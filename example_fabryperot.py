@@ -2,10 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import thinfilm as tf
 
-# Constants
-
-degrees = np.pi/180
-
 # Input
 
 n_cov = 1.0
@@ -20,7 +16,7 @@ lambda_0 = np.arange(500, 1000) #nm
 # Calculation 
 
 k0 = 2*np.pi/lambda_0
-theta_i = AOI*degrees
+theta_i = AOI*tf.degrees
 
 n_in.reverse()
 t_in.reverse()

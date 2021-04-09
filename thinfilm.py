@@ -16,20 +16,9 @@ import cmath
 
 '''
 
-def fabry_perot_refl(delta, r12, r23, t12, t21):
-    ''' Fabry Perot reflection coefficient '''  
-    phase_term = exp(-1j*delta)
-    r = r12 + t12*r23*t21/(phase_term+r12*r23)
-    return r
+# Constants
 
-
-def phase_difference(k0, nf, d, theta_t):
-    ''' The phase difference 
-    between two parallel rays reflected at thin film interfaces'''
-    L = 2*nf*d*cos(theta_t)
-    pd = k0 * L
-    return pd
-
+degrees = np.pi/180
 
 def snell_theta_t(n1, n2, theta_1):
     '''Calculates the angle of transmission at an interface'''
@@ -64,6 +53,21 @@ def fresnel_t_p(n1, n2, theta_i, theta_t):
     Parallel polarisation'''
     tp = 2*n1*cos(theta_i)/(n2*cos(theta_i) + n1*cos(theta_t))
     return tp
+
+
+def phase_difference(k0, nf, d, theta_t):
+    ''' The phase difference 
+    between two parallel rays reflected at thin film interfaces'''
+    L = 2*nf*d*cos(theta_t)
+    pd = k0 * L
+    return pd
+
+
+def fabry_perot_refl(delta, r12, r23, t12, t21):
+    ''' Fabry Perot reflection coefficient '''  
+    phase_term = exp(-1j*delta)
+    r = r12 + t12*r23*t21/(phase_term+r12*r23)
+    return r
 
 
 def psi_delta(r_s, r_p):

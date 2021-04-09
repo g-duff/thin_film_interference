@@ -13,14 +13,10 @@ AOI = 65
 
 lambda_0 = np.arange(500, 1000) #nm
 
-# Constants
-
-degrees = np.pi/180
-
 # Calculation 
 
 k0 = 2*np.pi/lambda_0
-theta_i = AOI*degrees
+theta_i = AOI*tf.degrees
 
 n_in.reverse()
 t_in.reverse()
