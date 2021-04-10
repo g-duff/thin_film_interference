@@ -29,4 +29,7 @@ ax2.plot(lambda_0, np.cos(delta))
 ax2.set_xlabel('Free space wavelength (nm)')
 
 fig.tight_layout()
+
+fig.savefig('./example_figures/psi_delta.png')
+
 plt.show()

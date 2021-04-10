@@ -7,7 +7,7 @@ import thinfilm as tf
 n_cov = 1.0
 
 n_in = [1.45, 3.8]
-t_in = [300]
+t_in = [800]
 
 AOI = 30
 
@@ -37,4 +37,7 @@ ax2.plot(lambda_0, np.abs(r_p)**2)
 ax2.set_xlabel('Free space wavelength (nm)')
 
 fig.tight_layout()
+
+fig.savefig('./example_figures/fabryperot.png')
+
 plt.show()

@@ -26,5 +26,8 @@ ax.plot(AOI, np.abs(r_p)**2, 'C3--', label="P polarisation")
 
 ax.set_xlabel('Angle of incidence (degrees)')
 ax.set_ylabel('Reflectance')
+ax.legend()
+
+fig.savefig('./example_figures/brewsters.png')
 
 plt.show()
