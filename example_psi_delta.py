@@ -9,9 +9,9 @@ t_in = [220, 3000]
 
 AOI = 65
 
-lambda_0 = np.arange(500, 1000) #nm
+lambda_0 = np.arange(500, 1000)  # nm
 
-# Calculation 
+# Calculation
 theta_i = AOI*tf.degrees
 
 psi, delta = tf.ellipsometry(lambda_0, theta_i, n_in, t_in)

@@ -25,7 +25,7 @@ class BaseFunctions(unittest.TestCase):
 
     def test_phase_normalincidence(self):
         '''Phase difference from reflections indide a film at normal incidence
-        tested against film thicknesses of fractional wavelengths''' 
+        tested against film thicknesses of fractional wavelengths'''
         tau = 2*np.pi
 
         lam0 = 800
@@ -41,12 +41,11 @@ class BaseFunctions(unittest.TestCase):
 
         phase_out = [tf.phase_difference(k0, nf, t, theta_t) for t in thick]
 
-        phase_residuals = (pout - pcomp for pout, pcomp in 
-            zip(phase_out, phase_compare))
+        phase_residuals = (pout - pcomp for pout, pcomp in
+                           zip(phase_out, phase_compare))
         phase_residuals = sum(phase_residuals)
 
         self.assertAlmostEqual(phase_residuals, 0)
-
 
     def test_phase_angledincidence(self):
         ''' Phase difference from reflections indide a film at 60 degrees
@@ -57,7 +56,7 @@ class BaseFunctions(unittest.TestCase):
         lam0 = 800
         theta_t = 60*tf.degrees
         nf = 2.0
-        
+
         comparison_factors = (0, 1/2, 1/4, 1/6)
 
         thick = [cf*lam0 for cf in comparison_factors]
@@ -67,8 +66,8 @@ class BaseFunctions(unittest.TestCase):
 
         phase_out = [tf.phase_difference(k0, nf, t, theta_t) for t in thick]
 
-        phase_residuals = (pout - pcomp for pout, pcomp in 
-            zip(phase_out, phase_compare))
+        phase_residuals = (pout - pcomp for pout, pcomp in
+                           zip(phase_out, phase_compare))
         phase_residuals = sum(phase_residuals)
 
         self.assertAlmostEqual(phase_residuals, 0)
@@ -82,18 +81,17 @@ class Fresnel(unittest.TestCase):
         theta_i = 15
         n_1 = 1.0
         n_2 = 1.5
-    
+
         theta_t = tf.snell_theta_t(n_1, n_2, theta_i)
-        
+
         r = tf.fresnel_r_s(n_1, n_2, theta_i, theta_t)
         t = tf.fresnel_t_s(n_1, n_2, theta_i, theta_t)
 
         R = r**2
         T = t**2 * n_2*np.cos(theta_t)/n_1/np.cos(theta_i)
 
-        test_energy = R + T 
+        test_energy = R + T
         self.assertAlmostEqual(test_energy, 1)
-
 
     def test_fresnel_p_energyconservation(self):
         '''Energy conservation for reflected and transmitted
@@ -102,9 +100,9 @@ class Fresnel(unittest.TestCase):
         theta_i = 15
         n_1 = 1.0
         n_2 = 1.5
-        
+
         theta_t = tf.snell_theta_t(n_1, n_2, theta_i)
-        
+
         r = tf.fresnel_r_p(n_1, n_2, theta_i, theta_t)
         t = tf.fresnel_t_p(n_1, n_2, theta_i, theta_t)
 
@@ -121,9 +119,9 @@ class Ellipsometry(unittest.TestCase):
         '''Compare calculated psi and delta values for SoI thin film against
         output from the Regress Pro application 
         using the same input parameters'''
-         
-        lambda_0, tan_psi_rp, cos_delta_rp = np.genfromtxt('./tests/SoI_regressPro.txt', 
-            skip_header=1, unpack=True, usecols=(0, 2, 5))
+
+        lambda_0, tan_psi_rp, cos_delta_rp = np.genfromtxt('./tests/SoI_regressPro.txt',
+                                                           skip_header=1, unpack=True, usecols=(0, 2, 5))
 
         n_cov = 1.0
 

@@ -11,9 +11,9 @@ t_in = [220, 2000]
 
 AOI = 30
 
-lambda_0 = np.arange(500, 1000) #nm
+lambda_0 = np.arange(500, 1000)  # nm
 
-# Calculation 
+# Calculation
 
 k0 = 2*np.pi/lambda_0
 theta_i = AOI*tf.degrees

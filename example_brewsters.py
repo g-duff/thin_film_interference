@@ -9,7 +9,7 @@ n_sub = 1.45
 
 AOI = np.arange(0, 90)
 
-# Calculation 
+# Calculation
 
 theta_i = AOI*tf.degrees
 theta_t = tf.snell_theta_t(n_cov, n_sub, theta_i)

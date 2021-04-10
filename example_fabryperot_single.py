@@ -12,28 +12,28 @@ t_film = 800
 
 AOI = 30
 
-lambda_0 = np.arange(500, 1000) #nm
+lambda_0 = np.arange(500, 1000)  # nm
 
 # Angles
 
 theta_i = AOI*tf.degrees                            # incident
 theta_f = tf.snell_theta_t(n_cov, n_film, theta_i)  # film
-theta_t = tf.snell_theta_t(n_film, n_subs, theta_f) # transmitted
+theta_t = tf.snell_theta_t(n_film, n_subs, theta_f)  # transmitted
 
 # Fresnel coefficients for both polarisations
 
 fresnel_s = {
-    'r12' : tf.fresnel_r_s(n_cov, n_film, theta_i, theta_f),
-    'r23' : tf.fresnel_r_s(n_film, n_subs, theta_f, theta_t),
-    't12' : tf.fresnel_t_s(n_cov, n_film, theta_i, theta_f),
-    't21' : tf.fresnel_t_s(n_film, n_cov, theta_f, theta_i),
+    'r12': tf.fresnel_r_s(n_cov, n_film, theta_i, theta_f),
+    'r23': tf.fresnel_r_s(n_film, n_subs, theta_f, theta_t),
+    't12': tf.fresnel_t_s(n_cov, n_film, theta_i, theta_f),
+    't21': tf.fresnel_t_s(n_film, n_cov, theta_f, theta_i),
 }
 
 fresnel_p = {
-    'r12' : tf.fresnel_r_p(n_cov, n_film, theta_i, theta_f),
-    'r23' : tf.fresnel_r_p(n_film, n_subs, theta_f, theta_t),
-    't12' : tf.fresnel_t_p(n_cov, n_film, theta_i, theta_f),
-    't21' : tf.fresnel_t_p(n_film, n_cov, theta_f, theta_i),
+    'r12': tf.fresnel_r_p(n_cov, n_film, theta_i, theta_f),
+    'r23': tf.fresnel_r_p(n_film, n_subs, theta_f, theta_t),
+    't12': tf.fresnel_t_p(n_cov, n_film, theta_i, theta_f),
+    't21': tf.fresnel_t_p(n_film, n_cov, theta_f, theta_i),
 }
 
 # Phase difference from rays

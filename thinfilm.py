@@ -20,6 +20,7 @@ import cmath
 
 degrees = np.pi/180
 
+
 def snell_theta_t(n1, n2, theta_1):
     '''Calculates the angle of transmission at an interface'''
     sintheta_2 = sin(theta_1)*n1/n2
@@ -64,7 +65,7 @@ def fresnel_t_p(n1, n2, theta_i, theta_t):
 
 
 def fabry_perot_refl(delta, r12, r23, t12, t21):
-    ''' Fabry Perot reflection coefficient '''  
+    ''' Fabry Perot reflection coefficient '''
     phase_term = exp(-1j*delta)
     r = r12 + t12*r23*t21/(phase_term+r12*r23)
     return r
@@ -82,14 +83,14 @@ def next_r_s(k0, theta_i, n_cov, n_sub, thicknesses):
     ''' Return reflection for the next layer 
     Senkrecht polarisation'''
 
-    # Base quantities    
+    # Base quantities
     n_film = n_sub.pop()
     theta_t = snell_theta_t(n_cov, n_film, theta_i)
     r12 = fresnel_r_s(n_cov, n_film, theta_i, theta_t)
 
     try:
-        # Interference inside a thin film, calculated using 
-        # a Fabry-Perot model 
+        # Interference inside a thin film, calculated using
+        # a Fabry-Perot model
         t = thicknesses.pop()
         r23 = next_r_s(k0, theta_t, n_film, n_sub, thicknesses)
 
@@ -102,10 +103,10 @@ def next_r_s(k0, theta_i, n_cov, n_sub, thicknesses):
         r = fabry_perot_refl(delta, r12, r23, t12, t21)
 
     except IndexError:
-        # Reflectance for a single interface when  
+        # Reflectance for a single interface when
         # no finite thicknesses are left in the stack
         r = r12
-    
+
     finally:
         return r
 
@@ -113,15 +114,15 @@ def next_r_s(k0, theta_i, n_cov, n_sub, thicknesses):
 def next_r_p(k0, theta_i, n_cov, n_sub, thicknesses):
     ''' Return reflection for the next layer 
     Parallel  polarisation'''
-    
-    # Base quantities    
+
+    # Base quantities
     n_film = n_sub.pop()
     theta_t = snell_theta_t(n_cov, n_film, theta_i)
     r12 = fresnel_r_p(n_cov, n_film, theta_i, theta_t)
 
     try:
         # Interference inside a thin film, calculated using
-        # a Fabry-Perot model 
+        # a Fabry-Perot model
         t = thicknesses.pop()
         r23 = next_r_p(k0, theta_t, n_film, n_sub, thicknesses)
 
@@ -134,7 +135,7 @@ def next_r_p(k0, theta_i, n_cov, n_sub, thicknesses):
         r = fabry_perot_refl(delta, r12, r23, t12, t21)
 
     except IndexError:
-        # Reflectance for a single interface when  
+        # Reflectance for a single interface when
         # no finite thicknesses are left in the stack
         r = r12
 
@@ -149,7 +150,7 @@ def ellipsometry(lambda_0, theta_i, ref_indices, thicknesses):
 
     ref_indices.reverse()
     thicknesses.reverse()
-    
+
     n_cov = ref_indices.pop()
 
     r_s = next_r_s(k0, theta_i, n_cov, ref_indices[:], thicknesses[:])

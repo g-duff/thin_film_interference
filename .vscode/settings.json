@@ -1,5 +1,6 @@
 {
     "python.pythonPath": ".venv/bin/python",
+    "python.formatting.provider": "autopep8",
     "python.testing.unittestArgs": [
         "-v",
         "-s",
