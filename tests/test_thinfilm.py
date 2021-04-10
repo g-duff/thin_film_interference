@@ -7,6 +7,7 @@ import random
 class BaseFunctions(unittest.TestCase):
 
     def test_snellnormal(self):
+        '''Snell's law at normal incidence'''
         n1 = 1.0
         n2 = 1.5
         theta_i = 0
@@ -14,6 +15,8 @@ class BaseFunctions(unittest.TestCase):
         self.assertEqual(snell_out, 0)
 
     def test_snellangle(self):
+        '''Snell's law, incident at 45 degrees tested
+        against exact sine values for total internal reflection'''
         n1 = 2
         n2 = np.sqrt(2)
         theta_i = 45*tf.degrees
@@ -21,6 +24,8 @@ class BaseFunctions(unittest.TestCase):
         self.assertAlmostEqual(snell_out, np.pi/2)
 
     def test_phase_normalincidence(self):
+        '''Phase difference from reflections indide a film at normal incidence
+        tested against film thicknesses of fractional wavelengths''' 
         tau = 2*np.pi
 
         lam0 = 800
@@ -44,6 +49,9 @@ class BaseFunctions(unittest.TestCase):
 
 
     def test_phase_angledincidence(self):
+        ''' Phase difference from reflections indide a film at 60 degrees
+        tested against film thicknesses of fractional wavelengths and
+        exact cosine values'''
         tau = 2*np.pi
 
         lam0 = 800
@@ -69,7 +77,8 @@ class BaseFunctions(unittest.TestCase):
 class Fresnel(unittest.TestCase):
 
     def test_fresnel_s_energyconservation(self):
-
+        '''Energy conservation for reflected and transmitted
+        amplitudes of s poarised light at an air-glass interface'''
         theta_i = 15
         n_1 = 1.0
         n_2 = 1.5
@@ -87,6 +96,8 @@ class Fresnel(unittest.TestCase):
 
 
     def test_fresnel_p_energyconservation(self):
+        '''Energy conservation for reflected and transmitted
+        amplitudes of p poarised light at an air-glass interface'''
 
         theta_i = 15
         n_1 = 1.0
@@ -106,19 +117,17 @@ class Fresnel(unittest.TestCase):
 
 class Ellipsometry(unittest.TestCase):
 
-    def test_snellnormal(self):
-        n1 = 1.0
-        n2 = 1.5
-        snell_out = tf.snell_theta_t(n1, n2, 0)
-        self.assertEqual(snell_out, 0)
-
     def test_regpro_SoI(self):
+        '''Compare calculated psi and delta values for SoI thin film against
+        output from the Regress Pro application 
+        using the same input parameters'''
+         
         lambda_0, tan_psi_rp, cos_delta_rp = np.genfromtxt('./tests/SoI_regressPro.txt', 
             skip_header=1, unpack=True, usecols=(0, 2, 5))
 
         n_cov = 1.0
 
-        n_in = [3.8, 1.45, 3.8]
+        n_in = [1.0, 3.8, 1.45, 3.8]
         t_in = [220, 3000]
 
         AOI = 65
@@ -126,13 +135,7 @@ class Ellipsometry(unittest.TestCase):
         k0 = 2*np.pi/lambda_0
         theta_i = AOI*tf.degrees
 
-        n_in.reverse()
-        t_in.reverse()
-
-        r_s = tf.next_r_s(k0, theta_i, n_cov, n_in[:], t_in[:])
-        r_p = tf.next_r_p(k0, theta_i, n_cov, n_in[:], t_in[:])
-
-        psi, delta = tf.psi_delta(r_s, r_p)
+        psi, delta = tf.ellipsometry(lambda_0, theta_i, n_in, t_in)
 
         psi_residules = np.tan(psi) - tan_psi_rp
         delta_residules = np.cos(delta) - cos_delta_rp

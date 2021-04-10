@@ -27,6 +27,14 @@ def snell_theta_t(n1, n2, theta_1):
     return theta_2
 
 
+def phase_difference(k0, nf, d, theta_t):
+    ''' The phase difference 
+    between two parallel rays reflected at thin film interfaces'''
+    L = 2*nf*d*cos(theta_t)
+    pd = k0 * L
+    return pd
+
+
 def fresnel_r_s(n1, n2, theta_i, theta_t):
     ''' Fresnel reflection coefficient
     Senkrecht polarisation'''
@@ -55,14 +63,6 @@ def fresnel_t_p(n1, n2, theta_i, theta_t):
     return tp
 
 
-def phase_difference(k0, nf, d, theta_t):
-    ''' The phase difference 
-    between two parallel rays reflected at thin film interfaces'''
-    L = 2*nf*d*cos(theta_t)
-    pd = k0 * L
-    return pd
-
-
 def fabry_perot_refl(delta, r12, r23, t12, t21):
     ''' Fabry Perot reflection coefficient '''  
     phase_term = exp(-1j*delta)
@@ -78,7 +78,7 @@ def psi_delta(r_s, r_p):
     return p, d
 
 
-def next_r_s(k0, theta_i, n_cov, n_sub, thicknesses=None):
+def next_r_s(k0, theta_i, n_cov, n_sub, thicknesses):
     ''' Return reflection for the next layer 
     Senkrecht polarisation'''
 
@@ -110,7 +110,7 @@ def next_r_s(k0, theta_i, n_cov, n_sub, thicknesses=None):
         return r
 
 
-def next_r_p(k0, theta_i, n_cov, n_sub, thicknesses=None):
+def next_r_p(k0, theta_i, n_cov, n_sub, thicknesses):
     ''' Return reflection for the next layer 
     Parallel  polarisation'''
     
@@ -140,3 +140,21 @@ def next_r_p(k0, theta_i, n_cov, n_sub, thicknesses=None):
 
     finally:
         return r
+
+
+def ellipsometry(lambda_0, theta_i, ref_indices, thicknesses):
+    '''Ellipsometry parameters for an n-layer thin film stack'''
+
+    k0 = 2*np.pi/lambda_0
+
+    ref_indices.reverse()
+    thicknesses.reverse()
+    
+    n_cov = ref_indices.pop()
+
+    r_s = next_r_s(k0, theta_i, n_cov, ref_indices[:], thicknesses[:])
+    r_p = next_r_p(k0, theta_i, n_cov, ref_indices[:], thicknesses[:])
+
+    psi, delta = psi_delta(r_s, r_p)
+
+    return psi, delta
