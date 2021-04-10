@@ -27,10 +27,10 @@ def snell_theta_t(n1, n2, theta_1):
     return theta_2
 
 
-def phase_difference(k0, nf, d, theta_t):
+def phase_difference(k0, nf, d, theta_f):
     ''' The phase difference 
     between two parallel rays reflected at thin film interfaces'''
-    L = 2*nf*d*cos(theta_t)
+    L = 2*nf*d*cos(theta_f)
     pd = k0 * L
     return pd
 

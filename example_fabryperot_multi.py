@@ -6,8 +6,8 @@ import thinfilm as tf
 
 n_cov = 1.0
 
-n_in = [1.45, 3.8]
-t_in = [800]
+n_in = [3.8, 1.45, 3.8]
+t_in = [220, 2000]
 
 AOI = 30
 
@@ -28,16 +28,18 @@ r_p = tf.next_r_p(k0, theta_i, n_cov, n_in[:], t_in[:])
 
 fig, (ax1, ax2) = plt.subplots(nrows=2, sharex=True)
 
-ax1.set_title('Reflectance, S polarisation')
+ax1.set_title('S polarisation')
+ax1.set_ylabel('Reflectance')
 ax1.plot(lambda_0, np.abs(r_s)**2)
 
-ax2.set_title('Reflectance, P polarisation')
+ax2.set_title('P polarisation')
+ax2.set_ylabel('Reflectance')
 ax2.plot(lambda_0, np.abs(r_p)**2)
 
 ax2.set_xlabel('Free space wavelength (nm)')
 
 fig.tight_layout()
 
-fig.savefig('./example_figures/fabryperot.png')
+fig.savefig('./example_figures/fabryperot_multi.png')
 
 plt.show()
