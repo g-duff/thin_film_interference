@@ -81,6 +81,8 @@ for i, t in enumerate(thicknesses):
             neff[i, j] = beta_out.real/k0
 
 
+print(neff)
+
 # Output
 fig, ax = plt.subplots()
 
