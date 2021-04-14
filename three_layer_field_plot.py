@@ -2,18 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy.optimize as opt
 import cmath
-
-def three_layers(beta, d, n1, n2, n3, k0, min_output=True):
-
-    delta = cmath.sqrt(beta**2 - (n3*k0)**2)
-    kappa = cmath.sqrt((n2*k0)**2 - beta**2)
-    gamma = cmath.sqrt(beta**2 - (n1*k0)**2)
-
-    if min_output:
-        diff = cmath.tan(kappa*d) - kappa*(gamma+delta)/(kappa**2-gamma*delta)
-        return diff
-    else:
-        return delta, kappa, gamma
+import waveguide as wg
 
 lam0 = 750
 
@@ -28,7 +17,7 @@ beta_in = k0*1.89
 
 print(f'Solving {t:2.1f} nm')
 try:
-    beta_out = opt.newton(three_layers, x0=beta_in,
+    beta_out = opt.newton(wg.three_layer_TE, x0=beta_in,
     args=(t, n1, n2, n3, k0), maxiter=1000, tol=1e-12)
 except:
     beta_out = k0
@@ -38,9 +27,7 @@ except:
 neff = beta_out/k0
 print(f'Effective refractive index: {neff}')
 
-(delta, kappa, gamma) = (three_layers(beta_out, t, n1, n2, n3, k0, False))
-
-print((delta, kappa, gamma))
+(delta, kappa, gamma) = (wg.field_coefficients(beta_out, n1, n2, n3, k0))
 
 A = 1
 B = -delta/kappa

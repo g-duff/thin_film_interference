@@ -1,23 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.optimize as opt
-import cmath
-
-# Needs actually implementing
-
-
-def three_layers(beta, d, n1, n2, n3, k0, full_output=False):
-
-    delta = cmath.sqrt(beta**2 - (n3*k0)**2)
-    kappa = cmath.sqrt((n2*k0)**2 - beta**2)
-    gamma = cmath.sqrt(beta**2 - (n1*k0)**2)
-
-    diff = cmath.tan(kappa*d) - kappa*(gamma+delta)/(kappa**2-gamma*delta)
-
-    if ~full_output:
-        return diff
-    else:
-        return delta, kappa, gamma
+import waveguide as wg
 
 lam0 = 1550
 
@@ -35,7 +19,7 @@ for i, t in enumerate(thicknesses):
     print(f'Solving {t:2.1f} nm')
     for j, b_in in enumerate(beta_in):
         try:
-            beta_out = opt.newton(three_layers, x0=b_in,
+            beta_out = opt.newton(wg.three_layers, x0=b_in,
                 args=(t, n1, n2, n3, k0), maxiter=100, tol=1e-7)
         except:
             beta_out = k0

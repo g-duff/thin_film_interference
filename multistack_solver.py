@@ -3,42 +3,7 @@ import numpy as np
 import scipy.optimize as opt
 import cmath
 import functools as ftl
-
-def multilayer_opt(beta, d, n, k0):
-    '''Based on the physics of sec 5.2.3 Slab Waveguide
-    Models an n-layer slab waveguide. 
-    Minimize to find guided modes.
-
-    Inputs
-    beta: propagation constant, float
-    d: layer thickesses, 1D iterable of floats
-    n: layer RI, iterable of floats same length as d 
-    k0: wave vector in free space
-
-    Outputs:
-    diff: float
-    '''
-
-    # From equation 5.20
-    kx = [cmath.sqrt((k0*ni)**2 - beta**2) for ni in n]
-
-    # From figure 5.7
-    alpha = [1j*kxi for kxi in kx]
-
-    # From figure 5.7. Easier to use delta plus one to put into 
-    # eqn 5.20 matrix
-    delta_p_1 = [a*di for a, di in zip(alpha[1:], d[1:])]
-
-    # From equation 5.20
-    matrices = [np.array([[(a+a_p1)*np.exp(-d_p1), (a-a_p1)*np.exp(d_p1)],
-                        [(a-a_p1)*np.exp(-d_p1), (a+a_p1)*np.exp(d_p1)]]
-    )/(2*a) for a, a_p1, d_p1 in zip(alpha, alpha[1:], delta_p_1)]
-
-    # Find the product of the eqn 5.20 matrices
-    M = ftl.reduce(np.matmul, matrices)
-    diff = M[0,0]
-
-    return abs(diff)
+import waveguide as wg
     
 # System parameters
 lam0 = 750  # nm
@@ -69,7 +34,7 @@ for i, t in enumerate(thicknesses):
 
         # Attempt to find a local minimum for a given initual guess: beta_in
         try:
-            beta_out, r = opt.newton(multilayer_opt, x0=b_in,
+            beta_out, r = opt.newton(wg.multilayer_opt, x0=b_in,
             args=(t, n, k0), maxiter=100, tol=1e-10, full_output=True)
         except:
             beta_out = k0
