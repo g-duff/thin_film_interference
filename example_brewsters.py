@@ -12,7 +12,7 @@ AOI = np.arange(0, 90)
 # Calculation
 
 theta_i = AOI*tf.degrees
-theta_t = tf.snell_theta_t(n_cov, n_sub, theta_i)
+theta_t = tf.calculateAngleOfTransmission(n_cov, n_sub, theta_i)
 
 r_s = tf.fresnel_r_s(n_cov, n_sub, theta_i, theta_t)
 r_p = tf.fresnel_r_p(n_cov, n_sub, theta_i, theta_t)

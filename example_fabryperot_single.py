@@ -17,8 +17,8 @@ lambda_0 = np.arange(500, 1000)  # nm
 # Angles
 
 theta_i = AOI*tf.degrees                            # incident
-theta_f = tf.snell_theta_t(n_cov, n_film, theta_i)  # film
-theta_t = tf.snell_theta_t(n_film, n_subs, theta_f)  # transmitted
+theta_f = tf.calculateAngleOfTransmission(n_cov, n_film, theta_i)  # film
+theta_t = tf.calculateAngleOfTransmission(n_film, n_subs, theta_f)  # transmitted
 
 # Fresnel coefficients for both polarisations
 

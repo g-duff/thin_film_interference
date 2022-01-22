@@ -21,11 +21,11 @@ import cmath
 degrees = np.pi/180
 
 
-def snell_theta_t(n1, n2, theta_1):
+def calculateAngleOfTransmission(incidenceRefractiveIndex, transmissionRefractiveIndex, angleOfIncidence):
     '''Calculates the angle of transmission at an interface'''
-    sintheta_2 = sin(theta_1)*n1/n2
-    theta_2 = np.arcsin(sintheta_2)
-    return theta_2
+    sinOfAngleOfTransmission = sin(angleOfIncidence)*incidenceRefractiveIndex/transmissionRefractiveIndex
+    angleOfTransmission = np.arcsin(sinOfAngleOfTransmission)
+    return angleOfTransmission
 
 
 def phase_difference(k0, nf, d, theta_f):
@@ -85,7 +85,7 @@ def next_r_s(k0, theta_i, n_cov, n_sub, thicknesses):
 
     # Base quantities
     n_film = n_sub.pop()
-    theta_t = snell_theta_t(n_cov, n_film, theta_i)
+    theta_t = calculateAngleOfTransmission(n_cov, n_film, theta_i)
     r12 = fresnel_r_s(n_cov, n_film, theta_i, theta_t)
 
     try:
@@ -117,7 +117,7 @@ def next_r_p(k0, theta_i, n_cov, n_sub, thicknesses):
 
     # Base quantities
     n_film = n_sub.pop()
-    theta_t = snell_theta_t(n_cov, n_film, theta_i)
+    theta_t = calculateAngleOfTransmission(n_cov, n_film, theta_i)
     r12 = fresnel_r_p(n_cov, n_film, theta_i, theta_t)
 
     try:

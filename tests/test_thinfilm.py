@@ -6,21 +6,21 @@ import random
 
 class BaseFunctions(unittest.TestCase):
 
-    def test_snellnormal(self):
+    def test_calculateAngleOfTransmission_normalIncidence(self):
         '''Snell's law at normal incidence'''
         n1 = 1.0
         n2 = 1.5
         theta_i = 0
-        snell_out = tf.snell_theta_t(n1, n2, theta_i)
+        snell_out = tf.calculateAngleOfTransmission(n1, n2, theta_i)
         self.assertEqual(snell_out, 0)
 
-    def test_snellangle(self):
+    def test_calculateAngleOfTransmission_obliqueIncidence(self):
         '''Snell's law, incident at 45 degrees tested
         against exact sine values for total internal reflection'''
         n1 = 2
         n2 = np.sqrt(2)
         theta_i = 45*tf.degrees
-        snell_out = tf.snell_theta_t(n1, n2, theta_i)
+        snell_out = tf.calculateAngleOfTransmission(n1, n2, theta_i)
         self.assertAlmostEqual(snell_out, np.pi/2)
 
     def test_phase_normalincidence(self):
@@ -82,7 +82,7 @@ class Fresnel(unittest.TestCase):
         n_1 = 1.0
         n_2 = 1.5
 
-        theta_t = tf.snell_theta_t(n_1, n_2, theta_i)
+        theta_t = tf.calculateAngleOfTransmission(n_1, n_2, theta_i)
 
         r = tf.fresnel_r_s(n_1, n_2, theta_i, theta_t)
         t = tf.fresnel_t_s(n_1, n_2, theta_i, theta_t)
@@ -101,7 +101,7 @@ class Fresnel(unittest.TestCase):
         n_1 = 1.0
         n_2 = 1.5
 
-        theta_t = tf.snell_theta_t(n_1, n_2, theta_i)
+        theta_t = tf.calculateAngleOfTransmission(n_1, n_2, theta_i)
 
         r = tf.fresnel_r_p(n_1, n_2, theta_i, theta_t)
         t = tf.fresnel_t_p(n_1, n_2, theta_i, theta_t)
