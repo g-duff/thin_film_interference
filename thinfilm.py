@@ -21,9 +21,9 @@ import cmath
 degrees = np.pi/180
 
 
-def calculateAngleOfTransmission(incidenceRefractiveIndex, transmissionRefractiveIndex, angleOfIncidence):
+def calculateAngleOfTransmission(incidenceRefractiveIndex, transmissionRefractiveIndex, incidentAngle):
     '''Calculates the angle of transmission at an interface'''
-    sinOfAngleOfTransmission = sin(angleOfIncidence)*incidenceRefractiveIndex/transmissionRefractiveIndex
+    sinOfAngleOfTransmission = sin(incidentAngle)*incidenceRefractiveIndex/transmissionRefractiveIndex
     angleOfTransmission = np.arcsin(sinOfAngleOfTransmission)
     return angleOfTransmission
 
@@ -36,32 +36,36 @@ def calculatePhaseDifference(freeSpaceWaveVector, filmRefractiveIndex, filmThick
     return freeSpaceWaveVector * opticalPathLength
 
 
-def fresnel_r_s(n1, n2, theta_i, theta_t):
+def calculateSenkrechtReflection(incidentRefractiveIndex, transmissionRefractiveIndex, incidentAngle, transmissionAngle):
     ''' Fresnel reflection coefficient
     Senkrecht polarisation'''
-    rs = (n1*cos(theta_i)-n2*cos(theta_t))/(n1*cos(theta_i)+n2*cos(theta_t))
-    return rs
+    numerator = (incidentRefractiveIndex*cos(incidentAngle)-transmissionRefractiveIndex*cos(transmissionAngle))
+    denominator = (incidentRefractiveIndex*cos(incidentAngle)+transmissionRefractiveIndex*cos(transmissionAngle))
+    return numerator/denominator
 
 
-def fresnel_t_s(n1, n2, theta_i, theta_t):
+def calculateSenkrechtTransmission(incidentRefractiveIndex, transmissionRefractiveIndex, incidentAngle, transmissionAngle):
     ''' Fresnel transmission coefficient
     Senkrecht polarization'''
-    ts = 2*n1*cos(theta_i)/(n1*cos(theta_i) + n2*cos(theta_t))
-    return ts
+    numerator = 2*incidentRefractiveIndex*cos(incidentAngle)
+    denominator = (incidentRefractiveIndex*cos(incidentAngle) + transmissionRefractiveIndex*cos(transmissionAngle))
+    return numerator/denominator
 
 
-def fresnel_r_p(n1, n2, theta_i, theta_t):
+def calculateParallelReflection(incidentRefractiveIndex, transmissionRefractiveIndex, incidentAngle, transmissionAngle):
     ''' Fresnel reflection coefficient
     Parallel polarisation'''
-    rp = (n2*cos(theta_i)-n1*cos(theta_t))/(n2*cos(theta_i)+n1*cos(theta_t))
-    return rp
+    numerator = (transmissionRefractiveIndex*cos(incidentAngle)-incidentRefractiveIndex*cos(transmissionAngle))
+    denominator = (transmissionRefractiveIndex*cos(incidentAngle)+incidentRefractiveIndex*cos(transmissionAngle))
+    return numerator/denominator
 
 
-def fresnel_t_p(n1, n2, theta_i, theta_t):
+def calculateParallelTransmission(incidentRefractiveIndex, transmissionRefractiveIndex, incidentAngle, transmissionAngle):
     ''' Fresnel transmission coefficient
     Parallel polarisation'''
-    tp = 2*n1*cos(theta_i)/(n2*cos(theta_i) + n1*cos(theta_t))
-    return tp
+    numerator = 2*incidentRefractiveIndex*cos(incidentAngle)
+    denominator = (transmissionRefractiveIndex*cos(incidentAngle) + incidentRefractiveIndex*cos(transmissionAngle))
+    return numerator/denominator
 
 
 def fabry_perot_refl(delta, r12, r23, t12, t21):
@@ -86,7 +90,7 @@ def next_r_s(k0, theta_i, n_cov, n_sub, thicknesses):
     # Base quantities
     n_film = n_sub.pop()
     theta_t = calculateAngleOfTransmission(n_cov, n_film, theta_i)
-    r12 = fresnel_r_s(n_cov, n_film, theta_i, theta_t)
+    r12 = calculateSenkrechtReflection(n_cov, n_film, theta_i, theta_t)
 
     try:
         # Interference inside a thin film, calculated using
@@ -94,8 +98,8 @@ def next_r_s(k0, theta_i, n_cov, n_sub, thicknesses):
         t = thicknesses.pop()
         r23 = next_r_s(k0, theta_t, n_film, n_sub, thicknesses)
 
-        t12 = fresnel_t_s(n_cov, n_film, theta_i, theta_t)
-        t21 = fresnel_t_s(n_film, n_cov, theta_t, theta_i)
+        t12 = calculateSenkrechtTransmission(n_cov, n_film, theta_i, theta_t)
+        t21 = calculateSenkrechtTransmission(n_film, n_cov, theta_t, theta_i)
 
         delta = calculatePhaseDifference(k0, n_film, t, theta_t)
         phase_term = exp(-1j*delta)
@@ -118,7 +122,7 @@ def next_r_p(k0, theta_i, n_cov, n_sub, thicknesses):
     # Base quantities
     n_film = n_sub.pop()
     theta_t = calculateAngleOfTransmission(n_cov, n_film, theta_i)
-    r12 = fresnel_r_p(n_cov, n_film, theta_i, theta_t)
+    r12 = calculateParallelReflection(n_cov, n_film, theta_i, theta_t)
 
     try:
         # Interference inside a thin film, calculated using
@@ -126,8 +130,8 @@ def next_r_p(k0, theta_i, n_cov, n_sub, thicknesses):
         t = thicknesses.pop()
         r23 = next_r_p(k0, theta_t, n_film, n_sub, thicknesses)
 
-        t12 = fresnel_t_p(n_cov, n_film, theta_i, theta_t)
-        t21 = fresnel_t_p(n_film, n_cov, theta_t, theta_i)
+        t12 = calculateParallelTransmission(n_cov, n_film, theta_i, theta_t)
+        t21 = calculateParallelTransmission(n_film, n_cov, theta_t, theta_i)
 
         delta = calculatePhaseDifference(k0, n_film, t, theta_t)
         phase_term = exp(-1j*delta)

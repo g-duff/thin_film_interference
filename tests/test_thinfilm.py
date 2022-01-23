@@ -75,7 +75,7 @@ class BaseFunctions(unittest.TestCase):
 
 class Fresnel(unittest.TestCase):
 
-    def test_fresnel_s_energyconservation(self):
+    def test_fresnelSenkrecht_energyconservation(self):
         '''Energy conservation for reflected and transmitted
         amplitudes of s poarised light at an air-glass interface'''
         theta_i = 15
@@ -84,8 +84,8 @@ class Fresnel(unittest.TestCase):
 
         theta_t = tf.calculateAngleOfTransmission(n_1, n_2, theta_i)
 
-        r = tf.fresnel_r_s(n_1, n_2, theta_i, theta_t)
-        t = tf.fresnel_t_s(n_1, n_2, theta_i, theta_t)
+        r = tf.calculateSenkrechtReflection(n_1, n_2, theta_i, theta_t)
+        t = tf.calculateSenkrechtTransmission(n_1, n_2, theta_i, theta_t)
 
         R = r**2
         T = t**2 * n_2*np.cos(theta_t)/n_1/np.cos(theta_i)
@@ -93,7 +93,7 @@ class Fresnel(unittest.TestCase):
         test_energy = R + T
         self.assertAlmostEqual(test_energy, 1)
 
-    def test_fresnel_p_energyconservation(self):
+    def test_fresnelParallel_energyconservation(self):
         '''Energy conservation for reflected and transmitted
         amplitudes of p poarised light at an air-glass interface'''
 
@@ -103,8 +103,8 @@ class Fresnel(unittest.TestCase):
 
         theta_t = tf.calculateAngleOfTransmission(n_1, n_2, theta_i)
 
-        r = tf.fresnel_r_p(n_1, n_2, theta_i, theta_t)
-        t = tf.fresnel_t_p(n_1, n_2, theta_i, theta_t)
+        r = tf.calculateParallelReflection(n_1, n_2, theta_i, theta_t)
+        t = tf.calculateParallelTransmission(n_1, n_2, theta_i, theta_t)
 
         R = r**2
         T = t**2 * n_2*np.cos(theta_t)/n_1/np.cos(theta_i)

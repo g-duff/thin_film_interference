@@ -23,17 +23,17 @@ theta_t = tf.calculateAngleOfTransmission(n_film, n_subs, theta_f)  # transmitte
 # Fresnel coefficients for both polarisations
 
 fresnel_s = {
-    'r12': tf.fresnel_r_s(n_cov, n_film, theta_i, theta_f),
-    'r23': tf.fresnel_r_s(n_film, n_subs, theta_f, theta_t),
-    't12': tf.fresnel_t_s(n_cov, n_film, theta_i, theta_f),
-    't21': tf.fresnel_t_s(n_film, n_cov, theta_f, theta_i),
+    'r12': tf.calculateSenkrechtReflection(n_cov, n_film, theta_i, theta_f),
+    'r23': tf.calculateSenkrechtReflection(n_film, n_subs, theta_f, theta_t),
+    't12': tf.calculateSenkrechtTransmission(n_cov, n_film, theta_i, theta_f),
+    't21': tf.calculateSenkrechtTransmission(n_film, n_cov, theta_f, theta_i),
 }
 
 fresnel_p = {
-    'r12': tf.fresnel_r_p(n_cov, n_film, theta_i, theta_f),
-    'r23': tf.fresnel_r_p(n_film, n_subs, theta_f, theta_t),
-    't12': tf.fresnel_t_p(n_cov, n_film, theta_i, theta_f),
-    't21': tf.fresnel_t_p(n_film, n_cov, theta_f, theta_i),
+    'r12': tf.calculateParallelReflection(n_cov, n_film, theta_i, theta_f),
+    'r23': tf.calculateParallelReflection(n_film, n_subs, theta_f, theta_t),
+    't12': tf.calculateParallelTransmission(n_cov, n_film, theta_i, theta_f),
+    't21': tf.calculateParallelTransmission(n_film, n_cov, theta_f, theta_i),
 }
 
 # Phase difference from rays
