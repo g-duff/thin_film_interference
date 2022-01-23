@@ -68,11 +68,12 @@ def calculateParallelTransmission(incidentRefractiveIndex, transmissionRefractiv
     return numerator/denominator
 
 
-def fabry_perot_refl(delta, r12, r23, t12, t21):
+def calculateFilmReflection(accumulatedPhase, reflectionInto, reflectionOutOf, transmissionInto, transmissionBack):
     ''' Fabry Perot reflection coefficient '''
-    phase_term = exp(-1j*delta)
-    r = r12 + t12*r23*t21/(phase_term+r12*r23)
-    return r
+    accumulatedPhase = exp(-1j*accumulatedPhase)
+    numerator = transmissionInto*reflectionOutOf*transmissionBack
+    demoninator = accumulatedPhase+reflectionInto*reflectionOutOf
+    return reflectionInto + numerator/demoninator
 
 
 def psi_delta(r_s, r_p):
@@ -104,7 +105,7 @@ def next_r_s(k0, theta_i, n_cov, n_sub, thicknesses):
         delta = calculatePhaseDifference(k0, n_film, t, theta_t)
         phase_term = exp(-1j*delta)
 
-        r = fabry_perot_refl(delta, r12, r23, t12, t21)
+        r = calculateFilmReflection(delta, r12, r23, t12, t21)
 
     except IndexError:
         # Reflectance for a single interface when
@@ -136,7 +137,7 @@ def next_r_p(k0, theta_i, n_cov, n_sub, thicknesses):
         delta = calculatePhaseDifference(k0, n_film, t, theta_t)
         phase_term = exp(-1j*delta)
 
-        r = fabry_perot_refl(delta, r12, r23, t12, t21)
+        r = calculateFilmReflection(delta, r12, r23, t12, t21)
 
     except IndexError:
         # Reflectance for a single interface when

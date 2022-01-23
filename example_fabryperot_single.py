@@ -43,8 +43,8 @@ delta = tf.calculatePhaseDifference(k0, n_film, t_film, theta_f)
 
 # Multiple beam interference in Fabry Perot cavity
 
-r_s = tf.fabry_perot_refl(delta,  **fresnel_s)
-r_p = tf.fabry_perot_refl(delta,  **fresnel_p)
+r_s = tf.calculateFilmReflection(delta,  **fresnel_s)
+r_p = tf.calculateFilmReflection(delta,  **fresnel_p)
 
 # Graphical output
 
