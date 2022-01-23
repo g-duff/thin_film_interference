@@ -4,25 +4,23 @@ import thinfilm as tf
 
 # Input
 
-n_cov = 1.0
-n_sub = 1.45
+coverRefractiveIndex = 1.0
+substrateRefractiveIndex = 1.45
 
-AOI = np.arange(0, 90)
+incidentAngle = np.arange(0, 90)*tf.degrees
 
 # Calculation
+transmissionAngle = tf.calculateAngleOfTransmission(coverRefractiveIndex, substrateRefractiveIndex, incidentAngle)
 
-theta_i = AOI*tf.degrees
-theta_t = tf.calculateAngleOfTransmission(n_cov, n_sub, theta_i)
-
-r_s = tf.calculateSenkrechtReflection(n_cov, n_sub, theta_i, theta_t)
-r_p = tf.calculateParallelReflection(n_cov, n_sub, theta_i, theta_t)
+senkrechtReflection = tf.calculateSenkrechtReflection(coverRefractiveIndex, substrateRefractiveIndex, incidentAngle, transmissionAngle)
+parallelReflection = tf.calculateParallelReflection(coverRefractiveIndex, substrateRefractiveIndex, incidentAngle, transmissionAngle)
 
 # Graphical output
 
 fig, ax = plt.subplots()
 
-ax.plot(AOI, np.abs(r_s)**2, 'C0--', label="S polarisation")
-ax.plot(AOI, np.abs(r_p)**2, 'C3--', label="P polarisation")
+ax.plot(incidentAngle, np.abs(senkrechtReflection)**2, 'C0--', label="S polarisation")
+ax.plot(incidentAngle, np.abs(parallelReflection)**2, 'C3--', label="P polarisation")
 
 ax.set_xlabel('Angle of incidence (degrees)')
 ax.set_ylabel('Reflectance')
