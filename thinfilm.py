@@ -84,68 +84,66 @@ def reflectionToPsiDelta(senkrechtReflection, parallelReflection):
     return psi, delta
 
 
-def next_r_s(k0, theta_i, n_cov, n_sub, thicknesses):
+def nextLayerSenkrechtReflection(freeSpaceWaveNumber, indidentAngle, coverRefractiveIndex, substrateRefractiveIndices, thicknesses):
     ''' Return reflection for the next layer 
     Senkrecht polarisation'''
 
     # Base quantities
-    n_film = n_sub.pop()
-    theta_t = calculateAngleOfTransmission(n_cov, n_film, theta_i)
-    r12 = calculateSenkrechtReflection(n_cov, n_film, theta_i, theta_t)
+    filmRefractiveIndex = substrateRefractiveIndices.pop()
+    transmissionAngle = calculateAngleOfTransmission(coverRefractiveIndex, filmRefractiveIndex, indidentAngle)
+    reflectionInto = calculateSenkrechtReflection(coverRefractiveIndex, filmRefractiveIndex, indidentAngle, transmissionAngle)
 
     try:
         # Interference inside a thin film, calculated using
         # a Fabry-Perot model
-        t = thicknesses.pop()
-        r23 = next_r_s(k0, theta_t, n_film, n_sub, thicknesses)
+        filmThickness = thicknesses.pop()
+        reflectionOutOf = nextLayerSenkrechtReflection(freeSpaceWaveNumber, transmissionAngle, filmRefractiveIndex, substrateRefractiveIndices, thicknesses)
 
-        t12 = calculateSenkrechtTransmission(n_cov, n_film, theta_i, theta_t)
-        t21 = calculateSenkrechtTransmission(n_film, n_cov, theta_t, theta_i)
+        transmissionInto = calculateSenkrechtTransmission(coverRefractiveIndex, filmRefractiveIndex, indidentAngle, transmissionAngle)
+        transmissionBack = calculateSenkrechtTransmission(filmRefractiveIndex, coverRefractiveIndex, transmissionAngle, indidentAngle)
 
-        delta = calculatePhaseDifference(k0, n_film, t, theta_t)
-        phase_term = exp(-1j*delta)
+        phaseDifference = calculatePhaseDifference(freeSpaceWaveNumber, filmRefractiveIndex, filmThickness, transmissionAngle)
 
-        r = calculateFilmReflection(delta, r12, r23, t12, t21)
+        reflectionInto = calculateFilmReflection(phaseDifference, reflectionInto, reflectionOutOf, transmissionInto, transmissionBack)
 
     except IndexError:
         # Reflectance for a single interface when
         # no finite thicknesses are left in the stack
-        r = r12
+        pass
 
     finally:
-        return r
+        return reflectionInto
 
 
-def next_r_p(k0, theta_i, n_cov, n_sub, thicknesses):
+def nextLayerParallelReflection(freeSpaceWaveNumber, incidentAngle, coverRefractiveIndex, substrateRefractiveIndices, thicknesses):
     ''' Return reflection for the next layer 
     Parallel  polarisation'''
 
     # Base quantities
-    n_film = n_sub.pop()
-    theta_t = calculateAngleOfTransmission(n_cov, n_film, theta_i)
-    r12 = calculateParallelReflection(n_cov, n_film, theta_i, theta_t)
+    filmRefractiveIndex = substrateRefractiveIndices.pop()
+    transmissionAngle = calculateAngleOfTransmission(coverRefractiveIndex, filmRefractiveIndex, incidentAngle)
+    reflectionInto = calculateParallelReflection(coverRefractiveIndex, filmRefractiveIndex, incidentAngle, transmissionAngle)
 
     try:
         # Interference inside a thin film, calculated using
         # a Fabry-Perot model
-        t = thicknesses.pop()
-        r23 = next_r_p(k0, theta_t, n_film, n_sub, thicknesses)
+        filmThickness = thicknesses.pop()
+        reflectionOutOf = nextLayerParallelReflection(freeSpaceWaveNumber, transmissionAngle, filmRefractiveIndex, substrateRefractiveIndices, thicknesses)
 
-        t12 = calculateParallelTransmission(n_cov, n_film, theta_i, theta_t)
-        t21 = calculateParallelTransmission(n_film, n_cov, theta_t, theta_i)
+        transmissionInto = calculateParallelTransmission(coverRefractiveIndex, filmRefractiveIndex, incidentAngle, transmissionAngle)
+        transmissionBack = calculateParallelTransmission(filmRefractiveIndex, coverRefractiveIndex, transmissionAngle, incidentAngle)
 
-        delta = calculatePhaseDifference(k0, n_film, t, theta_t)
-        phase_term = exp(-1j*delta)
+        phaseDifference = calculatePhaseDifference(freeSpaceWaveNumber, filmRefractiveIndex, filmThickness, transmissionAngle)
 
-        r = calculateFilmReflection(delta, r12, r23, t12, t21)
+        reflectionInto = calculateFilmReflection(phaseDifference, reflectionInto, reflectionOutOf, transmissionInto, transmissionBack)
 
     except IndexError:
         # Reflectance for a single interface when
         # no finite thicknesses are left in the stack
-        r = r12
+        pass
 
     finally:
-        return r
+        return reflectionInto
 
 
 def ellipsometry(lambda_0, theta_i, ref_indices, thicknesses):
@@ -158,8 +156,8 @@ def ellipsometry(lambda_0, theta_i, ref_indices, thicknesses):
 
     n_cov = ref_indices.pop()
 
-    r_s = next_r_s(k0, theta_i, n_cov, ref_indices[:], thicknesses[:])
-    r_p = next_r_p(k0, theta_i, n_cov, ref_indices[:], thicknesses[:])
+    r_s = nextLayerSenkrechtReflection(k0, theta_i, n_cov, ref_indices[:], thicknesses[:])
+    r_p = nextLayerParallelReflection(k0, theta_i, n_cov, ref_indices[:], thicknesses[:])
 
     psi, delta = reflectionToPsiDelta(r_s, r_p)
 

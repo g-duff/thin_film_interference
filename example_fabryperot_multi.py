@@ -21,8 +21,8 @@ theta_i = AOI*tf.degrees
 n_in.reverse()
 t_in.reverse()
 
-r_s = tf.next_r_s(k0, theta_i, n_cov, n_in[:], t_in[:])
-r_p = tf.next_r_p(k0, theta_i, n_cov, n_in[:], t_in[:])
+r_s = tf.nextLayerSenkrechtReflection(k0, theta_i, n_cov, n_in[:], t_in[:])
+r_p = tf.nextLayerParallelReflection(k0, theta_i, n_cov, n_in[:], t_in[:])
 
 # Graphical output
 
