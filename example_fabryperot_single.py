@@ -4,47 +4,45 @@ import thinfilm as tf
 
 # Input
 
-n_cov = 1.0
-n_film = 1.45
-n_subs = 3.8
+coverRefractiveIndex = 1.0
+filmRefractiveIndex = 1.45
+substrateRefractiveIndex = 3.8
 
-t_film = 800
+filmThickness = 800
 
-AOI = 30
+incidentAngle = 30*tf.degrees
 
-lambda_0 = np.arange(500, 1000)  # nm
+freeSpaceWavelength = np.arange(500, 1000)
 
 # Angles
-
-theta_i = AOI*tf.degrees                            # incident
-theta_f = tf.snell_theta_t(n_cov, n_film, theta_i)  # film
-theta_t = tf.snell_theta_t(n_film, n_subs, theta_f)  # transmitted
+rayAngleInFilm = tf.calculateAngleOfTransmission(coverRefractiveIndex, filmRefractiveIndex, incidentAngle)
+transmissionAngle = tf.calculateAngleOfTransmission(filmRefractiveIndex, substrateRefractiveIndex, rayAngleInFilm)
 
 # Fresnel coefficients for both polarisations
 
-fresnel_s = {
-    'r12': tf.fresnel_r_s(n_cov, n_film, theta_i, theta_f),
-    'r23': tf.fresnel_r_s(n_film, n_subs, theta_f, theta_t),
-    't12': tf.fresnel_t_s(n_cov, n_film, theta_i, theta_f),
-    't21': tf.fresnel_t_s(n_film, n_cov, theta_f, theta_i),
+fresnelSenkrechtCoefficients = {
+    'reflectionInto': tf.calculateSenkrechtReflection(coverRefractiveIndex, filmRefractiveIndex, incidentAngle, rayAngleInFilm),
+    'reflectionOutOf': tf.calculateSenkrechtReflection(filmRefractiveIndex, substrateRefractiveIndex, rayAngleInFilm, transmissionAngle),
+    'transmissionInto': tf.calculateSenkrechtTransmission(coverRefractiveIndex, filmRefractiveIndex, incidentAngle, rayAngleInFilm),
+    'transmissionBack': tf.calculateSenkrechtTransmission(filmRefractiveIndex, coverRefractiveIndex, rayAngleInFilm, incidentAngle),
 }
 
-fresnel_p = {
-    'r12': tf.fresnel_r_p(n_cov, n_film, theta_i, theta_f),
-    'r23': tf.fresnel_r_p(n_film, n_subs, theta_f, theta_t),
-    't12': tf.fresnel_t_p(n_cov, n_film, theta_i, theta_f),
-    't21': tf.fresnel_t_p(n_film, n_cov, theta_f, theta_i),
+fresnelParallelCoefficients = {
+    'reflectionInto': tf.calculateParallelReflection(coverRefractiveIndex, filmRefractiveIndex, incidentAngle, rayAngleInFilm),
+    'reflectionOutOf': tf.calculateParallelReflection(filmRefractiveIndex, substrateRefractiveIndex, rayAngleInFilm, transmissionAngle),
+    'transmissionInto': tf.calculateParallelTransmission(coverRefractiveIndex, filmRefractiveIndex, incidentAngle, rayAngleInFilm),
+    'transmissionBack': tf.calculateParallelTransmission(filmRefractiveIndex, coverRefractiveIndex, rayAngleInFilm, incidentAngle),
 }
 
 # Phase difference from rays
 
-k0 = 2*np.pi/lambda_0
-delta = tf.phase_difference(k0, n_film, t_film, theta_f)
+freeSpaceWavenumber = 2*np.pi/freeSpaceWavelength
+phaseDifference = tf.calculatePhaseDifference(freeSpaceWavenumber, filmRefractiveIndex, filmThickness, rayAngleInFilm)
 
 # Multiple beam interference in Fabry Perot cavity
 
-r_s = tf.fabry_perot_refl(delta,  **fresnel_s)
-r_p = tf.fabry_perot_refl(delta,  **fresnel_p)
+senkrechtReflection = tf.calculateFilmReflection(phaseDifference,  **fresnelSenkrechtCoefficients)
+parallelReflection = tf.calculateFilmReflection(phaseDifference,  **fresnelParallelCoefficients)
 
 # Graphical output
 
@@ -52,11 +50,11 @@ fig, (ax1, ax2) = plt.subplots(nrows=2, sharex=True)
 
 ax1.set_title('S polarisation')
 ax1.set_ylabel('Reflectance')
-ax1.plot(lambda_0, np.abs(r_s)**2)
+ax1.plot(freeSpaceWavelength, np.abs(senkrechtReflection)**2)
 
 ax2.set_title('P polarisation')
 ax2.set_ylabel('Reflectance')
-ax2.plot(lambda_0, np.abs(r_p)**2)
+ax2.plot(freeSpaceWavelength, np.abs(parallelReflection)**2)
 
 ax2.set_xlabel('Free space wavelength (nm)')
 

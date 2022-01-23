@@ -4,25 +4,22 @@ import thinfilm as tf
 
 # Input
 
-n_cov = 1.0
+coverRefractiveIndex = 1.0
+substrateRefractiveIndices = [3.8, 1.45, 3.8]
+filmThicknesses = [220, 2000]
 
-n_in = [3.8, 1.45, 3.8]
-t_in = [220, 2000]
+incidentAngle = 30*tf.degrees
 
-AOI = 30
-
-lambda_0 = np.arange(500, 1000)  # nm
+freeSpaceWavelength = np.arange(500, 1000)
 
 # Calculation
+freeSpaceWavenumber = 2*np.pi/freeSpaceWavelength
 
-k0 = 2*np.pi/lambda_0
-theta_i = AOI*tf.degrees
+substrateRefractiveIndices.reverse()
+filmThicknesses.reverse()
 
-n_in.reverse()
-t_in.reverse()
-
-r_s = tf.next_r_s(k0, theta_i, n_cov, n_in[:], t_in[:])
-r_p = tf.next_r_p(k0, theta_i, n_cov, n_in[:], t_in[:])
+r_s = tf.nextLayerSenkrechtReflection(freeSpaceWavenumber, incidentAngle, coverRefractiveIndex, substrateRefractiveIndices[:], filmThicknesses[:])
+r_p = tf.nextLayerParallelReflection(freeSpaceWavenumber, incidentAngle, coverRefractiveIndex, substrateRefractiveIndices[:], filmThicknesses[:])
 
 # Graphical output
 
@@ -30,11 +27,11 @@ fig, (ax1, ax2) = plt.subplots(nrows=2, sharex=True)
 
 ax1.set_title('S polarisation')
 ax1.set_ylabel('Reflectance')
-ax1.plot(lambda_0, np.abs(r_s)**2)
+ax1.plot(freeSpaceWavelength, np.abs(r_s)**2)
 
 ax2.set_title('P polarisation')
 ax2.set_ylabel('Reflectance')
-ax2.plot(lambda_0, np.abs(r_p)**2)
+ax2.plot(freeSpaceWavelength, np.abs(r_p)**2)
 
 ax2.set_xlabel('Free space wavelength (nm)')
 
