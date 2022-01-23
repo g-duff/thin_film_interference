@@ -76,12 +76,12 @@ def calculateFilmReflection(accumulatedPhase, reflectionInto, reflectionOutOf, t
     return reflectionInto + numerator/demoninator
 
 
-def psi_delta(r_s, r_p):
+def reflectionToPsiDelta(senkrechtReflection, parallelReflection):
     '''Return psi and delta ellipsometry parameters from reflection coefficients'''
-    rho = r_p/r_s
-    p = np.arctan(np.abs(rho))
-    d = d = np.angle(rho)
-    return p, d
+    reflectionRatio = parallelReflection/senkrechtReflection
+    psi = np.arctan(np.abs(reflectionRatio))
+    delta = np.angle(reflectionRatio)
+    return psi, delta
 
 
 def next_r_s(k0, theta_i, n_cov, n_sub, thicknesses):
@@ -161,6 +161,6 @@ def ellipsometry(lambda_0, theta_i, ref_indices, thicknesses):
     r_s = next_r_s(k0, theta_i, n_cov, ref_indices[:], thicknesses[:])
     r_p = next_r_p(k0, theta_i, n_cov, ref_indices[:], thicknesses[:])
 
-    psi, delta = psi_delta(r_s, r_p)
+    psi, delta = reflectionToPsiDelta(r_s, r_p)
 
     return psi, delta
