@@ -146,19 +146,19 @@ def nextLayerParallelReflection(freeSpaceWaveNumber, incidentAngle, coverRefract
         return reflectionInto
 
 
-def ellipsometry(lambda_0, theta_i, ref_indices, thicknesses):
+def ellipsometry(freeSpaceWavelength, indidentAngle, refractiveIndices, thicknesses):
     '''Ellipsometry parameters for an n-layer thin film stack'''
 
-    k0 = 2*np.pi/lambda_0
+    freeSpaceWavenumber = 2*np.pi/freeSpaceWavelength
 
-    ref_indices.reverse()
+    refractiveIndices.reverse()
     thicknesses.reverse()
 
-    n_cov = ref_indices.pop()
+    coverRefractiveIndex = refractiveIndices.pop()
 
-    r_s = nextLayerSenkrechtReflection(k0, theta_i, n_cov, ref_indices[:], thicknesses[:])
-    r_p = nextLayerParallelReflection(k0, theta_i, n_cov, ref_indices[:], thicknesses[:])
+    senkrechtReflection = nextLayerSenkrechtReflection(freeSpaceWavenumber, indidentAngle, coverRefractiveIndex, refractiveIndices[:], thicknesses[:])
+    parallelReflection = nextLayerParallelReflection(freeSpaceWavenumber, indidentAngle, coverRefractiveIndex, refractiveIndices[:], thicknesses[:])
 
-    psi, delta = reflectionToPsiDelta(r_s, r_p)
+    psi, delta = reflectionToPsiDelta(senkrechtReflection, parallelReflection)
 
     return psi, delta
