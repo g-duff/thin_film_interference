@@ -28,12 +28,12 @@ def calculateAngleOfTransmission(incidenceRefractiveIndex, transmissionRefractiv
     return angleOfTransmission
 
 
-def phase_difference(k0, nf, d, theta_f):
+def calculatePhaseDifference(freeSpaceWaveVector, filmRefractiveIndex, filmThickness, rayAngle):
     ''' The phase difference 
     between two parallel rays reflected at thin film interfaces'''
-    L = 2*nf*d*cos(theta_f)
-    pd = k0 * L
-    return pd
+    opticalThickness = filmRefractiveIndex*filmThickness
+    opticalPathLength = 2*opticalThickness*cos(rayAngle)
+    return freeSpaceWaveVector * opticalPathLength
 
 
 def fresnel_r_s(n1, n2, theta_i, theta_t):
@@ -97,7 +97,7 @@ def next_r_s(k0, theta_i, n_cov, n_sub, thicknesses):
         t12 = fresnel_t_s(n_cov, n_film, theta_i, theta_t)
         t21 = fresnel_t_s(n_film, n_cov, theta_t, theta_i)
 
-        delta = phase_difference(k0, n_film, t, theta_t)
+        delta = calculatePhaseDifference(k0, n_film, t, theta_t)
         phase_term = exp(-1j*delta)
 
         r = fabry_perot_refl(delta, r12, r23, t12, t21)
@@ -129,7 +129,7 @@ def next_r_p(k0, theta_i, n_cov, n_sub, thicknesses):
         t12 = fresnel_t_p(n_cov, n_film, theta_i, theta_t)
         t21 = fresnel_t_p(n_film, n_cov, theta_t, theta_i)
 
-        delta = phase_difference(k0, n_film, t, theta_t)
+        delta = calculatePhaseDifference(k0, n_film, t, theta_t)
         phase_term = exp(-1j*delta)
 
         r = fabry_perot_refl(delta, r12, r23, t12, t21)

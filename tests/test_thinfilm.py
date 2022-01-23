@@ -23,7 +23,7 @@ class BaseFunctions(unittest.TestCase):
         snell_out = tf.calculateAngleOfTransmission(n1, n2, theta_i)
         self.assertAlmostEqual(snell_out, np.pi/2)
 
-    def test_phase_normalincidence(self):
+    def test_calculatePhaseDifference_normalIncidence(self):
         '''Phase difference from reflections indide a film at normal incidence
         tested against film thicknesses of fractional wavelengths'''
         tau = 2*np.pi
@@ -39,7 +39,7 @@ class BaseFunctions(unittest.TestCase):
 
         k0 = tau/lam0
 
-        phase_out = [tf.phase_difference(k0, nf, t, theta_t) for t in thick]
+        phase_out = [tf.calculatePhaseDifference(k0, nf, t, theta_t) for t in thick]
 
         phase_residuals = (pout - pcomp for pout, pcomp in
                            zip(phase_out, phase_compare))
@@ -64,7 +64,7 @@ class BaseFunctions(unittest.TestCase):
 
         k0 = tau/lam0
 
-        phase_out = [tf.phase_difference(k0, nf, t, theta_t) for t in thick]
+        phase_out = [tf.calculatePhaseDifference(k0, nf, t, theta_t) for t in thick]
 
         phase_residuals = (pout - pcomp for pout, pcomp in
                            zip(phase_out, phase_compare))

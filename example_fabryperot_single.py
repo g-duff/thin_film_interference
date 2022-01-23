@@ -39,7 +39,7 @@ fresnel_p = {
 # Phase difference from rays
 
 k0 = 2*np.pi/lambda_0
-delta = tf.phase_difference(k0, n_film, t_film, theta_f)
+delta = tf.calculatePhaseDifference(k0, n_film, t_film, theta_f)
 
 # Multiple beam interference in Fabry Perot cavity
 
