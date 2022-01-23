@@ -8,69 +8,83 @@ class BaseFunctions(unittest.TestCase):
 
     def test_calculateAngleOfTransmission_normalIncidence(self):
         '''Snell's law at normal incidence'''
-        n1 = 1.0
-        n2 = 1.5
-        theta_i = 0
-        snell_out = tf.calculateAngleOfTransmission(n1, n2, theta_i)
-        self.assertEqual(snell_out, 0)
+        # Given
+        coverRefractiveIndex = 1.0
+        substrateRefractiveIndex = 1.5
+        incidentAngle = 0
+
+        # When
+        transmissionAngle = tf.calculateAngleOfTransmission(coverRefractiveIndex, substrateRefractiveIndex, incidentAngle)
+
+        # Then
+        self.assertEqual(transmissionAngle, 0)
 
     def test_calculateAngleOfTransmission_obliqueIncidence(self):
         '''Snell's law, incident at 45 degrees tested
         against exact sine values for total internal reflection'''
-        n1 = 2
-        n2 = np.sqrt(2)
-        theta_i = 45*tf.degrees
-        snell_out = tf.calculateAngleOfTransmission(n1, n2, theta_i)
-        self.assertAlmostEqual(snell_out, np.pi/2)
+        # Given
+        coverRefractiveIndex = 2
+        substrateRefractiveIndex = np.sqrt(2)
+        incidentAngle = 45*tf.degrees
+
+        # When
+        transmissionAngle = tf.calculateAngleOfTransmission(coverRefractiveIndex, substrateRefractiveIndex, incidentAngle)
+
+        # Then
+        self.assertAlmostEqual(transmissionAngle, np.pi/2)
 
     def test_calculatePhaseDifference_normalIncidence(self):
         '''Phase difference from reflections indide a film at normal incidence
         tested against film thicknesses of fractional wavelengths'''
+
+        # Given
         tau = 2*np.pi
 
-        lam0 = 800
-        theta_t = 0
-        nf = 2.0
+        freeSpaceWavelength = 800
+        transmissionAngle = 0
+        filmRefractiveIndex = 2.0
 
-        comparison_factors = (0, 1/2, 1/4, 1/6)
+        comparisonFactors = (0, 1/2, 1/4, 1/6)
 
-        thick = [cf*lam0 for cf in comparison_factors]
-        phase_compare = [cf*2*nf*tau for cf in comparison_factors]
+        filmThicknesses = [cf*freeSpaceWavelength for cf in comparisonFactors]
+        freeSpaceWavenumber = tau/freeSpaceWavelength
 
-        k0 = tau/lam0
+        # When
+        actualPhaseDifference = [tf.calculatePhaseDifference(freeSpaceWavenumber, filmRefractiveIndex, t, transmissionAngle) for t in filmThicknesses]
 
-        phase_out = [tf.calculatePhaseDifference(k0, nf, t, theta_t) for t in thick]
+        # Then
+        expectedPhaseDifference = [cf*2*filmRefractiveIndex*tau for cf in comparisonFactors]
+        phaseResiduals = (pout - pcomp for pout, pcomp in
+                           zip(actualPhaseDifference, expectedPhaseDifference))
+        phaseResiduals = sum(phaseResiduals)
 
-        phase_residuals = (pout - pcomp for pout, pcomp in
-                           zip(phase_out, phase_compare))
-        phase_residuals = sum(phase_residuals)
+        self.assertAlmostEqual(phaseResiduals, 0)
 
-        self.assertAlmostEqual(phase_residuals, 0)
-
-    def test_phase_angledincidence(self):
+    def test_calculatePhaseDifference_angledincidence(self):
         ''' Phase difference from reflections indide a film at 60 degrees
         tested against film thicknesses of fractional wavelengths and
         exact cosine values'''
+
+        # Given
         tau = 2*np.pi
+        freeSpaceWavelength = 800
+        transmissionAngle = 60*tf.degrees
+        filmRefractiveIndex = 2.0
 
-        lam0 = 800
-        theta_t = 60*tf.degrees
-        nf = 2.0
+        comparisonFactors = (0, 1/2, 1/4, 1/6)
+        filmThicknesses = [cf*freeSpaceWavelength for cf in comparisonFactors]
+        freeSpaceWavenumber = tau/freeSpaceWavelength
 
-        comparison_factors = (0, 1/2, 1/4, 1/6)
+        # When
+        actualPhaseDifference = [tf.calculatePhaseDifference(freeSpaceWavenumber, filmRefractiveIndex, t, transmissionAngle) for t in filmThicknesses]
 
-        thick = [cf*lam0 for cf in comparison_factors]
-        phase_compare = [cf*2*nf*tau*0.5 for cf in comparison_factors]
+        # Then
+        expectedPhaseDifference = [cf*2*filmRefractiveIndex*tau*0.5 for cf in comparisonFactors]
+        phaseResiduals = (pout - pcomp for pout, pcomp in
+                           zip(actualPhaseDifference, expectedPhaseDifference))
+        phaseResiduals = sum(phaseResiduals)
 
-        k0 = tau/lam0
-
-        phase_out = [tf.calculatePhaseDifference(k0, nf, t, theta_t) for t in thick]
-
-        phase_residuals = (pout - pcomp for pout, pcomp in
-                           zip(phase_out, phase_compare))
-        phase_residuals = sum(phase_residuals)
-
-        self.assertAlmostEqual(phase_residuals, 0)
+        self.assertAlmostEqual(phaseResiduals, 0)
 
 
 class Fresnel(unittest.TestCase):
@@ -78,38 +92,42 @@ class Fresnel(unittest.TestCase):
     def test_fresnelSenkrecht_energyconservation(self):
         '''Energy conservation for reflected and transmitted
         amplitudes of s poarised light at an air-glass interface'''
-        theta_i = 15
-        n_1 = 1.0
-        n_2 = 1.5
 
-        theta_t = tf.calculateAngleOfTransmission(n_1, n_2, theta_i)
+        # Given
+        incidentAngle = 15
+        coverRefractiveIndex = 1.0
+        substrateRefractiveIndex = 1.5
+        transmissionAngle = tf.calculateAngleOfTransmission(coverRefractiveIndex, substrateRefractiveIndex, incidentAngle)
 
-        r = tf.calculateSenkrechtReflection(n_1, n_2, theta_i, theta_t)
-        t = tf.calculateSenkrechtTransmission(n_1, n_2, theta_i, theta_t)
+        # When
+        reflection = tf.calculateSenkrechtReflection(coverRefractiveIndex, substrateRefractiveIndex, incidentAngle, transmissionAngle)
+        transmission = tf.calculateSenkrechtTransmission(coverRefractiveIndex, substrateRefractiveIndex, incidentAngle, transmissionAngle)
 
-        R = r**2
-        T = t**2 * n_2*np.cos(theta_t)/n_1/np.cos(theta_i)
-
-        test_energy = R + T
-        self.assertAlmostEqual(test_energy, 1)
+        # Then
+        reflectivity = reflection**2
+        transmissivity = transmission**2 * substrateRefractiveIndex*np.cos(transmissionAngle)/coverRefractiveIndex/np.cos(incidentAngle)
+        energy = reflectivity + transmissivity
+        self.assertAlmostEqual(energy, 1)
 
     def test_fresnelParallel_energyconservation(self):
         '''Energy conservation for reflected and transmitted
         amplitudes of p poarised light at an air-glass interface'''
 
-        theta_i = 15
-        n_1 = 1.0
-        n_2 = 1.5
+        # Given
+        incidentAngle = 15
+        coverRefractiveIndex = 1.0
+        substrateRefrativeIndex = 1.5
+        transmissionAngle = tf.calculateAngleOfTransmission(coverRefractiveIndex, substrateRefrativeIndex, incidentAngle)
 
-        theta_t = tf.calculateAngleOfTransmission(n_1, n_2, theta_i)
+        # When
+        reflection = tf.calculateParallelReflection(coverRefractiveIndex, substrateRefrativeIndex, incidentAngle, transmissionAngle)
+        transmission = tf.calculateParallelTransmission(coverRefractiveIndex, substrateRefrativeIndex, incidentAngle, transmissionAngle)
 
-        r = tf.calculateParallelReflection(n_1, n_2, theta_i, theta_t)
-        t = tf.calculateParallelTransmission(n_1, n_2, theta_i, theta_t)
 
-        R = r**2
-        T = t**2 * n_2*np.cos(theta_t)/n_1/np.cos(theta_i)
-
-        test_energy = R + T
+        # Then
+        reflectivity = reflection**2
+        transmissivity = transmission**2 * substrateRefrativeIndex*np.cos(transmissionAngle)/coverRefractiveIndex/np.cos(incidentAngle)
+        test_energy = reflectivity + transmissivity
         self.assertAlmostEqual(test_energy, 1)
 
 
@@ -120,30 +138,27 @@ class Ellipsometry(unittest.TestCase):
         output from the Regress Pro application 
         using the same input parameters'''
 
-        lambda_0, tan_psi_rp, cos_delta_rp = np.genfromtxt('./tests/SoI_regressPro.txt',
+        freeSpaceWavelength, expectedTanPsi, expectedCosDelta = np.genfromtxt('./tests/SoI_regressPro.txt',
                                                            skip_header=1, unpack=True, usecols=(0, 2, 5))
 
-        n_cov = 1.0
+        # Given
+        refractiveIndices = [1.0, 3.8, 1.45, 3.8]
+        filmThicknesses = [220, 3000]
+        incidentAngle = 65*tf.degrees
 
-        n_in = [1.0, 3.8, 1.45, 3.8]
-        t_in = [220, 3000]
+        # When
+        psi, delta = tf.ellipsometry(freeSpaceWavelength, incidentAngle, refractiveIndices, filmThicknesses)
 
-        AOI = 65
 
-        k0 = 2*np.pi/lambda_0
-        theta_i = AOI*tf.degrees
+        # Then
+        tanPsiResiduals = np.tan(psi) - expectedTanPsi
+        cosDeltaResiduals = np.cos(delta) - expectedCosDelta
 
-        psi, delta = tf.ellipsometry(lambda_0, theta_i, n_in, t_in)
+        tanPsiResiduals = sum(tanPsiResiduals)
+        cosDeltaResiduals = sum(cosDeltaResiduals)
+        totalResiduals = round(tanPsiResiduals+cosDeltaResiduals, 4)
 
-        psi_residules = np.tan(psi) - tan_psi_rp
-        delta_residules = np.cos(delta) - cos_delta_rp
-
-        psi_residules = sum(psi_residules)
-        delta_residules = sum(delta_residules)
-
-        total_residules = round(psi_residules+delta_residules, 4)
-
-        self.assertEqual(total_residules, 0)
+        self.assertAlmostEqual(totalResiduals, 0)
 
 
 if __name__ == '__main__':
