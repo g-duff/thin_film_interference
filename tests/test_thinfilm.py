@@ -1,7 +1,6 @@
 import thinfilm as tf   # The code to test
 import unittest         # The test framework
 import numpy as np
-import random
 
 
 class BaseFunctions(unittest.TestCase):

@@ -1,6 +1,5 @@
 import numpy as np
 from numpy import cos, sin, exp
-import cmath
 
 """Library for calculating reflection from a thin film
 
