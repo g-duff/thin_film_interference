@@ -57,65 +57,6 @@ def reflectionToPsiDelta(senkrechtReflection, parallelReflection):
     return psi, delta
 
 
-def nextLayerSenkrechtReflection(
-    freeSpaceWaveNumber,
-    indidentAngle,
-    coverRefractiveIndex,
-    substrateRefractiveIndices,
-    thicknesses,
-):
-    """Return reflection for the next layer
-    Senkrecht polarisation"""
-
-    # Base quantities
-    filmRefractiveIndex = substrateRefractiveIndices.pop()
-    transmissionAngle = calculateTransmissionAngle(
-        coverRefractiveIndex, filmRefractiveIndex, indidentAngle
-    )
-    reflectionInto = calculateSenkrechtReflection(
-        coverRefractiveIndex, filmRefractiveIndex, indidentAngle, transmissionAngle
-    )
-
-    try:
-        # Interference inside a thin film, calculated using
-        # a Fabry-Perot model
-        filmThickness = thicknesses.pop()
-        reflectionOutOf = nextLayerSenkrechtReflection(
-            freeSpaceWaveNumber,
-            transmissionAngle,
-            filmRefractiveIndex,
-            substrateRefractiveIndices,
-            thicknesses,
-        )
-
-        transmissionInto = calculateSenkrechtTransmission(
-            coverRefractiveIndex, filmRefractiveIndex, indidentAngle, transmissionAngle
-        )
-        transmissionBack = calculateSenkrechtTransmission(
-            filmRefractiveIndex, coverRefractiveIndex, transmissionAngle, indidentAngle
-        )
-
-        phaseDifference = calculatePhaseDifference(
-            freeSpaceWaveNumber, filmRefractiveIndex, filmThickness, transmissionAngle
-        )
-
-        reflectionInto = calculateFilmReflection(
-            phaseDifference,
-            reflectionInto,
-            reflectionOutOf,
-            transmissionInto,
-            transmissionBack,
-        )
-
-    except IndexError:
-        # Reflectance for a single interface when
-        # no finite thicknesses are left in the stack
-        pass
-
-    finally:
-        return reflectionInto
-
-
 def nextLayerParallelReflection(
     freeSpaceWaveNumber,
     incidentAngle,
@@ -125,13 +66,55 @@ def nextLayerParallelReflection(
 ):
     """Return reflection for the next layer
     Parallel  polarisation"""
+    return nextLayerReflection(
+        freeSpaceWaveNumber,
+        incidentAngle,
+        coverRefractiveIndex,
+        substrateRefractiveIndices,
+        thicknesses,
+        calculateParallelTransmission,
+        calculateParallelReflection,
+    )
+
+
+def nextLayerSenkrechtReflection(
+    freeSpaceWaveNumber,
+    incidentAngle,
+    coverRefractiveIndex,
+    substrateRefractiveIndices,
+    thicknesses,
+):
+    """Return reflection for the next layer
+    Senkrecht  polarisation"""
+    return nextLayerReflection(
+        freeSpaceWaveNumber,
+        incidentAngle,
+        coverRefractiveIndex,
+        substrateRefractiveIndices,
+        thicknesses,
+        calculateSenkrechtTransmission,
+        calculateSenkrechtReflection,
+    )
+
+
+def nextLayerReflection(
+    freeSpaceWaveNumber,
+    incidentAngle,
+    coverRefractiveIndex,
+    substrateRefractiveIndices,
+    thicknesses,
+    calculateTransmission,
+    calculateReflection,
+):
+    """Return reflection for the next layer
+    Parallel  polarisation"""
 
     # Base quantities
     filmRefractiveIndex = substrateRefractiveIndices.pop()
     transmissionAngle = calculateTransmissionAngle(
         coverRefractiveIndex, filmRefractiveIndex, incidentAngle
     )
-    reflectionInto = calculateParallelReflection(
+    reflectionInto = calculateReflection(
         coverRefractiveIndex, filmRefractiveIndex, incidentAngle, transmissionAngle
     )
 
@@ -139,18 +122,20 @@ def nextLayerParallelReflection(
         # Interference inside a thin film, calculated using
         # a Fabry-Perot model
         filmThickness = thicknesses.pop()
-        reflectionOutOf = nextLayerParallelReflection(
+        reflectionOutOf = nextLayerReflection(
             freeSpaceWaveNumber,
             transmissionAngle,
             filmRefractiveIndex,
             substrateRefractiveIndices,
             thicknesses,
+            calculateTransmission,
+            calculateReflection,
         )
 
-        transmissionInto = calculateParallelTransmission(
+        transmissionInto = calculateTransmission(
             coverRefractiveIndex, filmRefractiveIndex, incidentAngle, transmissionAngle
         )
-        transmissionBack = calculateParallelTransmission(
+        transmissionBack = calculateTransmission(
             filmRefractiveIndex, coverRefractiveIndex, transmissionAngle, incidentAngle
         )
 
