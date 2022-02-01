@@ -10,7 +10,7 @@ substrateRefractiveIndex = 1.45
 incidentAngle = np.arange(0, 90)*tf.degrees
 
 # Calculation
-transmissionAngle = tf.calculateAngleOfTransmission(coverRefractiveIndex, substrateRefractiveIndex, incidentAngle)
+transmissionAngle = tf.calculateTransmissionAngle(coverRefractiveIndex, substrateRefractiveIndex, incidentAngle)
 
 senkrechtReflection = tf.calculateSenkrechtReflection(coverRefractiveIndex, substrateRefractiveIndex, incidentAngle, transmissionAngle)
 parallelReflection = tf.calculateParallelReflection(coverRefractiveIndex, substrateRefractiveIndex, incidentAngle, transmissionAngle)

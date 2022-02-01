@@ -14,7 +14,7 @@ class BaseFunctions(unittest.TestCase):
         incidentAngle = 0
 
         # When
-        transmissionAngle = tf.calculateAngleOfTransmission(coverRefractiveIndex, substrateRefractiveIndex, incidentAngle)
+        transmissionAngle = tf.calculateTransmissionAngle(coverRefractiveIndex, substrateRefractiveIndex, incidentAngle)
 
         # Then
         self.assertEqual(transmissionAngle, 0)
@@ -28,7 +28,7 @@ class BaseFunctions(unittest.TestCase):
         incidentAngle = 45*tf.degrees
 
         # When
-        transmissionAngle = tf.calculateAngleOfTransmission(coverRefractiveIndex, substrateRefractiveIndex, incidentAngle)
+        transmissionAngle = tf.calculateTransmissionAngle(coverRefractiveIndex, substrateRefractiveIndex, incidentAngle)
 
         # Then
         self.assertAlmostEqual(transmissionAngle, np.pi/2)
@@ -97,7 +97,7 @@ class Fresnel(unittest.TestCase):
         incidentAngle = 15
         coverRefractiveIndex = 1.0
         substrateRefractiveIndex = 1.5
-        transmissionAngle = tf.calculateAngleOfTransmission(coverRefractiveIndex, substrateRefractiveIndex, incidentAngle)
+        transmissionAngle = tf.calculateTransmissionAngle(coverRefractiveIndex, substrateRefractiveIndex, incidentAngle)
 
         # When
         reflection = tf.calculateSenkrechtReflection(coverRefractiveIndex, substrateRefractiveIndex, incidentAngle, transmissionAngle)
@@ -117,7 +117,7 @@ class Fresnel(unittest.TestCase):
         incidentAngle = 15
         coverRefractiveIndex = 1.0
         substrateRefrativeIndex = 1.5
-        transmissionAngle = tf.calculateAngleOfTransmission(coverRefractiveIndex, substrateRefrativeIndex, incidentAngle)
+        transmissionAngle = tf.calculateTransmissionAngle(coverRefractiveIndex, substrateRefrativeIndex, incidentAngle)
 
         # When
         reflection = tf.calculateParallelReflection(coverRefractiveIndex, substrateRefrativeIndex, incidentAngle, transmissionAngle)

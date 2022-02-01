@@ -15,8 +15,8 @@ incidentAngle = 30*tf.degrees
 freeSpaceWavelength = np.arange(500, 1000)
 
 # Angles
-rayAngleInFilm = tf.calculateAngleOfTransmission(coverRefractiveIndex, filmRefractiveIndex, incidentAngle)
-transmissionAngle = tf.calculateAngleOfTransmission(filmRefractiveIndex, substrateRefractiveIndex, rayAngleInFilm)
+rayAngleInFilm = tf.calculateTransmissionAngle(coverRefractiveIndex, filmRefractiveIndex, incidentAngle)
+transmissionAngle = tf.calculateTransmissionAngle(filmRefractiveIndex, substrateRefractiveIndex, rayAngleInFilm)
 
 # Fresnel coefficients for both polarisations
 

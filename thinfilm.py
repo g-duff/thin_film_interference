@@ -21,7 +21,7 @@ import cmath
 degrees = np.pi/180
 
 
-def calculateAngleOfTransmission(incidenceRefractiveIndex, transmissionRefractiveIndex, incidentAngle):
+def calculateTransmissionAngle(incidenceRefractiveIndex, transmissionRefractiveIndex, incidentAngle):
     '''Calculates the angle of transmission at an interface'''
     sinOfAngleOfTransmission = sin(incidentAngle)*incidenceRefractiveIndex/transmissionRefractiveIndex
     angleOfTransmission = np.arcsin(sinOfAngleOfTransmission)
@@ -90,7 +90,7 @@ def nextLayerSenkrechtReflection(freeSpaceWaveNumber, indidentAngle, coverRefrac
 
     # Base quantities
     filmRefractiveIndex = substrateRefractiveIndices.pop()
-    transmissionAngle = calculateAngleOfTransmission(coverRefractiveIndex, filmRefractiveIndex, indidentAngle)
+    transmissionAngle = calculateTransmissionAngle(coverRefractiveIndex, filmRefractiveIndex, indidentAngle)
     reflectionInto = calculateSenkrechtReflection(coverRefractiveIndex, filmRefractiveIndex, indidentAngle, transmissionAngle)
 
     try:
@@ -121,7 +121,7 @@ def nextLayerParallelReflection(freeSpaceWaveNumber, incidentAngle, coverRefract
 
     # Base quantities
     filmRefractiveIndex = substrateRefractiveIndices.pop()
-    transmissionAngle = calculateAngleOfTransmission(coverRefractiveIndex, filmRefractiveIndex, incidentAngle)
+    transmissionAngle = calculateTransmissionAngle(coverRefractiveIndex, filmRefractiveIndex, incidentAngle)
     reflectionInto = calculateParallelReflection(coverRefractiveIndex, filmRefractiveIndex, incidentAngle, transmissionAngle)
 
     try:
