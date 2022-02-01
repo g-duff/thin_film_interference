@@ -37,7 +37,7 @@ fresnelParallelCoefficients = {
 # Phase difference from rays
 
 freeSpaceWavenumber = 2*np.pi/freeSpaceWavelength
-phaseDifference = tf.calculatePhaseDifference(freeSpaceWavenumber, filmRefractiveIndex, filmThickness, rayAngleInFilm)
+phaseDifference = tf.calculatePhaseDifference(freeSpaceWavenumber, rayAngleInFilm, filmRefractiveIndex, filmThickness)
 
 # Multiple beam interference in Fabry Perot cavity
 

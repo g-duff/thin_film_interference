@@ -49,7 +49,7 @@ class BaseFunctions(unittest.TestCase):
         freeSpaceWavenumber = tau/freeSpaceWavelength
 
         # When
-        actualPhaseDifference = [tf.calculatePhaseDifference(freeSpaceWavenumber, filmRefractiveIndex, t, transmissionAngle) for t in filmThicknesses]
+        actualPhaseDifference = [tf.calculatePhaseDifference(freeSpaceWavenumber, transmissionAngle, filmRefractiveIndex, t) for t in filmThicknesses]
 
         # Then
         expectedPhaseDifference = [cf*2*filmRefractiveIndex*tau for cf in comparisonFactors]
@@ -75,7 +75,7 @@ class BaseFunctions(unittest.TestCase):
         freeSpaceWavenumber = tau/freeSpaceWavelength
 
         # When
-        actualPhaseDifference = [tf.calculatePhaseDifference(freeSpaceWavenumber, filmRefractiveIndex, t, transmissionAngle) for t in filmThicknesses]
+        actualPhaseDifference = [tf.calculatePhaseDifference(freeSpaceWavenumber, transmissionAngle, filmRefractiveIndex, t) for t in filmThicknesses]
 
         # Then
         expectedPhaseDifference = [cf*2*filmRefractiveIndex*tau*0.5 for cf in comparisonFactors]

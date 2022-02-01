@@ -139,7 +139,7 @@ def nextLayerReflection(
         )
 
         phaseDifference = calculatePhaseDifference(
-            freeSpaceWaveNumber, filmRefractiveIndex, filmThickness, transmissionAngle
+            freeSpaceWaveNumber, transmissionAngle, filmRefractiveIndex, filmThickness
         )
 
         reflectionInto = calculateFilmReflection(
@@ -160,7 +160,7 @@ def nextLayerReflection(
 
 
 def calculatePhaseDifference(
-    freeSpaceWaveVector, filmRefractiveIndex, filmThickness, rayAngle
+    freeSpaceWaveVector, rayAngle, filmRefractiveIndex, filmThickness
 ):
     """The phase difference
     between two parallel rays reflected at thin film interfaces"""
