@@ -16,64 +16,25 @@ import cmath
 
 '''
 
-# Constants
-
 degrees = np.pi/180
 
 
-def calculateTransmissionAngle(incidenceRefractiveIndex, transmissionRefractiveIndex, incidentAngle):
-    '''Calculates the angle of transmission at an interface'''
-    sinOfAngleOfTransmission = sin(incidentAngle)*incidenceRefractiveIndex/transmissionRefractiveIndex
-    angleOfTransmission = np.arcsin(sinOfAngleOfTransmission)
-    return angleOfTransmission
+def ellipsometry(freeSpaceWavelength, indidentAngle, refractiveIndices, thicknesses):
+    '''Ellipsometry parameters for an n-layer thin film stack'''
 
+    freeSpaceWavenumber = 2*np.pi/freeSpaceWavelength
 
-def calculatePhaseDifference(freeSpaceWaveVector, filmRefractiveIndex, filmThickness, rayAngle):
-    ''' The phase difference 
-    between two parallel rays reflected at thin film interfaces'''
-    opticalThickness = filmRefractiveIndex*filmThickness
-    opticalPathLength = 2*opticalThickness*cos(rayAngle)
-    return freeSpaceWaveVector * opticalPathLength
+    refractiveIndices.reverse()
+    thicknesses.reverse()
 
+    coverRefractiveIndex = refractiveIndices.pop()
 
-def calculateSenkrechtReflection(incidentRefractiveIndex, transmissionRefractiveIndex, incidentAngle, transmissionAngle):
-    ''' Fresnel reflection coefficient
-    Senkrecht polarisation'''
-    numerator = (incidentRefractiveIndex*cos(incidentAngle)-transmissionRefractiveIndex*cos(transmissionAngle))
-    denominator = (incidentRefractiveIndex*cos(incidentAngle)+transmissionRefractiveIndex*cos(transmissionAngle))
-    return numerator/denominator
+    senkrechtReflection = nextLayerSenkrechtReflection(freeSpaceWavenumber, indidentAngle, coverRefractiveIndex, refractiveIndices[:], thicknesses[:])
+    parallelReflection = nextLayerParallelReflection(freeSpaceWavenumber, indidentAngle, coverRefractiveIndex, refractiveIndices[:], thicknesses[:])
 
+    psi, delta = reflectionToPsiDelta(senkrechtReflection, parallelReflection)
 
-def calculateSenkrechtTransmission(incidentRefractiveIndex, transmissionRefractiveIndex, incidentAngle, transmissionAngle):
-    ''' Fresnel transmission coefficient
-    Senkrecht polarization'''
-    numerator = 2*incidentRefractiveIndex*cos(incidentAngle)
-    denominator = (incidentRefractiveIndex*cos(incidentAngle) + transmissionRefractiveIndex*cos(transmissionAngle))
-    return numerator/denominator
-
-
-def calculateParallelReflection(incidentRefractiveIndex, transmissionRefractiveIndex, incidentAngle, transmissionAngle):
-    ''' Fresnel reflection coefficient
-    Parallel polarisation'''
-    numerator = (transmissionRefractiveIndex*cos(incidentAngle)-incidentRefractiveIndex*cos(transmissionAngle))
-    denominator = (transmissionRefractiveIndex*cos(incidentAngle)+incidentRefractiveIndex*cos(transmissionAngle))
-    return numerator/denominator
-
-
-def calculateParallelTransmission(incidentRefractiveIndex, transmissionRefractiveIndex, incidentAngle, transmissionAngle):
-    ''' Fresnel transmission coefficient
-    Parallel polarisation'''
-    numerator = 2*incidentRefractiveIndex*cos(incidentAngle)
-    denominator = (transmissionRefractiveIndex*cos(incidentAngle) + incidentRefractiveIndex*cos(transmissionAngle))
-    return numerator/denominator
-
-
-def calculateFilmReflection(accumulatedPhase, reflectionInto, reflectionOutOf, transmissionInto, transmissionBack):
-    ''' Fabry Perot reflection coefficient '''
-    accumulatedPhase = exp(-1j*accumulatedPhase)
-    numerator = transmissionInto*reflectionOutOf*transmissionBack
-    demoninator = accumulatedPhase+reflectionInto*reflectionOutOf
-    return reflectionInto + numerator/demoninator
+    return psi, delta
 
 
 def reflectionToPsiDelta(senkrechtReflection, parallelReflection):
@@ -146,19 +107,57 @@ def nextLayerParallelReflection(freeSpaceWaveNumber, incidentAngle, coverRefract
         return reflectionInto
 
 
-def ellipsometry(freeSpaceWavelength, indidentAngle, refractiveIndices, thicknesses):
-    '''Ellipsometry parameters for an n-layer thin film stack'''
+def calculatePhaseDifference(freeSpaceWaveVector, filmRefractiveIndex, filmThickness, rayAngle):
+    ''' The phase difference 
+    between two parallel rays reflected at thin film interfaces'''
+    opticalThickness = filmRefractiveIndex*filmThickness
+    opticalPathLength = 2*opticalThickness*cos(rayAngle)
+    return freeSpaceWaveVector * opticalPathLength
 
-    freeSpaceWavenumber = 2*np.pi/freeSpaceWavelength
 
-    refractiveIndices.reverse()
-    thicknesses.reverse()
+def calculateFilmReflection(accumulatedPhase, reflectionInto, reflectionOutOf, transmissionInto, transmissionBack):
+    ''' Fabry Perot reflection coefficient '''
+    accumulatedPhase = exp(-1j*accumulatedPhase)
+    numerator = transmissionInto*reflectionOutOf*transmissionBack
+    demoninator = accumulatedPhase+reflectionInto*reflectionOutOf
+    return reflectionInto + numerator/demoninator
 
-    coverRefractiveIndex = refractiveIndices.pop()
 
-    senkrechtReflection = nextLayerSenkrechtReflection(freeSpaceWavenumber, indidentAngle, coverRefractiveIndex, refractiveIndices[:], thicknesses[:])
-    parallelReflection = nextLayerParallelReflection(freeSpaceWavenumber, indidentAngle, coverRefractiveIndex, refractiveIndices[:], thicknesses[:])
+def calculateSenkrechtReflection(incidentRefractiveIndex, transmissionRefractiveIndex, incidentAngle, transmissionAngle):
+    ''' Fresnel reflection coefficient
+    Senkrecht polarisation'''
+    numerator = (incidentRefractiveIndex*cos(incidentAngle)-transmissionRefractiveIndex*cos(transmissionAngle))
+    denominator = (incidentRefractiveIndex*cos(incidentAngle)+transmissionRefractiveIndex*cos(transmissionAngle))
+    return numerator/denominator
 
-    psi, delta = reflectionToPsiDelta(senkrechtReflection, parallelReflection)
 
-    return psi, delta
+def calculateSenkrechtTransmission(incidentRefractiveIndex, transmissionRefractiveIndex, incidentAngle, transmissionAngle):
+    ''' Fresnel transmission coefficient
+    Senkrecht polarization'''
+    numerator = 2*incidentRefractiveIndex*cos(incidentAngle)
+    denominator = (incidentRefractiveIndex*cos(incidentAngle) + transmissionRefractiveIndex*cos(transmissionAngle))
+    return numerator/denominator
+
+
+def calculateParallelReflection(incidentRefractiveIndex, transmissionRefractiveIndex, incidentAngle, transmissionAngle):
+    ''' Fresnel reflection coefficient
+    Parallel polarisation'''
+    numerator = (transmissionRefractiveIndex*cos(incidentAngle)-incidentRefractiveIndex*cos(transmissionAngle))
+    denominator = (transmissionRefractiveIndex*cos(incidentAngle)+incidentRefractiveIndex*cos(transmissionAngle))
+    return numerator/denominator
+    
+
+def calculateParallelTransmission(incidentRefractiveIndex, transmissionRefractiveIndex, incidentAngle, transmissionAngle):
+    ''' Fresnel transmission coefficient
+    Parallel polarisation'''
+    numerator = 2*incidentRefractiveIndex*cos(incidentAngle)
+    denominator = (transmissionRefractiveIndex*cos(incidentAngle) + incidentRefractiveIndex*cos(transmissionAngle))
+    return numerator/denominator
+
+
+def calculateTransmissionAngle(incidenceRefractiveIndex, transmissionRefractiveIndex, incidentAngle):
+    '''Calculates the angle of transmission at an interface'''
+    sinOfAngleOfTransmission = sin(incidentAngle)*incidenceRefractiveIndex/transmissionRefractiveIndex
+    angleOfTransmission = np.arcsin(sinOfAngleOfTransmission)
+    return angleOfTransmission
+
