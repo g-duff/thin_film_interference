@@ -160,13 +160,13 @@ def nextLayerReflection(
 
 
 def calculatePhaseDifference(
-    freeSpaceWaveVector, rayAngle, filmRefractiveIndex, filmThickness
+    freeSpaceWavenumber, rayAngle, filmRefractiveIndex, filmThickness
 ):
     """The phase difference
     between two parallel rays reflected at thin film interfaces"""
     opticalThickness = filmRefractiveIndex * filmThickness
     opticalPathLength = 2 * opticalThickness * cos(rayAngle)
-    return freeSpaceWaveVector * opticalPathLength
+    return freeSpaceWavenumber * opticalPathLength
 
 
 def calculateFilmReflection(
