@@ -20,7 +20,6 @@ degrees = np.pi / 180
 
 
 def ellipsometry(freeSpaceWavelength, indidentAngle, refractiveIndices, thicknesses):
-    """Ellipsometry parameters for an n-layer thin film stack"""
 
     freeSpaceWavenumber = 2 * np.pi / freeSpaceWavelength
 
@@ -50,7 +49,6 @@ def ellipsometry(freeSpaceWavelength, indidentAngle, refractiveIndices, thicknes
 
 
 def reflectionToPsiDelta(senkrechtReflection, parallelReflection):
-    """Return psi and delta ellipsometry parameters from reflection coefficients"""
     reflectionRatio = parallelReflection / senkrechtReflection
     psi = np.arctan(np.abs(reflectionRatio))
     delta = np.angle(reflectionRatio)
@@ -173,7 +171,6 @@ def calculateFilmReflection(
 def calculateTransmissionAngle(
     incidenceRefractiveIndex, transmissionRefractiveIndex, incidentAngle
 ):
-    """Calculates the angle of transmission at an interface"""
     sinOfAngleOfTransmission = (
         sin(incidentAngle) * incidenceRefractiveIndex / transmissionRefractiveIndex
     )
