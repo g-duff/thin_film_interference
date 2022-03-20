@@ -28,19 +28,21 @@ def ellipsometry(freeSpaceWavelength, indidentAngle, refractiveIndices, thicknes
 
     coverRefractiveIndex = refractiveIndices.pop()
 
-    senkrechtReflection = nextLayerSenkrechtReflection(
+    senkrechtReflection = nextLayerReflection(
         freeSpaceWavenumber,
         indidentAngle,
         coverRefractiveIndex,
         refractiveIndices[:],
         thicknesses[:],
+        Senkrecht
     )
-    parallelReflection = nextLayerParallelReflection(
+    parallelReflection = nextLayerReflection(
         freeSpaceWavenumber,
         indidentAngle,
         coverRefractiveIndex,
         refractiveIndices[:],
         thicknesses[:],
+        Parallel
     )
 
     psi, delta = reflectionToPsiDelta(senkrechtReflection, parallelReflection)
@@ -53,40 +55,6 @@ def reflectionToPsiDelta(senkrechtReflection, parallelReflection):
     psi = np.arctan(np.abs(reflectionRatio))
     delta = np.angle(reflectionRatio)
     return psi, delta
-
-
-def nextLayerParallelReflection(
-    freeSpaceWaveNumber,
-    incidentAngle,
-    coverRefractiveIndex,
-    substrateRefractiveIndices,
-    thicknesses,
-):
-    return nextLayerReflection(
-        freeSpaceWaveNumber,
-        incidentAngle,
-        coverRefractiveIndex,
-        substrateRefractiveIndices,
-        thicknesses,
-        Parallel,
-    )
-
-
-def nextLayerSenkrechtReflection(
-    freeSpaceWaveNumber,
-    incidentAngle,
-    coverRefractiveIndex,
-    substrateRefractiveIndices,
-    thicknesses,
-):
-    return nextLayerReflection(
-        freeSpaceWaveNumber,
-        incidentAngle,
-        coverRefractiveIndex,
-        substrateRefractiveIndices,
-        thicknesses,
-        Senkrecht,
-    )
 
 
 def nextLayerReflection(
