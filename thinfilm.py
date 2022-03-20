@@ -1,5 +1,6 @@
 import numpy as np
 from numpy import cos, sin, exp
+from Fresnel import Parallel, Senkrecht
 
 """Library for calculating reflection from a thin film
 
@@ -63,16 +64,13 @@ def nextLayerParallelReflection(
     substrateRefractiveIndices,
     thicknesses,
 ):
-    """Return reflection for the next layer
-    Parallel  polarisation"""
     return nextLayerReflection(
         freeSpaceWaveNumber,
         incidentAngle,
         coverRefractiveIndex,
         substrateRefractiveIndices,
         thicknesses,
-        calculateParallelTransmission,
-        calculateParallelReflection,
+        Parallel,
     )
 
 
@@ -83,16 +81,13 @@ def nextLayerSenkrechtReflection(
     substrateRefractiveIndices,
     thicknesses,
 ):
-    """Return reflection for the next layer
-    Senkrecht  polarisation"""
     return nextLayerReflection(
         freeSpaceWaveNumber,
         incidentAngle,
         coverRefractiveIndex,
         substrateRefractiveIndices,
         thicknesses,
-        calculateSenkrechtTransmission,
-        calculateSenkrechtReflection,
+        Senkrecht,
     )
 
 
@@ -102,18 +97,14 @@ def nextLayerReflection(
     coverRefractiveIndex,
     substrateRefractiveIndices,
     thicknesses,
-    calculateTransmission,
-    calculateReflection,
+    Polarization,
 ):
-    """Return reflection for the next layer
-    Parallel  polarisation"""
-
     # Base quantities
     filmRefractiveIndex = substrateRefractiveIndices.pop()
     transmissionAngle = calculateTransmissionAngle(
         coverRefractiveIndex, filmRefractiveIndex, incidentAngle
     )
-    reflectionInto = calculateReflection(
+    reflectionInto = Polarization.reflection(
         coverRefractiveIndex, filmRefractiveIndex, incidentAngle, transmissionAngle
     )
 
@@ -127,14 +118,13 @@ def nextLayerReflection(
             filmRefractiveIndex,
             substrateRefractiveIndices,
             thicknesses,
-            calculateTransmission,
-            calculateReflection,
+            Polarization,
         )
 
-        transmissionInto = calculateTransmission(
+        transmissionInto = Polarization.transmission(
             coverRefractiveIndex, filmRefractiveIndex, incidentAngle, transmissionAngle
         )
-        transmissionBack = calculateTransmission(
+        transmissionBack = Polarization.transmission(
             filmRefractiveIndex, coverRefractiveIndex, transmissionAngle, incidentAngle
         )
 
@@ -162,8 +152,6 @@ def nextLayerReflection(
 def calculatePhaseDifference(
     freeSpaceWavenumber, rayAngle, filmRefractiveIndex, filmThickness
 ):
-    """The phase difference
-    between two parallel rays reflected at thin film interfaces"""
     opticalThickness = filmRefractiveIndex * filmThickness
     opticalPathLength = 2 * opticalThickness * cos(rayAngle)
     return freeSpaceWavenumber * opticalPathLength
@@ -176,75 +164,10 @@ def calculateFilmReflection(
     transmissionInto,
     transmissionBack,
 ):
-    """Fabry Perot reflection coefficient"""
     accumulatedPhase = exp(-1j * accumulatedPhase)
     numerator = transmissionInto * reflectionOutOf * transmissionBack
     demoninator = accumulatedPhase + reflectionInto * reflectionOutOf
     return reflectionInto + numerator / demoninator
-
-
-def calculateSenkrechtReflection(
-    incidentRefractiveIndex,
-    transmissionRefractiveIndex,
-    incidentAngle,
-    transmissionAngle,
-):
-    """Fresnel reflection coefficient
-    Senkrecht polarisation"""
-    numerator = incidentRefractiveIndex * cos(
-        incidentAngle
-    ) - transmissionRefractiveIndex * cos(transmissionAngle)
-    denominator = incidentRefractiveIndex * cos(
-        incidentAngle
-    ) + transmissionRefractiveIndex * cos(transmissionAngle)
-    return numerator / denominator
-
-
-def calculateSenkrechtTransmission(
-    incidentRefractiveIndex,
-    transmissionRefractiveIndex,
-    incidentAngle,
-    transmissionAngle,
-):
-    """Fresnel transmission coefficient
-    Senkrecht polarization"""
-    numerator = 2 * incidentRefractiveIndex * cos(incidentAngle)
-    denominator = incidentRefractiveIndex * cos(
-        incidentAngle
-    ) + transmissionRefractiveIndex * cos(transmissionAngle)
-    return numerator / denominator
-
-
-def calculateParallelReflection(
-    incidentRefractiveIndex,
-    transmissionRefractiveIndex,
-    incidentAngle,
-    transmissionAngle,
-):
-    """Fresnel reflection coefficient
-    Parallel polarisation"""
-    numerator = transmissionRefractiveIndex * cos(
-        incidentAngle
-    ) - incidentRefractiveIndex * cos(transmissionAngle)
-    denominator = transmissionRefractiveIndex * cos(
-        incidentAngle
-    ) + incidentRefractiveIndex * cos(transmissionAngle)
-    return numerator / denominator
-
-
-def calculateParallelTransmission(
-    incidentRefractiveIndex,
-    transmissionRefractiveIndex,
-    incidentAngle,
-    transmissionAngle,
-):
-    """Fresnel transmission coefficient
-    Parallel polarisation"""
-    numerator = 2 * incidentRefractiveIndex * cos(incidentAngle)
-    denominator = transmissionRefractiveIndex * cos(
-        incidentAngle
-    ) + incidentRefractiveIndex * cos(transmissionAngle)
-    return numerator / denominator
 
 
 def calculateTransmissionAngle(
