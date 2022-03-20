@@ -1,5 +1,5 @@
 from Fresnel import Parallel, Senkrecht
-import thinfilm as tf
+import ellipsometer as el
 import numpy as np
 import unittest
 
@@ -11,7 +11,7 @@ class Fresnel(unittest.TestCase):
         incidentAngle = 15
         coverRefractiveIndex = 1.0
         substrateRefractiveIndex = 1.5
-        transmissionAngle = tf.calculateTransmissionAngle(
+        transmissionAngle = el.calculateTransmissionAngle(
             coverRefractiveIndex, substrateRefractiveIndex, incidentAngle
         )
 
@@ -47,7 +47,7 @@ class Fresnel(unittest.TestCase):
         incidentAngle = 15
         coverRefractiveIndex = 1.0
         substrateRefrativeIndex = 1.5
-        transmissionAngle = tf.calculateTransmissionAngle(
+        transmissionAngle = el.calculateTransmissionAngle(
             coverRefractiveIndex, substrateRefrativeIndex, incidentAngle
         )
 

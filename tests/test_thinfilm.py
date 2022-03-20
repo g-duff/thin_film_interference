@@ -1,4 +1,4 @@
-import thinfilm as tf
+import ellipsometer as el
 import unittest
 import numpy as np
 
@@ -12,7 +12,7 @@ class BaseFunctions(unittest.TestCase):
         incidentAngle = 0
 
         # When
-        transmissionAngle = tf.calculateTransmissionAngle(
+        transmissionAngle = el.calculateTransmissionAngle(
             coverRefractiveIndex, substrateRefractiveIndex, incidentAngle
         )
 
@@ -25,10 +25,10 @@ class BaseFunctions(unittest.TestCase):
         # Given
         coverRefractiveIndex = 2
         substrateRefractiveIndex = np.sqrt(2)
-        incidentAngle = 45 * tf.degrees
+        incidentAngle = 45 * el.degrees
 
         # When
-        transmissionAngle = tf.calculateTransmissionAngle(
+        transmissionAngle = el.calculateTransmissionAngle(
             coverRefractiveIndex, substrateRefractiveIndex, incidentAngle
         )
 
@@ -49,12 +49,12 @@ class BaseFunctions(unittest.TestCase):
         comparisonFactors = (0, 1 / 2, 1 / 4, 1 / 6)
 
         filmThicknesses = [cf * freeSpaceWavelength for cf in comparisonFactors]
-        freeSpaceWavenumber = tau / freeSpaceWavelength
+        testEllipsometer = el.Ellipsometer(freeSpaceWavelength)
 
         # When
         actualPhaseDifference = [
-            tf.calculatePhaseDifference(
-                freeSpaceWavenumber, transmissionAngle, filmRefractiveIndex, t
+            testEllipsometer.calculatePhaseDifference(
+                transmissionAngle, filmRefractiveIndex, t
             )
             for t in filmThicknesses
         ]
@@ -79,17 +79,17 @@ class BaseFunctions(unittest.TestCase):
         # Given
         tau = 2 * np.pi
         freeSpaceWavelength = 800
-        transmissionAngle = 60 * tf.degrees
+        transmissionAngle = 60 * el.degrees
         filmRefractiveIndex = 2.0
 
         comparisonFactors = (0, 1 / 2, 1 / 4, 1 / 6)
         filmThicknesses = [cf * freeSpaceWavelength for cf in comparisonFactors]
-        freeSpaceWavenumber = tau / freeSpaceWavelength
+        testEllipsometer = el.Ellipsometer(freeSpaceWavelength)
 
         # When
         actualPhaseDifference = [
-            tf.calculatePhaseDifference(
-                freeSpaceWavenumber, transmissionAngle, filmRefractiveIndex, t
+            testEllipsometer.calculatePhaseDifference(
+                transmissionAngle, filmRefractiveIndex, t
             )
             for t in filmThicknesses
         ]
@@ -120,11 +120,12 @@ class Ellipsometry(unittest.TestCase):
         # Given
         refractiveIndices = [1.0, 3.8, 1.45, 3.8]
         filmThicknesses = [220, 3000]
-        incidentAngle = 65 * tf.degrees
+        incidentAngle = 65 * el.degrees
 
         # When
-        psi, delta = tf.ellipsometry(
-            freeSpaceWavelength, incidentAngle, refractiveIndices, filmThicknesses
+        testEllipsometer = el.Ellipsometer(freeSpaceWavelength)
+        psi, delta = testEllipsometer.ellipsometry(
+            incidentAngle, refractiveIndices, filmThicknesses
         )
 
         # Then

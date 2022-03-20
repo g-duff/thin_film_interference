@@ -1,19 +1,19 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import thinfilm as tf
+import ellipsometer as el
 
 # Input
 
 substrateRefractiveIndices = [1.0, 3.8, 1.45, 3.8]
 filmThicknesses = [220, 3000]
 
-incidentAngle = 65*tf.degrees
+incidentAngle = 65*el.degrees
 
 freeSpaceWavelength = np.arange(500, 1000)
 
 # Calculation
 
-psi, delta = tf.ellipsometry(freeSpaceWavelength, incidentAngle, substrateRefractiveIndices, filmThicknesses)
+psi, delta = el.ellipsometry(freeSpaceWavelength, incidentAngle, substrateRefractiveIndices, filmThicknesses)
 
 # Graphical output
 

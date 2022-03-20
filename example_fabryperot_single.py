@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import thinfilm as tf
+import ellipsometer as el
 
 # Input
 
@@ -10,39 +10,39 @@ substrateRefractiveIndex = 3.8
 
 filmThickness = 800
 
-incidentAngle = 30*tf.degrees
+incidentAngle = 30*el.degrees
 
 freeSpaceWavelength = np.arange(500, 1000)
 
 # Angles
-rayAngleInFilm = tf.calculateTransmissionAngle(coverRefractiveIndex, filmRefractiveIndex, incidentAngle)
-transmissionAngle = tf.calculateTransmissionAngle(filmRefractiveIndex, substrateRefractiveIndex, rayAngleInFilm)
+rayAngleInFilm = el.calculateTransmissionAngle(coverRefractiveIndex, filmRefractiveIndex, incidentAngle)
+transmissionAngle = el.calculateTransmissionAngle(filmRefractiveIndex, substrateRefractiveIndex, rayAngleInFilm)
 
 # Fresnel coefficients for both polarisations
 
 fresnelSenkrechtCoefficients = {
-    'reflectionInto': tf.calculateSenkrechtReflection(coverRefractiveIndex, filmRefractiveIndex, incidentAngle, rayAngleInFilm),
-    'reflectionOutOf': tf.calculateSenkrechtReflection(filmRefractiveIndex, substrateRefractiveIndex, rayAngleInFilm, transmissionAngle),
-    'transmissionInto': tf.calculateSenkrechtTransmission(coverRefractiveIndex, filmRefractiveIndex, incidentAngle, rayAngleInFilm),
-    'transmissionBack': tf.calculateSenkrechtTransmission(filmRefractiveIndex, coverRefractiveIndex, rayAngleInFilm, incidentAngle),
+    'reflectionInto': el.calculateSenkrechtReflection(coverRefractiveIndex, filmRefractiveIndex, incidentAngle, rayAngleInFilm),
+    'reflectionOutOf': el.calculateSenkrechtReflection(filmRefractiveIndex, substrateRefractiveIndex, rayAngleInFilm, transmissionAngle),
+    'transmissionInto': el.calculateSenkrechtTransmission(coverRefractiveIndex, filmRefractiveIndex, incidentAngle, rayAngleInFilm),
+    'transmissionBack': el.calculateSenkrechtTransmission(filmRefractiveIndex, coverRefractiveIndex, rayAngleInFilm, incidentAngle),
 }
 
 fresnelParallelCoefficients = {
-    'reflectionInto': tf.calculateParallelReflection(coverRefractiveIndex, filmRefractiveIndex, incidentAngle, rayAngleInFilm),
-    'reflectionOutOf': tf.calculateParallelReflection(filmRefractiveIndex, substrateRefractiveIndex, rayAngleInFilm, transmissionAngle),
-    'transmissionInto': tf.calculateParallelTransmission(coverRefractiveIndex, filmRefractiveIndex, incidentAngle, rayAngleInFilm),
-    'transmissionBack': tf.calculateParallelTransmission(filmRefractiveIndex, coverRefractiveIndex, rayAngleInFilm, incidentAngle),
+    'reflectionInto': el.calculateParallelReflection(coverRefractiveIndex, filmRefractiveIndex, incidentAngle, rayAngleInFilm),
+    'reflectionOutOf': el.calculateParallelReflection(filmRefractiveIndex, substrateRefractiveIndex, rayAngleInFilm, transmissionAngle),
+    'transmissionInto': el.calculateParallelTransmission(coverRefractiveIndex, filmRefractiveIndex, incidentAngle, rayAngleInFilm),
+    'transmissionBack': el.calculateParallelTransmission(filmRefractiveIndex, coverRefractiveIndex, rayAngleInFilm, incidentAngle),
 }
 
 # Phase difference from rays
 
 freeSpaceWavenumber = 2*np.pi/freeSpaceWavelength
-phaseDifference = tf.calculatePhaseDifference(freeSpaceWavenumber, rayAngleInFilm, filmRefractiveIndex, filmThickness)
+phaseDifference = el.calculatePhaseDifference(freeSpaceWavenumber, rayAngleInFilm, filmRefractiveIndex, filmThickness)
 
 # Multiple beam interference in Fabry Perot cavity
 
-senkrechtReflection = tf.calculateFilmReflection(phaseDifference,  **fresnelSenkrechtCoefficients)
-parallelReflection = tf.calculateFilmReflection(phaseDifference,  **fresnelParallelCoefficients)
+senkrechtReflection = el.calculateFilmReflection(phaseDifference,  **fresnelSenkrechtCoefficients)
+parallelReflection = el.calculateFilmReflection(phaseDifference,  **fresnelParallelCoefficients)
 
 # Graphical output
 

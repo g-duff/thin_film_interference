@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import thinfilm as tf
+import ellipsometer as el
 
 # Input
 
@@ -8,7 +8,7 @@ coverRefractiveIndex = 1.0
 substrateRefractiveIndices = [3.8, 1.45, 3.8]
 filmThicknesses = [220, 2000]
 
-incidentAngle = 30*tf.degrees
+incidentAngle = 30*el.degrees
 
 freeSpaceWavelength = np.arange(500, 1000)
 
@@ -18,8 +18,8 @@ freeSpaceWavenumber = 2*np.pi/freeSpaceWavelength
 substrateRefractiveIndices.reverse()
 filmThicknesses.reverse()
 
-r_s = tf.nextLayerSenkrechtReflection(freeSpaceWavenumber, incidentAngle, coverRefractiveIndex, substrateRefractiveIndices[:], filmThicknesses[:])
-r_p = tf.nextLayerParallelReflection(freeSpaceWavenumber, incidentAngle, coverRefractiveIndex, substrateRefractiveIndices[:], filmThicknesses[:])
+r_s = el.nextLayerSenkrechtReflection(freeSpaceWavenumber, incidentAngle, coverRefractiveIndex, substrateRefractiveIndices[:], filmThicknesses[:])
+r_p = el.nextLayerParallelReflection(freeSpaceWavenumber, incidentAngle, coverRefractiveIndex, substrateRefractiveIndices[:], filmThicknesses[:])
 
 # Graphical output
 

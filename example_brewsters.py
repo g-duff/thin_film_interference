@@ -1,19 +1,19 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import thinfilm as tf
+import ellipsometer as el
 
 # Input
 
 coverRefractiveIndex = 1.0
 substrateRefractiveIndex = 1.45
 
-incidentAngle = np.arange(0, 90)*tf.degrees
+incidentAngle = np.arange(0, 90)*el.degrees
 
 # Calculation
-transmissionAngle = tf.calculateTransmissionAngle(coverRefractiveIndex, substrateRefractiveIndex, incidentAngle)
+transmissionAngle = el.calculateTransmissionAngle(coverRefractiveIndex, substrateRefractiveIndex, incidentAngle)
 
-senkrechtReflection = tf.calculateSenkrechtReflection(coverRefractiveIndex, substrateRefractiveIndex, incidentAngle, transmissionAngle)
-parallelReflection = tf.calculateParallelReflection(coverRefractiveIndex, substrateRefractiveIndex, incidentAngle, transmissionAngle)
+senkrechtReflection = el.calculateSenkrechtReflection(coverRefractiveIndex, substrateRefractiveIndex, incidentAngle, transmissionAngle)
+parallelReflection = el.calculateParallelReflection(coverRefractiveIndex, substrateRefractiveIndex, incidentAngle, transmissionAngle)
 
 # Graphical output
 
