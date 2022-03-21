@@ -14,21 +14,21 @@ class Ellipsometer:
     def ellipsometry(self, incidentAngle, refractiveIndices, thicknesses):
 
         coverRefractiveIndex = refractiveIndices.pop(0)
-        rayAngles = cascadeTransmissionAngle(
+        transmittedAngles = cascadeTransmissionAngle(
             incidentAngle, coverRefractiveIndex, refractiveIndices
         )
 
         substrateRefractiveIndex = refractiveIndices.pop()
-        substrateRayAngle = rayAngles.pop()
+        substrateRayAngle = transmittedAngles.pop()
 
         phaseDifferences = [
             self.calculatePhaseDifference(transmissionAngle, refractiveIndex, thickness)
             for transmissionAngle, refractiveIndex, thickness in zip(
-                rayAngles, refractiveIndices, thicknesses
+                transmittedAngles, refractiveIndices, thicknesses
             )
         ]
 
-        layers = list(zip(refractiveIndices, rayAngles))
+        layers = list(zip(refractiveIndices, transmittedAngles))
 
         senkrechtCoefficients = prepareFresnelBusiness(
             Senkrecht,
@@ -36,64 +36,55 @@ class Ellipsometer:
             coverRefractiveIndex,
             layers,
         )
-
+        senkrechtSubstrateReflection = Senkrecht.reflection(
+            refractiveIndices[-1],
+            substrateRefractiveIndex,
+            transmittedAngles[-1],
+            substrateRayAngle,
+        )
+        senkrechtReflection = combineReflections(
+            senkrechtSubstrateReflection,
+            phaseDifferences,
+            senkrechtCoefficients,
+        )
         parallelCoefficients = prepareFresnelBusiness(
             Parallel,
             incidentAngle,
             coverRefractiveIndex,
             layers,
         )
-
-        senkrechtReflection = self.combineReflections(
-            Senkrecht,
+        parallelSubstrateReflection = Parallel.reflection(
             refractiveIndices[-1],
             substrateRefractiveIndex,
-            rayAngles[-1],
+            transmittedAngles[-1],
             substrateRayAngle,
-            phaseDifferences,
-            senkrechtCoefficients,
         )
-        parallelReflection = self.combineReflections(
-            Parallel,
-            refractiveIndices[-1],
-            substrateRefractiveIndex,
-            rayAngles[-1],
-            substrateRayAngle,
+        parallelReflection = combineReflections(
+            parallelSubstrateReflection,
             phaseDifferences,
             parallelCoefficients,
         )
 
         return reflectionToPsiDelta(senkrechtReflection, parallelReflection)
 
-    def combineReflections(
-        self,
-        Polarization,
-        coverRefractiveIndex,
-        substrateRefractiveIndex,
-        incidentAngle,
-        substrateRayAngle,
-        phaseDifferences,
-        layerFresnelParameters,
-    ):
-        reflectionFromSubstrate = Polarization.reflection(
-            coverRefractiveIndex,
-            substrateRefractiveIndex,
-            incidentAngle,
-            substrateRayAngle,
-        )
-
-        return functools.reduce(
-            lambda reflectionOutOf, paramSet: calculateFilmReflection(
-                reflectionOutOf, *paramSet[0], paramSet[1]
-            ),
-            zip(layerFresnelParameters[::-1], phaseDifferences[::-1]),
-            reflectionFromSubstrate,
-        )
-
     def calculatePhaseDifference(self, rayAngle, filmRefractiveIndex, filmThickness):
         opticalThickness = filmRefractiveIndex * filmThickness
         opticalPathLength = 2 * opticalThickness * cos(rayAngle)
         return self.freeSpaceWavenumber * opticalPathLength
+
+
+def combineReflections(
+    reflectionFromSubstrate,
+    phaseDifferences,
+    layerFresnelParameters,
+):
+    return functools.reduce(
+        lambda reflectionOutOf, paramSet: calculateFilmReflection(
+            reflectionOutOf, *paramSet[0], paramSet[1]
+        ),
+        zip(layerFresnelParameters[::-1], phaseDifferences[::-1]),
+        reflectionFromSubstrate,
+    )
 
 
 def prepareFresnelBusiness(
@@ -152,7 +143,6 @@ def calculateFilmReflection(
 
 
 def cascadeTransmissionAngle(incidentAngle, coverRefractiveIndex, refractiveIndices):
-
     rayAngles = []
     for refractiveIndex in refractiveIndices:
         incidentAngle = calculateTransmissionAngle(
