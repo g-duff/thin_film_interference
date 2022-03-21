@@ -25,19 +25,19 @@ class Ellipsometer:
         self.freeSpaceWavelength = freeSpaceWavelength
         self.freeSpaceWavenumber = 2 * np.pi / freeSpaceWavelength
 
-    def ellipsometry(self, indidentAngle, refractiveIndices, thicknesses):
+    def ellipsometry(self, incidentAngle, refractiveIndices, thicknesses):
 
         coverRefractiveIndex = refractiveIndices.pop(0)
         layers = linkLayers(refractiveIndices, thicknesses)
 
-        senkrechtReflection = self.nextLayerReflection(
-            indidentAngle,
+        senkrechtReflection = self.recursiveLayerReflection(
+            incidentAngle,
             coverRefractiveIndex,
             layers,
             Senkrecht,
         )
-        parallelReflection = self.nextLayerReflection(
-            indidentAngle,
+        parallelReflection = self.recursiveLayerReflection(
+            incidentAngle,
             coverRefractiveIndex,
             layers,
             Parallel,
@@ -45,7 +45,7 @@ class Ellipsometer:
 
         return reflectionToPsiDelta(senkrechtReflection, parallelReflection)
 
-    def nextLayerReflection(
+    def recursiveLayerReflection(
         self,
         incidentAngle,
         coverRefractiveIndex,
@@ -61,13 +61,6 @@ class Ellipsometer:
         )
 
         if layers.hasNextLayer():
-            reflectionOutOf = self.nextLayerReflection(
-                transmissionAngle,
-                layers.refractiveIndex,
-                layers.nextLayer,
-                Polarization,
-            )
-
             transmissionInto = Polarization.transmission(
                 coverRefractiveIndex,
                 toRefractiveIndex,
@@ -85,12 +78,19 @@ class Ellipsometer:
                 transmissionAngle, toRefractiveIndex, layers.thickness
             )
 
+            reflectionOutOf = self.recursiveLayerReflection(
+                transmissionAngle,
+                toRefractiveIndex,
+                layers.nextLayer,
+                Polarization,
+            )
+
             reflectionInto = calculateFilmReflection(
-                phaseDifference,
-                reflectionInto,
                 reflectionOutOf,
+                reflectionInto,
                 transmissionInto,
                 transmissionBack,
+                phaseDifference,
             )
 
         return reflectionInto
@@ -109,11 +109,11 @@ def reflectionToPsiDelta(senkrechtReflection, parallelReflection):
 
 
 def calculateFilmReflection(
-    accumulatedPhase,
-    reflectionInto,
     reflectionOutOf,
+    reflectionInto,
     transmissionInto,
     transmissionBack,
+    accumulatedPhase,
 ):
     numerator = transmissionInto * reflectionOutOf * transmissionBack
     demoninator = exp(-1j * accumulatedPhase) + reflectionInto * reflectionOutOf
