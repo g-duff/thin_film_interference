@@ -14,7 +14,7 @@ class Ellipsometer:
     def ellipsometry(self, incidentAngle, refractiveIndices, thicknesses):
 
         coverRefractiveIndex = refractiveIndices.pop(0)
-        transmittedAngles = cascadeTransmissionAngle(
+        transmittedAngles = propagateTransmissionAngles(
             incidentAngle, coverRefractiveIndex, refractiveIndices
         )
 
@@ -93,8 +93,13 @@ def prepareFresnelBusiness(
     coverRefractiveIndex,
     layers,
 ):
+    upperLayers = [(coverRefractiveIndex, incidentAngle)] + layers[:-1]
+    layerPairs = zip(upperLayers, layers)
     layerFresnelParameters = []
-    for toRefractiveIndex, transmissionAngle in layers:
+    for (coverRefractiveIndex, incidentAngle), (
+        toRefractiveIndex,
+        transmissionAngle,
+    ) in layerPairs:
         reflectionInto = Polarization.reflection(
             coverRefractiveIndex,
             toRefractiveIndex,
@@ -113,9 +118,6 @@ def prepareFresnelBusiness(
             transmissionAngle,
             incidentAngle,
         )
-
-        incidentAngle = transmissionAngle
-        coverRefractiveIndex = toRefractiveIndex
         layerFresnelParameters.append(
             [reflectionInto, transmissionInto, transmissionBack]
         )
@@ -142,16 +144,16 @@ def calculateFilmReflection(
     return reflectionInto + numerator / demoninator
 
 
-def cascadeTransmissionAngle(incidentAngle, coverRefractiveIndex, refractiveIndices):
-    rayAngles = []
-    for refractiveIndex in refractiveIndices:
-        incidentAngle = calculateTransmissionAngle(
+def propagateTransmissionAngles(incidentAngle, coverRefractiveIndex, refractiveIndices):
+    refractiveIndexPairs = zip(
+        [coverRefractiveIndex] + refractiveIndices, refractiveIndices
+    )
+    return [
+        incidentAngle := calculateTransmissionAngle(
             coverRefractiveIndex, refractiveIndex, incidentAngle
         )
-        rayAngles.append(incidentAngle)
-        coverRefractiveIndex = refractiveIndex
-
-    return rayAngles
+        for coverRefractiveIndex, refractiveIndex in refractiveIndexPairs
+    ]
 
 
 def calculateTransmissionAngle(
