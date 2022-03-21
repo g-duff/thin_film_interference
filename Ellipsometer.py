@@ -23,29 +23,24 @@ class Ellipsometer:
         transmittedAngles = propagateTransmissionAngles(
             incidentAngle, refractiveIndexPairs
         )
+
+        phaseParameters = zip(transmittedAngles, filmRefractiveIndices, thicknesses)
         phaseDifferences = [
             self.calculatePhaseDifference(transmissionAngle, refractiveIndex, thickness)
-            for transmissionAngle, refractiveIndex, thickness in zip(
-                transmittedAngles, filmRefractiveIndices, thicknesses
-            )
+            for transmissionAngle, refractiveIndex, thickness in phaseParameters
         ]
 
         rayAnglePairs = list(
             zip([incidentAngle] + transmittedAngles, transmittedAngles)
         )
-        finalAnglePair = rayAnglePairs.pop()
-        finalRefractiveIndexPair = refractiveIndexPairs.pop()
 
         senkrechtCalculator = FresnelCalculator(Senkrecht)
         senkrechtCoefficients = senkrechtCalculator.prepareCoefficients(
             refractiveIndexPairs, rayAnglePairs
         )
-        senkrechtSubstrateReflection = Senkrecht.reflection(
-            *finalRefractiveIndexPair,
-            *finalAnglePair
-        )
+        senkrechtSubstrateReflection = senkrechtCoefficients.pop()
         senkrechtReflection = combineReflections(
-            senkrechtSubstrateReflection,
+            senkrechtSubstrateReflection[0],
             phaseDifferences,
             senkrechtCoefficients,
         )
@@ -54,12 +49,9 @@ class Ellipsometer:
         parallelCoefficients = parallelCalculator.prepareCoefficients(
             refractiveIndexPairs, rayAnglePairs
         )
-        parallelSubstrateReflection = Parallel.reflection(
-            *finalRefractiveIndexPair,
-            *finalAnglePair
-        )
+        parallelSubstrateReflection = parallelCoefficients.pop()
         parallelReflection = combineReflections(
-            parallelSubstrateReflection,
+            parallelSubstrateReflection[0],
             phaseDifferences,
             parallelCoefficients,
         )
