@@ -1,27 +1,23 @@
 import functools
 
 
-def linkRefractiveIndices(
-    filmRefractiveIndices,
-):
+def linkLayers(filmRefractiveIndices, filmThicknesses):
     substrateRefractiveIndex = filmRefractiveIndices.pop()
+
     return functools.reduce(
-        lambda previous, current: linkedList(current, previous),
-        filmRefractiveIndices[::-1],
+        lambda previous, current: linkedList(
+            current[0], thickness=current[1], nextLayer=previous
+        ),
+        zip(filmRefractiveIndices[::-1], filmThicknesses[::-1]),
         linkedList(substrateRefractiveIndex),
     )
 
 
-def linkThicknesses(filmThicknesses):
-    bottomFilm = filmThicknesses.pop()
-    return functools.reduce(
-        lambda previous, current: linkedList(current, previous),
-        filmThicknesses[::-1],
-        linkedList(bottomFilm),
-    )
-
-
 class linkedList:
-    def __init__(self, thisValue, nextValue=None):
-        self.thisValue = thisValue
-        self.nextValue = nextValue
+    def __init__(self, refractiveIndex, thickness=None, nextLayer=None):
+        self.refractiveIndex = refractiveIndex
+        self.thickness = thickness
+        self.nextLayer = nextLayer
+
+    def hasNextLayer(self):
+        return self.nextLayer != None

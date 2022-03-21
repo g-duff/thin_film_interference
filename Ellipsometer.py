@@ -1,7 +1,7 @@
 import numpy as np
 from numpy import cos, sin, exp
 from Fresnel import Parallel, Senkrecht
-from filmStackFactory import linkRefractiveIndices, linkThicknesses
+from filmStackFactory import linkLayers
 
 """Library for calculating reflection from a thin film
 
@@ -27,19 +27,19 @@ class Ellipsometer:
 
     def ellipsometry(self, indidentAngle, refractiveIndices, thicknesses):
 
-        refractiveIndices = linkRefractiveIndices(refractiveIndices)
-        thicknesses = linkThicknesses(thicknesses)
+        coverRefractiveIndex = refractiveIndices.pop(0)
+        layers = linkLayers(refractiveIndices, thicknesses)
 
         senkrechtReflection = self.nextLayerReflection(
             indidentAngle,
-            refractiveIndices,
-            thicknesses,
+            coverRefractiveIndex,
+            layers,
             Senkrecht,
         )
         parallelReflection = self.nextLayerReflection(
             indidentAngle,
-            refractiveIndices,
-            thicknesses,
+            coverRefractiveIndex,
+            layers,
             Parallel,
         )
 
@@ -48,47 +48,41 @@ class Ellipsometer:
     def nextLayerReflection(
         self,
         incidentAngle,
-        refractiveIndices,
-        thicknesses,
+        coverRefractiveIndex,
+        layers,
         Polarization,
     ):
-        # Base quantities
-        fromRefractiveIndex = refractiveIndices.thisValue
-        toRefractiveIndex = refractiveIndices.nextValue.thisValue
+        toRefractiveIndex = layers.refractiveIndex
         transmissionAngle = calculateTransmissionAngle(
-            fromRefractiveIndex, toRefractiveIndex, incidentAngle
+            coverRefractiveIndex, toRefractiveIndex, incidentAngle
         )
         reflectionInto = Polarization.reflection(
-            fromRefractiveIndex, toRefractiveIndex, incidentAngle, transmissionAngle
+            coverRefractiveIndex, toRefractiveIndex, incidentAngle, transmissionAngle
         )
 
-        if thicknesses is not None:
-            # Interference inside a thin film, calculated using
-            # a Fabry-Perot model
+        if layers.hasNextLayer():
             reflectionOutOf = self.nextLayerReflection(
                 transmissionAngle,
-                refractiveIndices.nextValue,
-                thicknesses.nextValue,
+                layers.refractiveIndex,
+                layers.nextLayer,
                 Polarization,
             )
 
             transmissionInto = Polarization.transmission(
-                fromRefractiveIndex,
+                coverRefractiveIndex,
                 toRefractiveIndex,
                 incidentAngle,
                 transmissionAngle,
             )
             transmissionBack = Polarization.transmission(
                 toRefractiveIndex,
-                fromRefractiveIndex,
+                coverRefractiveIndex,
                 transmissionAngle,
                 incidentAngle,
             )
 
             phaseDifference = self.calculatePhaseDifference(
-                transmissionAngle,
-                toRefractiveIndex,
-                thicknesses.thisValue
+                transmissionAngle, toRefractiveIndex, layers.thickness
             )
 
             reflectionInto = calculateFilmReflection(
@@ -121,9 +115,8 @@ def calculateFilmReflection(
     transmissionInto,
     transmissionBack,
 ):
-    accumulatedPhase = exp(-1j * accumulatedPhase)
     numerator = transmissionInto * reflectionOutOf * transmissionBack
-    demoninator = accumulatedPhase + reflectionInto * reflectionOutOf
+    demoninator = exp(-1j * accumulatedPhase) + reflectionInto * reflectionOutOf
     return reflectionInto + numerator / demoninator
 
 
