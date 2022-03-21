@@ -30,64 +30,51 @@ class Ellipsometer:
 
         layers = list(zip(refractiveIndices, rayAngles))
 
-        senkrechtReflection = self.iterativeLayerReflection(
+        senkrechtCoefficients = prepareFresnelBusiness(
             Senkrecht,
             incidentAngle,
             coverRefractiveIndex,
-            substrateRefractiveIndex,
-            substrateRayAngle,
             layers,
-            phaseDifferences,
         )
-        parallelReflection = self.iterativeLayerReflection(
+
+        parallelCoefficients = prepareFresnelBusiness(
             Parallel,
             incidentAngle,
             coverRefractiveIndex,
-            substrateRefractiveIndex,
-            substrateRayAngle,
             layers,
+        )
+
+        senkrechtReflection = self.combineReflections(
+            Senkrecht,
+            refractiveIndices[-1],
+            substrateRefractiveIndex,
+            rayAngles[-1],
+            substrateRayAngle,
             phaseDifferences,
+            senkrechtCoefficients,
+        )
+        parallelReflection = self.combineReflections(
+            Parallel,
+            refractiveIndices[-1],
+            substrateRefractiveIndex,
+            rayAngles[-1],
+            substrateRayAngle,
+            phaseDifferences,
+            parallelCoefficients,
         )
 
         return reflectionToPsiDelta(senkrechtReflection, parallelReflection)
 
-    def iterativeLayerReflection(
+    def combineReflections(
         self,
         Polarization,
-        incidentAngle,
         coverRefractiveIndex,
         substrateRefractiveIndex,
+        incidentAngle,
         substrateRayAngle,
-        layers,
         phaseDifferences,
+        layerFresnelParameters,
     ):
-        layerFresnelParameters = []
-        for toRefractiveIndex, transmissionAngle in layers:
-            reflectionInto = Polarization.reflection(
-                coverRefractiveIndex,
-                toRefractiveIndex,
-                incidentAngle,
-                transmissionAngle,
-            )
-            transmissionInto = Polarization.transmission(
-                coverRefractiveIndex,
-                toRefractiveIndex,
-                incidentAngle,
-                transmissionAngle,
-            )
-            transmissionBack = Polarization.transmission(
-                toRefractiveIndex,
-                coverRefractiveIndex,
-                transmissionAngle,
-                incidentAngle,
-            )
-
-            incidentAngle = transmissionAngle
-            coverRefractiveIndex = toRefractiveIndex
-            layerFresnelParameters.append(
-                [reflectionInto, transmissionInto, transmissionBack]
-            )
-
         reflectionFromSubstrate = Polarization.reflection(
             coverRefractiveIndex,
             substrateRefractiveIndex,
@@ -107,6 +94,42 @@ class Ellipsometer:
         opticalThickness = filmRefractiveIndex * filmThickness
         opticalPathLength = 2 * opticalThickness * cos(rayAngle)
         return self.freeSpaceWavenumber * opticalPathLength
+
+
+def prepareFresnelBusiness(
+    Polarization,
+    incidentAngle,
+    coverRefractiveIndex,
+    layers,
+):
+    layerFresnelParameters = []
+    for toRefractiveIndex, transmissionAngle in layers:
+        reflectionInto = Polarization.reflection(
+            coverRefractiveIndex,
+            toRefractiveIndex,
+            incidentAngle,
+            transmissionAngle,
+        )
+        transmissionInto = Polarization.transmission(
+            coverRefractiveIndex,
+            toRefractiveIndex,
+            incidentAngle,
+            transmissionAngle,
+        )
+        transmissionBack = Polarization.transmission(
+            toRefractiveIndex,
+            coverRefractiveIndex,
+            transmissionAngle,
+            incidentAngle,
+        )
+
+        incidentAngle = transmissionAngle
+        coverRefractiveIndex = toRefractiveIndex
+        layerFresnelParameters.append(
+            [reflectionInto, transmissionInto, transmissionBack]
+        )
+
+    return layerFresnelParameters
 
 
 def reflectionToPsiDelta(senkrechtReflection, parallelReflection):
