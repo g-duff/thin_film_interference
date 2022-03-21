@@ -15,7 +15,6 @@ class Ellipsometer:
     def ellipsometry(self, incidentAngle, refractiveIndices, thicknesses):
 
         coverRefractiveIndex = refractiveIndices.pop(0)
-        filmRefractiveIndices = refractiveIndices[:-1]
 
         refractiveIndexPairs = list(
             zip([coverRefractiveIndex] + refractiveIndices, refractiveIndices)
@@ -24,6 +23,7 @@ class Ellipsometer:
             incidentAngle, refractiveIndexPairs
         )
 
+        filmRefractiveIndices = refractiveIndices[:-1]
         phaseParameters = zip(transmittedAngles, filmRefractiveIndices, thicknesses)
         phaseDifferences = [
             self.calculatePhaseDifference(transmissionAngle, refractiveIndex, thickness)
@@ -33,11 +33,10 @@ class Ellipsometer:
         rayAnglePairs = list(
             zip([incidentAngle] + transmittedAngles, transmittedAngles)
         )
-
-        senkrechtCalculator = FresnelCalculator(Senkrecht)
-        senkrechtCoefficients = senkrechtCalculator.prepareCoefficients(
-            refractiveIndexPairs, rayAnglePairs
+        senkrechtCalculator = FresnelCalculator(
+            Senkrecht, refractiveIndexPairs, rayAnglePairs
         )
+        senkrechtCoefficients = senkrechtCalculator.prepareCoefficients()
         senkrechtSubstrateReflection = senkrechtCoefficients.pop()
         senkrechtReflection = combineReflections(
             senkrechtSubstrateReflection[0],
@@ -45,10 +44,10 @@ class Ellipsometer:
             senkrechtCoefficients,
         )
 
-        parallelCalculator = FresnelCalculator(Parallel)
-        parallelCoefficients = parallelCalculator.prepareCoefficients(
-            refractiveIndexPairs, rayAnglePairs
+        parallelCalculator = FresnelCalculator(
+            Parallel, refractiveIndexPairs, rayAnglePairs
         )
+        parallelCoefficients = parallelCalculator.prepareCoefficients()
         parallelSubstrateReflection = parallelCoefficients.pop()
         parallelReflection = combineReflections(
             parallelSubstrateReflection[0],
@@ -65,29 +64,46 @@ class Ellipsometer:
 
 
 class FresnelCalculator:
-    def __init__(self, Polarization):
+    def __init__(self, Polarization, refractiveIndexPairs, rayAnglePairs):
         self.Polarization = Polarization
+        self.refractiveIndexPairs = refractiveIndexPairs
+        self.rayAnglePairs = rayAnglePairs
 
-    def prepareCoefficients(self, refractiveIndexPairs, rayAnglePairs):
-        layerFresnelParameters = []
-        for refractiveIndices, rayAngles in zip(refractiveIndexPairs, rayAnglePairs):
-            reflectionInto = self.Polarization.reflection(
+    def reflectionInto(self):
+        return [
+            self.Polarization.reflection(
                 *refractiveIndices,
                 *rayAngles,
             )
-            transmissionInto = self.Polarization.transmission(
+            for refractiveIndices, rayAngles in zip(
+                self.refractiveIndexPairs, self.rayAnglePairs
+            )
+        ]
+
+    def transmissionInto(self):
+        return [
+            self.Polarization.transmission(
                 *refractiveIndices,
                 *rayAngles,
             )
-            transmissionBack = self.Polarization.transmission(
+            for refractiveIndices, rayAngles in zip(
+                self.refractiveIndexPairs, self.rayAnglePairs
+            )
+        ]
+
+    def transmissionBack(self):
+        return [
+            self.Polarization.transmission(
                 *refractiveIndices[::-1],
                 *rayAngles[::-1],
             )
-            layerFresnelParameters.append(
-                [reflectionInto, transmissionInto, transmissionBack]
+            for refractiveIndices, rayAngles in zip(
+                self.refractiveIndexPairs, self.rayAnglePairs
             )
+        ]
 
-        return layerFresnelParameters
+    def prepareCoefficients(self):
+        return list(zip(self.reflectionInto(), self.transmissionInto(), self.transmissionBack()))
 
 
 def combineReflections(
