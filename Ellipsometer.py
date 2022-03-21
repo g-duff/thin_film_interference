@@ -33,10 +33,10 @@ class Ellipsometer:
         rayAnglePairs = list(
             zip([incidentAngle] + transmittedAngles, transmittedAngles)
         )
-        senkrechtCalculator = FresnelCalculator(
-            Senkrecht, refractiveIndexPairs, rayAnglePairs
-        )
-        senkrechtCoefficients = senkrechtCalculator.prepareCoefficients()
+        fresnelCalculator = FresnelCalculator(refractiveIndexPairs, rayAnglePairs)
+
+        fresnelCalculator.setPolarization(Senkrecht)
+        senkrechtCoefficients = fresnelCalculator.prepareCoefficients()
         senkrechtSubstrateReflection = senkrechtCoefficients.pop()
         senkrechtReflection = combineReflections(
             senkrechtSubstrateReflection[0],
@@ -44,10 +44,8 @@ class Ellipsometer:
             senkrechtCoefficients,
         )
 
-        parallelCalculator = FresnelCalculator(
-            Parallel, refractiveIndexPairs, rayAnglePairs
-        )
-        parallelCoefficients = parallelCalculator.prepareCoefficients()
+        fresnelCalculator.setPolarization(Parallel)
+        parallelCoefficients = fresnelCalculator.prepareCoefficients()
         parallelSubstrateReflection = parallelCoefficients.pop()
         parallelReflection = combineReflections(
             parallelSubstrateReflection[0],
@@ -64,10 +62,12 @@ class Ellipsometer:
 
 
 class FresnelCalculator:
-    def __init__(self, Polarization, refractiveIndexPairs, rayAnglePairs):
-        self.Polarization = Polarization
+    def __init__(self, refractiveIndexPairs, rayAnglePairs):
         self.refractiveIndexPairs = refractiveIndexPairs
         self.rayAnglePairs = rayAnglePairs
+
+    def setPolarization(self, Polarization):
+        self.Polarization = Polarization
 
     def reflectionInto(self):
         return [
@@ -103,7 +103,9 @@ class FresnelCalculator:
         ]
 
     def prepareCoefficients(self):
-        return list(zip(self.reflectionInto(), self.transmissionInto(), self.transmissionBack()))
+        return list(
+            zip(self.reflectionInto(), self.transmissionInto(), self.transmissionBack())
+        )
 
 
 def combineReflections(
