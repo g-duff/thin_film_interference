@@ -14,12 +14,21 @@ class Ellipsometer:
     def ellipsometry(self, incidentAngle, refractiveIndices, thicknesses):
 
         coverRefractiveIndex = refractiveIndices.pop(0)
-        rayAngles = cascadeTransmissionAngle(incidentAngle, coverRefractiveIndex, refractiveIndices)
-        
+        rayAngles = cascadeTransmissionAngle(
+            incidentAngle, coverRefractiveIndex, refractiveIndices
+        )
+
         substrateRefractiveIndex = refractiveIndices.pop()
         substrateRayAngle = rayAngles.pop()
 
-        layers = list(zip(refractiveIndices, thicknesses, rayAngles))
+        phaseDifferences = [
+            self.calculatePhaseDifference(transmissionAngle, refractiveIndex, thickness)
+            for transmissionAngle, refractiveIndex, thickness in zip(
+                rayAngles, refractiveIndices, thicknesses
+            )
+        ]
+
+        layers = list(zip(refractiveIndices, rayAngles))
 
         senkrechtReflection = self.iterativeLayerReflection(
             Senkrecht,
@@ -28,6 +37,7 @@ class Ellipsometer:
             substrateRefractiveIndex,
             substrateRayAngle,
             layers,
+            phaseDifferences,
         )
         parallelReflection = self.iterativeLayerReflection(
             Parallel,
@@ -36,6 +46,7 @@ class Ellipsometer:
             substrateRefractiveIndex,
             substrateRayAngle,
             layers,
+            phaseDifferences,
         )
 
         return reflectionToPsiDelta(senkrechtReflection, parallelReflection)
@@ -48,9 +59,10 @@ class Ellipsometer:
         substrateRefractiveIndex,
         substrateRayAngle,
         layers,
+        phaseDifferences,
     ):
         layerFresnelParameters = []
-        for toRefractiveIndex, thickness, transmissionAngle in layers:
+        for toRefractiveIndex, transmissionAngle in layers:
             reflectionInto = Polarization.reflection(
                 coverRefractiveIndex,
                 toRefractiveIndex,
@@ -69,13 +81,11 @@ class Ellipsometer:
                 transmissionAngle,
                 incidentAngle,
             )
-            phaseDifference = self.calculatePhaseDifference(
-                transmissionAngle, toRefractiveIndex, thickness
-            )
+
             incidentAngle = transmissionAngle
             coverRefractiveIndex = toRefractiveIndex
             layerFresnelParameters.append(
-                [reflectionInto, transmissionInto, transmissionBack, phaseDifference]
+                [reflectionInto, transmissionInto, transmissionBack]
             )
 
         reflectionFromSubstrate = Polarization.reflection(
@@ -87,9 +97,9 @@ class Ellipsometer:
 
         return functools.reduce(
             lambda reflectionOutOf, paramSet: calculateFilmReflection(
-                reflectionOutOf, *paramSet
+                reflectionOutOf, *paramSet[0], paramSet[1]
             ),
-            layerFresnelParameters[::-1],
+            zip(layerFresnelParameters[::-1], phaseDifferences[::-1]),
             reflectionFromSubstrate,
         )
 
