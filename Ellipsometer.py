@@ -1,6 +1,7 @@
 import numpy as np
 from numpy import cos, sin, exp
 from Fresnel import Parallel, Senkrecht
+from filmStackFactory import linkRefractiveIndices, linkThicknesses
 
 """Library for calculating reflection from a thin film
 
@@ -26,76 +27,68 @@ class Ellipsometer:
 
     def ellipsometry(self, indidentAngle, refractiveIndices, thicknesses):
 
-        refractiveIndices.reverse()
-        thicknesses.reverse()
-
-        coverRefractiveIndex = refractiveIndices.pop()
+        refractiveIndices = linkRefractiveIndices(refractiveIndices)
+        thicknesses = linkThicknesses(thicknesses)
 
         senkrechtReflection = self.nextLayerReflection(
             indidentAngle,
-            coverRefractiveIndex,
-            refractiveIndices[:],
-            thicknesses[:],
+            refractiveIndices,
+            thicknesses,
             Senkrecht,
         )
         parallelReflection = self.nextLayerReflection(
             indidentAngle,
-            coverRefractiveIndex,
-            refractiveIndices[:],
-            thicknesses[:],
+            refractiveIndices,
+            thicknesses,
             Parallel,
         )
 
-        psi, delta = reflectionToPsiDelta(senkrechtReflection, parallelReflection)
-
-        return psi, delta
+        return reflectionToPsiDelta(senkrechtReflection, parallelReflection)
 
     def nextLayerReflection(
         self,
         incidentAngle,
-        coverRefractiveIndex,
-        substrateRefractiveIndices,
+        refractiveIndices,
         thicknesses,
         Polarization,
     ):
         # Base quantities
-        filmRefractiveIndex = substrateRefractiveIndices.pop()
+        fromRefractiveIndex = refractiveIndices.thisValue
+        toRefractiveIndex = refractiveIndices.nextValue.thisValue
         transmissionAngle = calculateTransmissionAngle(
-            coverRefractiveIndex, filmRefractiveIndex, incidentAngle
+            fromRefractiveIndex, toRefractiveIndex, incidentAngle
         )
         reflectionInto = Polarization.reflection(
-            coverRefractiveIndex, filmRefractiveIndex, incidentAngle, transmissionAngle
+            fromRefractiveIndex, toRefractiveIndex, incidentAngle, transmissionAngle
         )
 
-        try:
+        if thicknesses is not None:
             # Interference inside a thin film, calculated using
             # a Fabry-Perot model
-            filmThickness = thicknesses.pop()
             reflectionOutOf = self.nextLayerReflection(
                 transmissionAngle,
-                filmRefractiveIndex,
-                substrateRefractiveIndices,
-                thicknesses,
+                refractiveIndices.nextValue,
+                thicknesses.nextValue,
                 Polarization,
             )
 
             transmissionInto = Polarization.transmission(
-                coverRefractiveIndex,
-                filmRefractiveIndex,
+                fromRefractiveIndex,
+                toRefractiveIndex,
                 incidentAngle,
                 transmissionAngle,
             )
             transmissionBack = Polarization.transmission(
-                filmRefractiveIndex,
-                coverRefractiveIndex,
+                toRefractiveIndex,
+                fromRefractiveIndex,
                 transmissionAngle,
                 incidentAngle,
             )
 
             phaseDifference = self.calculatePhaseDifference(
                 transmissionAngle,
-                filmRefractiveIndex,
-                filmThickness,
+                toRefractiveIndex,
+                thicknesses.thisValue
             )
 
             reflectionInto = calculateFilmReflection(
@@ -106,13 +99,7 @@ class Ellipsometer:
                 transmissionBack,
             )
 
-        except IndexError:
-            # Reflectance for a single interface when
-            # no finite thicknesses are left in the stack
-            pass
-
-        finally:
-            return reflectionInto
+        return reflectionInto
 
     def calculatePhaseDifference(self, rayAngle, filmRefractiveIndex, filmThickness):
         opticalThickness = filmRefractiveIndex * filmThickness
