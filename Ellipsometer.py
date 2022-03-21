@@ -4,12 +4,13 @@ from Fresnel import Parallel, Senkrecht
 import functools
 
 degrees = np.pi / 180
+tau = 2 * np.pi
 
 
 class Ellipsometer:
     def __init__(self, freeSpaceWavelength):
         self.freeSpaceWavelength = freeSpaceWavelength
-        self.freeSpaceWavenumber = 2 * np.pi / freeSpaceWavelength
+        self.freeSpaceWavenumber = tau / freeSpaceWavelength
 
     def ellipsometry(self, incidentAngle, refractiveIndices, thicknesses):
 
@@ -30,8 +31,8 @@ class Ellipsometer:
 
         layers = list(zip(refractiveIndices, transmittedAngles))
 
-        senkrechtCoefficients = prepareFresnelBusiness(
-            Senkrecht,
+        senkrechtCalculator = FresnelCalculator(Senkrecht)
+        senkrechtCoefficients = senkrechtCalculator.prepareCoefficients(
             incidentAngle,
             coverRefractiveIndex,
             layers,
@@ -47,8 +48,9 @@ class Ellipsometer:
             phaseDifferences,
             senkrechtCoefficients,
         )
-        parallelCoefficients = prepareFresnelBusiness(
-            Parallel,
+
+        parallelCalculator = FresnelCalculator(Parallel)
+        parallelCoefficients = parallelCalculator.prepareCoefficients(
             incidentAngle,
             coverRefractiveIndex,
             layers,
@@ -73,6 +75,48 @@ class Ellipsometer:
         return self.freeSpaceWavenumber * opticalPathLength
 
 
+class FresnelCalculator:
+    def __init__(self, Polarization):
+        self.Polarization = Polarization
+
+    def prepareCoefficients(
+        self,
+        incidentAngle,
+        coverRefractiveIndex,
+        layers,
+    ):
+        upperLayers = [(coverRefractiveIndex, incidentAngle)] + layers[:-1]
+        layerPairs = zip(upperLayers, layers)
+        layerFresnelParameters = []
+        for (coverRefractiveIndex, incidentAngle), (
+            toRefractiveIndex,
+            transmissionAngle,
+        ) in layerPairs:
+            reflectionInto = self.Polarization.reflection(
+                coverRefractiveIndex,
+                toRefractiveIndex,
+                incidentAngle,
+                transmissionAngle,
+            )
+            transmissionInto = self.Polarization.transmission(
+                coverRefractiveIndex,
+                toRefractiveIndex,
+                incidentAngle,
+                transmissionAngle,
+            )
+            transmissionBack = self.Polarization.transmission(
+                toRefractiveIndex,
+                coverRefractiveIndex,
+                transmissionAngle,
+                incidentAngle,
+            )
+            layerFresnelParameters.append(
+                [reflectionInto, transmissionInto, transmissionBack]
+            )
+
+        return layerFresnelParameters
+
+
 def combineReflections(
     reflectionFromSubstrate,
     phaseDifferences,
@@ -85,44 +129,6 @@ def combineReflections(
         zip(layerFresnelParameters[::-1], phaseDifferences[::-1]),
         reflectionFromSubstrate,
     )
-
-
-def prepareFresnelBusiness(
-    Polarization,
-    incidentAngle,
-    coverRefractiveIndex,
-    layers,
-):
-    upperLayers = [(coverRefractiveIndex, incidentAngle)] + layers[:-1]
-    layerPairs = zip(upperLayers, layers)
-    layerFresnelParameters = []
-    for (coverRefractiveIndex, incidentAngle), (
-        toRefractiveIndex,
-        transmissionAngle,
-    ) in layerPairs:
-        reflectionInto = Polarization.reflection(
-            coverRefractiveIndex,
-            toRefractiveIndex,
-            incidentAngle,
-            transmissionAngle,
-        )
-        transmissionInto = Polarization.transmission(
-            coverRefractiveIndex,
-            toRefractiveIndex,
-            incidentAngle,
-            transmissionAngle,
-        )
-        transmissionBack = Polarization.transmission(
-            toRefractiveIndex,
-            coverRefractiveIndex,
-            transmissionAngle,
-            incidentAngle,
-        )
-        layerFresnelParameters.append(
-            [reflectionInto, transmissionInto, transmissionBack]
-        )
-
-    return layerFresnelParameters
 
 
 def reflectionToPsiDelta(senkrechtReflection, parallelReflection):
