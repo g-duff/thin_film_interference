@@ -14,14 +14,19 @@ class Ellipsometer:
     def ellipsometry(self, incidentAngle, refractiveIndices, thicknesses):
 
         coverRefractiveIndex = refractiveIndices.pop(0)
+        rayAngles = cascadeTransmissionAngle(incidentAngle, coverRefractiveIndex, refractiveIndices)
+        
         substrateRefractiveIndex = refractiveIndices.pop()
-        layers = list(zip(refractiveIndices, thicknesses))
+        substrateRayAngle = rayAngles.pop()
+
+        layers = list(zip(refractiveIndices, thicknesses, rayAngles))
 
         senkrechtReflection = self.iterativeLayerReflection(
             Senkrecht,
             incidentAngle,
             coverRefractiveIndex,
             substrateRefractiveIndex,
+            substrateRayAngle,
             layers,
         )
         parallelReflection = self.iterativeLayerReflection(
@@ -29,6 +34,7 @@ class Ellipsometer:
             incidentAngle,
             coverRefractiveIndex,
             substrateRefractiveIndex,
+            substrateRayAngle,
             layers,
         )
 
@@ -40,13 +46,11 @@ class Ellipsometer:
         incidentAngle,
         coverRefractiveIndex,
         substrateRefractiveIndex,
+        substrateRayAngle,
         layers,
     ):
         layerFresnelParameters = []
-        for toRefractiveIndex, thickness in layers:
-            transmissionAngle = calculateTransmissionAngle(
-                coverRefractiveIndex, toRefractiveIndex, incidentAngle
-            )
+        for toRefractiveIndex, thickness, transmissionAngle in layers:
             reflectionInto = Polarization.reflection(
                 coverRefractiveIndex,
                 toRefractiveIndex,
@@ -74,14 +78,11 @@ class Ellipsometer:
                 [reflectionInto, transmissionInto, transmissionBack, phaseDifference]
             )
 
-        transmissionAngle = calculateTransmissionAngle(
-            coverRefractiveIndex, substrateRefractiveIndex, incidentAngle
-        )
         reflectionFromSubstrate = Polarization.reflection(
             coverRefractiveIndex,
             substrateRefractiveIndex,
             incidentAngle,
-            transmissionAngle,
+            substrateRayAngle,
         )
 
         return functools.reduce(
@@ -115,6 +116,19 @@ def calculateFilmReflection(
     numerator = transmissionInto * reflectionOutOf * transmissionBack
     demoninator = exp(-1j * accumulatedPhase) + reflectionInto * reflectionOutOf
     return reflectionInto + numerator / demoninator
+
+
+def cascadeTransmissionAngle(incidentAngle, coverRefractiveIndex, refractiveIndices):
+
+    rayAngles = []
+    for refractiveIndex in refractiveIndices:
+        incidentAngle = calculateTransmissionAngle(
+            coverRefractiveIndex, refractiveIndex, incidentAngle
+        )
+        rayAngles.append(incidentAngle)
+        coverRefractiveIndex = refractiveIndex
+
+    return rayAngles
 
 
 def calculateTransmissionAngle(
