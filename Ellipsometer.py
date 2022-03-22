@@ -36,21 +36,15 @@ class Ellipsometer:
         fresnelCalculator = FresnelCalculator(refractiveIndexPairs, rayAnglePairs)
 
         fresnelCalculator.setPolarization(Senkrecht)
-        senkrechtCoefficients = fresnelCalculator.prepareCoefficients()
-        senkrechtSubstrateReflection = senkrechtCoefficients.pop()
         senkrechtReflection = combineReflections(
-            senkrechtSubstrateReflection[0],
+            fresnelCalculator,
             phaseDifferences,
-            senkrechtCoefficients,
         )
 
         fresnelCalculator.setPolarization(Parallel)
-        parallelCoefficients = fresnelCalculator.prepareCoefficients()
-        parallelSubstrateReflection = parallelCoefficients.pop()
         parallelReflection = combineReflections(
-            parallelSubstrateReflection[0],
+            fresnelCalculator,
             phaseDifferences,
-            parallelCoefficients,
         )
 
         return reflectionToPsiDelta(senkrechtReflection, parallelReflection)
@@ -102,22 +96,28 @@ class FresnelCalculator:
             )
         ]
 
-    def prepareCoefficients(self):
-        return list(
-            zip(self.reflectionInto(), self.transmissionInto(), self.transmissionBack())
-        )
-
 
 def combineReflections(
-    reflectionFromSubstrate,
+    fresnelCalculator,
     phaseDifferences,
-    layerFresnelParameters,
 ):
+
+    reflectionInto = fresnelCalculator.reflectionInto()
+    transmissionInto = fresnelCalculator.transmissionInto()
+    transmissionBack = fresnelCalculator.transmissionBack()
+    reflectionFromSubstrate = reflectionInto.pop()
+    transmissionInto.pop()
+    transmissionBack.pop()
     return functools.reduce(
         lambda reflectionOutOf, paramSet: calculateFilmReflection(
-            reflectionOutOf, *paramSet[0], paramSet[1]
+            reflectionOutOf, *paramSet
         ),
-        zip(layerFresnelParameters[::-1], phaseDifferences[::-1]),
+        zip(
+            reflectionInto[::-1],
+            transmissionInto[::-1],
+            transmissionBack[::-1],
+            phaseDifferences[::-1],
+        ),
         reflectionFromSubstrate,
     )
 
