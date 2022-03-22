@@ -15,18 +15,12 @@ class Ellipsometer:
     def ellipsometry(self, incidentAngle, refractiveIndices, thicknesses):
 
         coverRefractiveIndex = refractiveIndices.pop(0)
-        substrateRefractiveIndex = refractiveIndices.pop()
-
-        refractiveIndexPairs = list(
-            zip(
-                [coverRefractiveIndex] + refractiveIndices,
-                refractiveIndices + [substrateRefractiveIndex],
-            )
+        refractiveIndexPairs = pairParameters(
+            coverRefractiveIndex, refractiveIndices, refractiveIndices.pop()
         )
         transmittedAngles = propagateTransmissionAngles(
             incidentAngle, refractiveIndexPairs
         )
-        substrateTransmittedAngle = transmittedAngles.pop()
 
         phaseParameters = zip(transmittedAngles, refractiveIndices, thicknesses)
         phaseDifferences = [
@@ -34,11 +28,8 @@ class Ellipsometer:
             for transmissionAngle, refractiveIndex, thickness in phaseParameters
         ]
 
-        rayAnglePairs = list(
-            zip(
-                [incidentAngle] + transmittedAngles,
-                transmittedAngles + [substrateTransmittedAngle],
-            )
+        rayAnglePairs = pairParameters(
+            incidentAngle, transmittedAngles, transmittedAngles.pop()
         )
         fresnelCalculator = FresnelCalculator(refractiveIndexPairs, rayAnglePairs)
 
@@ -165,3 +156,20 @@ def calculateTransmissionAngle(
     )
     angleOfTransmission = np.arcsin(sinOfAngleOfTransmission)
     return angleOfTransmission
+
+
+def calculatePhaseDifference(
+    freeSpaceWavenumber, rayAngle, filmRefractiveIndex, filmThickness
+):
+    opticalThickness = filmRefractiveIndex * filmThickness
+    opticalPathLength = 2 * opticalThickness * cos(rayAngle)
+    return freeSpaceWavenumber * opticalPathLength
+
+
+def pairParameters(firstItem, middleItems, lastItem):
+    return list(
+        zip(
+            [firstItem] + middleItems,
+            middleItems + [lastItem],
+        )
+    )
