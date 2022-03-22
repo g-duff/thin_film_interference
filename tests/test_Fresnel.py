@@ -1,4 +1,4 @@
-from Fresnel import Parallel, Senkrecht
+from fresnel import Parallel, Senkrecht
 import ellipsometerUtils as el
 import numpy as np
 import unittest

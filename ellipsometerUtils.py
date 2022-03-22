@@ -1,6 +1,6 @@
 import numpy as np
 from numpy import cos, sin, exp
-from Fresnel import Parallel, Senkrecht
+from fresnel import Parallel, Senkrecht
 import functools
 
 degrees = np.pi / 180
