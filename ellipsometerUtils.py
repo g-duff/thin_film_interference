@@ -15,23 +15,30 @@ class Ellipsometer:
     def ellipsometry(self, incidentAngle, refractiveIndices, thicknesses):
 
         coverRefractiveIndex = refractiveIndices.pop(0)
+        substrateRefractiveIndex = refractiveIndices.pop()
 
         refractiveIndexPairs = list(
-            zip([coverRefractiveIndex] + refractiveIndices, refractiveIndices)
+            zip(
+                [coverRefractiveIndex] + refractiveIndices,
+                refractiveIndices + [substrateRefractiveIndex],
+            )
         )
         transmittedAngles = propagateTransmissionAngles(
             incidentAngle, refractiveIndexPairs
         )
+        substrateTransmittedAngle = transmittedAngles.pop()
 
-        filmRefractiveIndices = refractiveIndices[:-1]
-        phaseParameters = zip(transmittedAngles, filmRefractiveIndices, thicknesses)
+        phaseParameters = zip(transmittedAngles, refractiveIndices, thicknesses)
         phaseDifferences = [
             self.calculatePhaseDifference(transmissionAngle, refractiveIndex, thickness)
             for transmissionAngle, refractiveIndex, thickness in phaseParameters
         ]
 
         rayAnglePairs = list(
-            zip([incidentAngle] + transmittedAngles, transmittedAngles)
+            zip(
+                [incidentAngle] + transmittedAngles,
+                transmittedAngles + [substrateTransmittedAngle],
+            )
         )
         fresnelCalculator = FresnelCalculator(refractiveIndexPairs, rayAnglePairs)
 

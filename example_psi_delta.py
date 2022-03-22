@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import ellipsometer as el
+import ellipsometerUtils as el
 
 # Input
 

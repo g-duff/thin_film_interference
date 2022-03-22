@@ -1,5 +1,5 @@
 from Fresnel import Parallel, Senkrecht
-import ellipsometer as el
+import ellipsometerUtils as el
 import numpy as np
 import unittest
 

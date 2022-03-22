@@ -1,4 +1,4 @@
-import ellipsometer as el
+import ellipsometerUtils as el
 import unittest
 import numpy as np
 
