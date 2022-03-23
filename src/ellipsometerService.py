@@ -5,7 +5,7 @@ from src.opticalPathDomain import OpticalPath
 from src.opticalInterfaceDomain import OpticalInterface
 
 tau = 2 * np.pi
-degrees = np.pi/180
+degrees = np.pi / 180
 
 
 def ellipsometry(
@@ -20,9 +20,7 @@ def ellipsometry(
     refractiveIndexPairs = pairParameters(
         coverRefractiveIndex, filmRefractiveIndexes, substrateRefractiveIndex
     )
-    transmittedAngles = propagateTransmissionAngles(
-        incidentAngle, refractiveIndexPairs
-    )
+    transmittedAngles = propagateTransmissionAngles(incidentAngle, refractiveIndexPairs)
 
     pathParameters = zip(filmRefractiveIndexes, filmThicknesses, transmittedAngles)
     opticalPaths = (OpticalPath(*p) for p in pathParameters)
@@ -63,6 +61,8 @@ def pairParameters(firstItem, middleItems, lastItem):
             middleItems + [lastItem],
         )
     )
+
+
 def propagateTransmissionAngles(incidentAngle, refractiveIndexPairs):
     return [
         incidentAngle := calculateTransmissionAngle(
@@ -80,6 +80,7 @@ def calculateTransmissionAngle(
     )
     angleOfTransmission = np.arcsin(sinOfAngleOfTransmission)
     return angleOfTransmission
+
 
 def filmStackResponse(
     opticalInterfaces,
@@ -109,6 +110,7 @@ def calculateFilmReflection(
     numerator = transmissionInto * reflectionOutOf * transmissionBack
     demoninator = np.exp(-1j * accumulatedPhase) + reflectionInto * reflectionOutOf
     return reflectionInto + numerator / demoninator
+
 
 def reflectionToPsiDelta(senkrechtReflection, parallelReflection):
     reflectionRatio = parallelReflection / senkrechtReflection

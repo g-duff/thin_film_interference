@@ -2,10 +2,10 @@ from src.opticalPathDomain import OpticalPath
 import unittest
 import numpy as np
 
-degrees = np.pi/180
+degrees = np.pi / 180
+
 
 class accumulatePhase(unittest.TestCase):
-
     def test_accumulatePhase_normalIncidence(self):
         """Phase difference from reflections indide a film at normal incidence
         tested against film thicknesses of fractional wavelengths"""
@@ -16,16 +16,18 @@ class accumulatePhase(unittest.TestCase):
         freeSpaceWavelength = 800
         transmissionAngle = 0
         filmRefractiveIndex = 2.0
-        freeSpaceWavenumber = tau/freeSpaceWavelength
+        freeSpaceWavenumber = tau / freeSpaceWavelength
 
         comparisonFactors = (0, 1 / 2, 1 / 4, 1 / 6)
         filmThicknesses = [cf * freeSpaceWavelength for cf in comparisonFactors]
-        testOpticalPaths = [OpticalPath(filmRefractiveIndex, t, transmissionAngle) for t in filmThicknesses]
+        testOpticalPaths = [
+            OpticalPath(filmRefractiveIndex, t, transmissionAngle)
+            for t in filmThicknesses
+        ]
 
         # When
         actualPhaseDifference = [
-            o.accumulatePhase(freeSpaceWavenumber)
-            for o in testOpticalPaths
+            o.accumulatePhase(freeSpaceWavenumber) for o in testOpticalPaths
         ]
 
         # Then
@@ -50,17 +52,18 @@ class accumulatePhase(unittest.TestCase):
         freeSpaceWavelength = 800
         transmissionAngle = 60 * degrees
         filmRefractiveIndex = 2.0
-        freeSpaceWavenumber = tau/freeSpaceWavelength
-
+        freeSpaceWavenumber = tau / freeSpaceWavelength
 
         comparisonFactors = (0, 1 / 2, 1 / 4, 1 / 6)
         filmThicknesses = [cf * freeSpaceWavelength for cf in comparisonFactors]
-        testOpticalPaths = [OpticalPath(filmRefractiveIndex, t, transmissionAngle) for t in filmThicknesses]
+        testOpticalPaths = [
+            OpticalPath(filmRefractiveIndex, t, transmissionAngle)
+            for t in filmThicknesses
+        ]
 
         # When
         actualPhaseDifference = [
-            o.accumulatePhase(freeSpaceWavenumber)
-            for o in testOpticalPaths
+            o.accumulatePhase(freeSpaceWavenumber) for o in testOpticalPaths
         ]
 
         # Then
