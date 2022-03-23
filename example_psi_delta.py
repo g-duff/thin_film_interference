@@ -1,10 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import ellipsometerUtils as el
+import src.ellipsometerService as el
 
 # Input
 
-substrateRefractiveIndices = [1.0, 3.8, 1.45, 3.8]
+filmRefractiveIndices = [3.8, 1.45]
 filmThicknesses = [220, 3000]
 
 incidentAngle = 65*el.degrees
@@ -13,7 +13,7 @@ freeSpaceWavelength = np.arange(500, 1000)
 
 # Calculation
 
-psi, delta = el.ellipsometry(freeSpaceWavelength, incidentAngle, substrateRefractiveIndices, filmThicknesses)
+psi, delta = el.ellipsometry(freeSpaceWavelength, incidentAngle, filmRefractiveIndices, filmThicknesses, 3.8)
 
 # Graphical output
 
