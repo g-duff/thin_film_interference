@@ -5,8 +5,6 @@ from src.opticalPathDomain import OpticalPath
 from src.opticalInterfaceDomain import OpticalInterface
 
 tau = 2 * np.pi
-degrees = np.pi / 180
-
 
 def ellipsometry(
     freeSpaceWavelengths,

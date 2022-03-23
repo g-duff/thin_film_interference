@@ -5,7 +5,6 @@ import numpy as np
 
 class transmissionAngles(unittest.TestCase):
     def test_calculateAngleOfTransmission_normalIncidence(self):
-        """Snell's law at normal incidence"""
         # Given
         coverRefractiveIndex = 1.0
         substrateRefractiveIndex = 1.5
@@ -20,12 +19,10 @@ class transmissionAngles(unittest.TestCase):
         self.assertEqual(transmissionAngle, 0)
 
     def test_calculateAngleOfTransmission_obliqueIncidence(self):
-        """Snell's law, incident at 45 degrees tested
-        against exact sine values for total internal reflection"""
         # Given
         coverRefractiveIndex = 2
         substrateRefractiveIndex = np.sqrt(2)
-        incidentAngle = 45 * el.degrees
+        incidentAngle = np.deg2rad(45)
 
         # When
         transmissionAngle = el.calculateTransmissionAngle(

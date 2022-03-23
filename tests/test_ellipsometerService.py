@@ -14,7 +14,7 @@ class Ellipsometry(unittest.TestCase):
         coverRefractiveIndex = 1.0
         refractiveIndices = [3.8, 1.45]
         filmThicknesses = [220, 3000]
-        incidentAngle = 65 * ec.degrees
+        incidentAngle = np.deg2rad(65)
 
         # When
         psi, delta = ec.ellipsometry(

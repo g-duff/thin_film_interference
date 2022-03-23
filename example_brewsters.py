@@ -3,27 +3,28 @@ import matplotlib.pyplot as plt
 import src.ellipsometerService as el
 import src.fresnel as fr
 
-# Input
 
 coverRefractiveIndex = 1.0
 substrateRefractiveIndex = 1.45
-
 incidentAngle = np.arange(0, 90)
+
 incidentAngleInRadians = np.deg2rad(incidentAngle)
 
-# Calculation
 transmissionAngle = el.calculateTransmissionAngle(
     coverRefractiveIndex, substrateRefractiveIndex, incidentAngleInRadians
 )
-
 senkrechtReflection = fr.Senkrecht.reflection(
-    coverRefractiveIndex, substrateRefractiveIndex, incidentAngleInRadians, transmissionAngle
+    coverRefractiveIndex,
+    substrateRefractiveIndex,
+    incidentAngleInRadians,
+    transmissionAngle,
 )
 parallelReflection = fr.Parallel.reflection(
-    coverRefractiveIndex, substrateRefractiveIndex, incidentAngleInRadians, transmissionAngle
+    coverRefractiveIndex,
+    substrateRefractiveIndex,
+    incidentAngleInRadians,
+    transmissionAngle,
 )
-
-# Graphical output
 
 fig, ax = plt.subplots()
 

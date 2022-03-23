@@ -5,19 +5,13 @@ from src.opticalInterfaceDomain import OpticalInterface
 from src.opticalPathDomain import OpticalPath
 from src.fresnel import Parallel, Senkrecht
 
-# Input
-
 coverRefractiveIndex = 1.0
 filmRefractiveIndex = 1.45
 substrateRefractiveIndex = 3.8
-
 filmThickness = 800
-
-incidentAngle = 30 * el.degrees
-
+incidentAngle = np.deg2rad(30)
 freeSpaceWavelength = np.arange(500, 1000)
 
-# Angles
 rayAngleInFilm = el.calculateTransmissionAngle(
     coverRefractiveIndex, filmRefractiveIndex, incidentAngle
 )
@@ -32,13 +26,10 @@ lowerInterface = OpticalInterface(
     (filmRefractiveIndex, substrateRefractiveIndex), (rayAngleInFilm, transmissionAngle)
 )
 
-
-# Phase difference from rays
 freeSpaceWavenumber = 2 * np.pi / freeSpaceWavelength
 phaseDifference = OpticalPath(
     filmRefractiveIndex, filmThickness, rayAngleInFilm
 ).accumulatePhase(freeSpaceWavenumber)
-# Multiple beam interference in Fabry Perot cavity
 
 upperInterface.setPolarization(Senkrecht)
 lowerInterface.setPolarization(Senkrecht)
@@ -59,8 +50,6 @@ parallelReflection = el.calculateFilmReflection(
     upperInterface.transmissionBack(),
     phaseDifference,
 )
-
-# Graphical output
 
 fig, (ax1, ax2) = plt.subplots(nrows=2, sharex=True)
 
