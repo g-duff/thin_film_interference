@@ -5,7 +5,7 @@ import src.ellipsometerService as el
 filmThicknesses = [220, 3000]
 filmRefractiveIndices = [3.8, 1.45]
 substrateRefractivIndex = 3.8
-incidentAngle = 65 * el.degrees
+incidentAngle = np.deg2rad(65)
 freeSpaceWavelength = np.arange(500, 1000)
 
 psi, delta = el.ellipsometry(
