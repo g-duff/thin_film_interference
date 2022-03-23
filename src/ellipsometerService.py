@@ -1,8 +1,8 @@
 import numpy as np
 import functools
-from fresnel import Parallel, Senkrecht
-from opticalPathDomain import OpticalPath
-from opticalInterfaceDomain import OpticalInterface
+from src.fresnel import Parallel, Senkrecht
+from src.opticalPathDomain import OpticalPath
+from src.opticalInterfaceDomain import OpticalInterface
 
 tau = 2 * np.pi
 degrees = np.pi/180

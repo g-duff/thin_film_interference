@@ -1,4 +1,4 @@
-from opticalPathDomain import OpticalPath
+from src.opticalPathDomain import OpticalPath
 import unittest
 import numpy as np
 

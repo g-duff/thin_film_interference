@@ -1,5 +1,5 @@
-from fresnel import Parallel, Senkrecht
-import ellipsometerService as el
+from src.fresnel import Parallel, Senkrecht
+import src.ellipsometerService as el
 import numpy as np
 import unittest
 
