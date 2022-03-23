@@ -1,11 +1,11 @@
 from fresnel import Parallel, Senkrecht
-import ellipsometerUtils as el
+import ellipsometerService as el
 import numpy as np
 import unittest
 
 
 class Fresnel(unittest.TestCase):
-    def test_fresnelSenkrecht_energyconservation(self):
+    def test_Senkrecht_energyconservation(self):
 
         # Given
         incidentAngle = 15
@@ -41,7 +41,7 @@ class Fresnel(unittest.TestCase):
         energy = reflectivity + transmissivity
         self.assertAlmostEqual(energy, 1)
 
-    def test_fresnelParallel_energyconservation(self):
+    def test_Parallel_energyconservation(self):
 
         # Given
         incidentAngle = 15

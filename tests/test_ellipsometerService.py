@@ -1,4 +1,3 @@
-import ellipsometerUtils as el
 import ellipsometerService as ec
 import unittest
 import numpy as np
@@ -15,7 +14,7 @@ class Ellipsometry(unittest.TestCase):
         coverRefractiveIndex = 1.0
         refractiveIndices = [3.8, 1.45]
         filmThicknesses = [220, 3000]
-        incidentAngle = 65 * el.degrees
+        incidentAngle = 65 * ec.degrees
 
         # When
         psi, delta = ec.ellipsometry(
