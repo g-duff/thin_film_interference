@@ -9,11 +9,6 @@ This collection of python functions models interference in thin films using simp
 ![image](./example_figures/psi_delta.png)
 
 
-* `fabryperot_multi`: A [Fabry-Pérot](https://en.wikipedia.org/wiki/Fabry–Pérot_interferometer) cavity from the same thin silicon and insulator layers as the psi_delta example. This example demonstrates the simplicity of calculating s and p polarised reflections from a multi-film stack.
-
-![image](./example_figures/fabryperot_multi.png)
-
-
 * `fabryperot_single`: A Fabry-Pérot cavity from a single thin silica layer. This example calculates the reflection spectra from the cavity for s and p polarisations and exposes some of the more fundamental functions used in psi_delta and fabryperot_multi.
 
 ![image](./example_figures/fabryperot_single.png)

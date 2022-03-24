@@ -1,65 +1,70 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import thinfilm as tf
-
-# Input
+import src.ellipsometerService as el
+from src.opticalInterfaceDomain import OpticalInterface
+from src.opticalPathDomain import OpticalPath
+from src.fresnel import Parallel, Senkrecht
 
 coverRefractiveIndex = 1.0
 filmRefractiveIndex = 1.45
 substrateRefractiveIndex = 3.8
-
 filmThickness = 800
-
-incidentAngle = 30*tf.degrees
-
+incidentAngle = np.deg2rad(30)
 freeSpaceWavelength = np.arange(500, 1000)
 
-# Angles
-rayAngleInFilm = tf.calculateAngleOfTransmission(coverRefractiveIndex, filmRefractiveIndex, incidentAngle)
-transmissionAngle = tf.calculateAngleOfTransmission(filmRefractiveIndex, substrateRefractiveIndex, rayAngleInFilm)
+rayAngleInFilm = el.calculateTransmissionAngle(
+    coverRefractiveIndex, filmRefractiveIndex, incidentAngle
+)
+transmissionAngle = el.calculateTransmissionAngle(
+    filmRefractiveIndex, substrateRefractiveIndex, rayAngleInFilm
+)
 
-# Fresnel coefficients for both polarisations
+upperInterface = OpticalInterface(
+    (coverRefractiveIndex, filmRefractiveIndex), (incidentAngle, rayAngleInFilm)
+)
+lowerInterface = OpticalInterface(
+    (filmRefractiveIndex, substrateRefractiveIndex), (rayAngleInFilm, transmissionAngle)
+)
 
-fresnelSenkrechtCoefficients = {
-    'reflectionInto': tf.calculateSenkrechtReflection(coverRefractiveIndex, filmRefractiveIndex, incidentAngle, rayAngleInFilm),
-    'reflectionOutOf': tf.calculateSenkrechtReflection(filmRefractiveIndex, substrateRefractiveIndex, rayAngleInFilm, transmissionAngle),
-    'transmissionInto': tf.calculateSenkrechtTransmission(coverRefractiveIndex, filmRefractiveIndex, incidentAngle, rayAngleInFilm),
-    'transmissionBack': tf.calculateSenkrechtTransmission(filmRefractiveIndex, coverRefractiveIndex, rayAngleInFilm, incidentAngle),
-}
+freeSpaceWavenumber = 2 * np.pi / freeSpaceWavelength
+phaseDifference = OpticalPath(
+    filmRefractiveIndex, filmThickness, rayAngleInFilm
+).accumulatePhase(freeSpaceWavenumber)
 
-fresnelParallelCoefficients = {
-    'reflectionInto': tf.calculateParallelReflection(coverRefractiveIndex, filmRefractiveIndex, incidentAngle, rayAngleInFilm),
-    'reflectionOutOf': tf.calculateParallelReflection(filmRefractiveIndex, substrateRefractiveIndex, rayAngleInFilm, transmissionAngle),
-    'transmissionInto': tf.calculateParallelTransmission(coverRefractiveIndex, filmRefractiveIndex, incidentAngle, rayAngleInFilm),
-    'transmissionBack': tf.calculateParallelTransmission(filmRefractiveIndex, coverRefractiveIndex, rayAngleInFilm, incidentAngle),
-}
+upperInterface.setPolarization(Senkrecht)
+lowerInterface.setPolarization(Senkrecht)
+senkrechtReflection = el.calculateFilmReflection(
+    lowerInterface.reflectionInto(),
+    upperInterface.reflectionInto(),
+    upperInterface.transmissionInto(),
+    upperInterface.transmissionBack(),
+    phaseDifference,
+)
 
-# Phase difference from rays
-
-freeSpaceWavenumber = 2*np.pi/freeSpaceWavelength
-phaseDifference = tf.calculatePhaseDifference(freeSpaceWavenumber, filmRefractiveIndex, filmThickness, rayAngleInFilm)
-
-# Multiple beam interference in Fabry Perot cavity
-
-senkrechtReflection = tf.calculateFilmReflection(phaseDifference,  **fresnelSenkrechtCoefficients)
-parallelReflection = tf.calculateFilmReflection(phaseDifference,  **fresnelParallelCoefficients)
-
-# Graphical output
+lowerInterface.setPolarization(Parallel)
+upperInterface.setPolarization(Parallel)
+parallelReflection = el.calculateFilmReflection(
+    lowerInterface.reflectionInto(),
+    upperInterface.reflectionInto(),
+    upperInterface.transmissionInto(),
+    upperInterface.transmissionBack(),
+    phaseDifference,
+)
 
 fig, (ax1, ax2) = plt.subplots(nrows=2, sharex=True)
 
-ax1.set_title('S polarisation')
-ax1.set_ylabel('Reflectance')
-ax1.plot(freeSpaceWavelength, np.abs(senkrechtReflection)**2)
+ax1.set_title("S polarisation")
+ax1.set_ylabel("Reflectance")
+ax1.plot(freeSpaceWavelength, np.abs(senkrechtReflection) ** 2)
 
-ax2.set_title('P polarisation')
-ax2.set_ylabel('Reflectance')
-ax2.plot(freeSpaceWavelength, np.abs(parallelReflection)**2)
+ax2.set_title("P polarisation")
+ax2.set_ylabel("Reflectance")
+ax2.plot(freeSpaceWavelength, np.abs(parallelReflection) ** 2)
 
-ax2.set_xlabel('Free space wavelength (nm)')
+ax2.set_xlabel("Free space wavelength (nm)")
 
 fig.tight_layout()
 
-fig.savefig('./example_figures/fabryperot_single.png')
+fig.savefig("./example_figures/fabryperot_single.png")
 
 plt.show()
