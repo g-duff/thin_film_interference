@@ -20,30 +20,27 @@ def ellipsometry(
     )
     transmittedAngles = propagateTransmissionAngles(incidentAngle, refractiveIndexPairs)
 
-    pathParameters = zip(filmRefractiveIndexes, filmThicknesses, transmittedAngles)
-    opticalPaths = (OpticalPath(*p) for p in pathParameters)
     freeSpaceWavenumbers = tau / freeSpaceWavelengths
-    accumulatedPhases = [p.accumulatePhase(freeSpaceWavenumbers) for p in opticalPaths]
+    pathParameters = zip(filmRefractiveIndexes, filmThicknesses, transmittedAngles)
+    accumulatedPhases = [OpticalPath(*p).accumulatePhase(freeSpaceWavenumbers) for p in pathParameters]
 
     anglePairs = pairParameters(
         incidentAngle, transmittedAngles, transmittedAngles.pop()
     )
-
     interfaceParameters = zip(refractiveIndexPairs, anglePairs)
     opticalInterfaces = [OpticalInterface(*p) for p in interfaceParameters]
+
     substrateInterface = opticalInterfaces.pop()
 
-    for o in opticalInterfaces:
+    for o in opticalInterfaces + [substrateInterface]:
         o.setPolarization(Parallel)
-    substrateInterface.setPolarization(Parallel)
 
     parallelReflection = filmStackResponse(
         opticalInterfaces, accumulatedPhases, substrateInterface
     )
 
-    for o in opticalInterfaces:
+    for o in opticalInterfaces + [substrateInterface]:
         o.setPolarization(Senkrecht)
-    substrateInterface.setPolarization(Senkrecht)
 
     senkrechtReflection = filmStackResponse(
         opticalInterfaces, accumulatedPhases, substrateInterface
