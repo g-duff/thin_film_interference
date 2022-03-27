@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def propagateTransmissionAngles(incidentAngle, refractiveIndexPairs):
     return [
         incidentAngle := calculateTransmissionAngle(
