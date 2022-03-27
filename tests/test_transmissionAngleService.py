@@ -1,4 +1,4 @@
-import src.ellipsometerService as el
+import src.transmissionAngleService as ta
 import unittest
 import numpy as np
 
@@ -11,7 +11,7 @@ class transmissionAngles(unittest.TestCase):
         incidentAngle = 0
 
         # When
-        transmissionAngle = el.calculateTransmissionAngle(
+        transmissionAngle = ta.calculateTransmissionAngle(
             coverRefractiveIndex, substrateRefractiveIndex, incidentAngle
         )
 
@@ -25,7 +25,7 @@ class transmissionAngles(unittest.TestCase):
         incidentAngle = np.deg2rad(45)
 
         # When
-        transmissionAngle = el.calculateTransmissionAngle(
+        transmissionAngle = ta.calculateTransmissionAngle(
             coverRefractiveIndex, substrateRefractiveIndex, incidentAngle
         )
 
