@@ -7,6 +7,7 @@ from src.opticalInterfaceDomain import OpticalInterface
 
 tau = 2 * np.pi
 
+
 def ellipsometry(
     freeSpaceWavelengths,
     incidentAngle,
@@ -23,7 +24,9 @@ def ellipsometry(
 
     freeSpaceWavenumbers = tau / freeSpaceWavelengths
     pathParameters = zip(filmRefractiveIndexes, filmThicknesses, transmittedAngles)
-    accumulatedPhases = [OpticalPath(*p).accumulatePhase(freeSpaceWavenumbers) for p in pathParameters]
+    accumulatedPhases = [
+        OpticalPath(*p).accumulatePhase(freeSpaceWavenumbers) for p in pathParameters
+    ]
 
     anglePairs = pairParameters(
         incidentAngle, transmittedAngles, transmittedAngles.pop()
@@ -57,7 +60,6 @@ def pairParameters(firstItem, middleItems, lastItem):
             middleItems + [lastItem],
         )
     )
-
 
 
 def filmStackResponse(
