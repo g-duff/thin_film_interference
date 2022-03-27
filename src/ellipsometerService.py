@@ -1,5 +1,6 @@
 import numpy as np
 import functools
+from src.transmissionAngleService import propagateTransmissionAngles
 from src.fresnel import Parallel, Senkrecht
 from src.opticalPathDomain import OpticalPath
 from src.opticalInterfaceDomain import OpticalInterface
@@ -57,24 +58,6 @@ def pairParameters(firstItem, middleItems, lastItem):
         )
     )
 
-
-def propagateTransmissionAngles(incidentAngle, refractiveIndexPairs):
-    return [
-        incidentAngle := calculateTransmissionAngle(
-            coverRefractiveIndex, lowerRefractiveIndex, incidentAngle
-        )
-        for coverRefractiveIndex, lowerRefractiveIndex in refractiveIndexPairs
-    ]
-
-
-def calculateTransmissionAngle(
-    incidenceRefractiveIndex, transmissionRefractiveIndex, incidentAngle
-):
-    sinOfAngleOfTransmission = (
-        np.sin(incidentAngle) * incidenceRefractiveIndex / transmissionRefractiveIndex
-    )
-    angleOfTransmission = np.arcsin(sinOfAngleOfTransmission)
-    return angleOfTransmission
 
 
 def filmStackResponse(
