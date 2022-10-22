@@ -12,7 +12,7 @@ tau = 2 * np.pi
 
 def ellipsometry(
     free_space_wavelengths,
-    incident_angle,
+    illumination_angle,
     film_refractive_indexes,
     film_thicknesses,
     substrate_refractive_index,
@@ -26,7 +26,7 @@ def ellipsometry(
         [substrate_refractive_index]
 
     transmitted_angles = cascade_transmission_angles(
-        incident_angle, all_refractive_indexes)
+        illumination_angle, all_refractive_indexes)
 
     free_space_wavenumbers = tau / free_space_wavelengths
     wavenumbers_in_layer = [
@@ -39,7 +39,7 @@ def ellipsometry(
     ]
 
     angle_pairs = pair_parameters(
-        incident_angle, transmitted_angles, transmitted_angles.pop()
+        illumination_angle, transmitted_angles, transmitted_angles.pop()
     )
     optical_interfaces = [OpticalBoundary(*p) for p in angle_pairs]
 
