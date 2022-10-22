@@ -30,7 +30,7 @@ class AccumulatePhase(unittest.TestCase):
 
         # Then
         expected_phase_difference = [
-            cf * 2 * tau for cf in comparison_factors
+            cf * tau for cf in comparison_factors
         ]
         phase_residuals = (
             pout - pcomp
@@ -62,7 +62,7 @@ class AccumulatePhase(unittest.TestCase):
         ]
         # Then
         expected_phase_difference = [
-            cf * 2 * tau * 0.5 for cf in comparison_factors
+            cf * tau * 0.5 for cf in comparison_factors
         ]
         phase_residuals = (
             pout - pcomp
