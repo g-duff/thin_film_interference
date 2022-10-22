@@ -17,14 +17,10 @@ class Fresnel(unittest.TestCase):
 
         # When
         reflection = Senkrecht.reflection(
-            coverRefractiveIndex,
-            substrateRefractiveIndex,
             incidentAngle,
             transmissionAngle,
         )
         transmission = Senkrecht.transmission(
-            coverRefractiveIndex,
-            substrateRefractiveIndex,
             incidentAngle,
             transmissionAngle,
         )
@@ -53,14 +49,10 @@ class Fresnel(unittest.TestCase):
 
         # When
         reflection = Parallel.reflection(
-            coverRefractiveIndex,
-            substrateRefrativeIndex,
             incidentAngle,
             transmissionAngle,
         )
         transmission = Parallel.transmission(
-            coverRefractiveIndex,
-            substrateRefrativeIndex,
             incidentAngle,
             transmissionAngle,
         )
