@@ -1,4 +1,4 @@
-import src.transmissionAngleService as ta
+import src.transmission_angles as ta
 import unittest
 import numpy as np
 

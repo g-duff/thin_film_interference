@@ -1,5 +1,5 @@
 from src.fresnel import Parallel, Senkrecht
-import src.transmissionAngleService as ta
+import src.transmission_angles as ta
 import numpy as np
 import unittest
 

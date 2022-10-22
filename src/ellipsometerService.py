@@ -1,6 +1,6 @@
 import numpy as np
 import functools
-from src.transmissionAngleService import propagateTransmissionAngles
+from src.transmission_angles import propagateTransmissionAngles
 from src.fresnel import Parallel, Senkrecht
 from src.optical_path import OpticalPath
 from src.optical_boundary import OpticalBoundary
