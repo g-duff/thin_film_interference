@@ -22,15 +22,13 @@ def ellipsometry(
 
     all_refractive_indexes = [cover_refractive_index] + \
         film_refractive_indexes + [substrate_refractive_index]
-    material_refractive_indexes = film_refractive_indexes + \
-        [substrate_refractive_index]
 
     transmitted_angles = cascade_transmission_angles(
         illumination_angle, all_refractive_indexes)
 
     free_space_wavenumbers = tau / free_space_wavelengths
     wavenumbers_in_layer = [
-        ri * free_space_wavenumbers for ri in material_refractive_indexes]
+        ri * free_space_wavenumbers for ri in film_refractive_indexes]
 
     path_parameters = zip(wavenumbers_in_layer,
                           transmitted_angles, film_thicknesses)
