@@ -14,14 +14,10 @@ transmissionAngle = el.calculateTransmissionAngle(
     coverRefractiveIndex, substrateRefractiveIndex, incidentAngleInRadians
 )
 senkrechtReflection = fr.Senkrecht.reflection(
-    coverRefractiveIndex,
-    substrateRefractiveIndex,
     incidentAngleInRadians,
     transmissionAngle,
 )
 parallelReflection = fr.Parallel.reflection(
-    coverRefractiveIndex,
-    substrateRefractiveIndex,
     incidentAngleInRadians,
     transmissionAngle,
 )

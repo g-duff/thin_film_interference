@@ -4,8 +4,6 @@ import numpy as np
 class Senkrecht:
     @staticmethod
     def reflection(
-        incidentRefractiveIndex,
-        transmissionRefractiveIndex,
         incidentAngle,
         transmissionAngle,
     ):
@@ -15,8 +13,6 @@ class Senkrecht:
 
     @staticmethod
     def transmission(
-        incidentRefractiveIndex,
-        transmissionRefractiveIndex,
         incidentAngle,
         transmissionAngle,
     ):
@@ -28,8 +24,6 @@ class Senkrecht:
 class Parallel:
     @staticmethod
     def reflection(
-        incidentRefractiveIndex,
-        transmissionRefractiveIndex,
         incidentAngle,
         transmissionAngle,
     ):
@@ -39,8 +33,6 @@ class Parallel:
 
     @staticmethod
     def transmission(
-        incidentRefractiveIndex,
-        transmissionRefractiveIndex,
         incidentAngle,
         transmissionAngle,
     ):
