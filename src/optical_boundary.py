@@ -6,23 +6,23 @@ class OpticalBoundary:
         self.refractiveIndexPair = refractiveIndexPair
         self.rayAnglePair = rayAnglePair
 
-    def setPolarization(self, Polarization):
+    def set_polarization(self, Polarization):
         '''Set polarization for reflection and transmission calculations'''
         self.Polarization = Polarization
 
-    def reflectionInto(self):
+    def reflection_into(self):
         '''Calculate reflection towards the interface'''
         return self.Polarization.reflection(
             *self.rayAnglePair,
         )
 
-    def transmissionInto(self):
+    def transmission_into(self):
         '''Calculate transmission through the interface'''
         return self.Polarization.transmission(
             *self.rayAnglePair,
         )
 
-    def transmissionBack(self):
+    def transmission_back(self):
         '''Calculate transmission back through interface'''
         return self.Polarization.transmission(
             *self.rayAnglePair[::-1],

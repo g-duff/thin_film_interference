@@ -31,23 +31,23 @@ phaseDifference = OpticalPath(
     filmRefractiveIndex, filmThickness, rayAngleInFilm
 ).accumulatePhase(freeSpaceWavenumber)
 
-upperInterface.setPolarization(Senkrecht)
-lowerInterface.setPolarization(Senkrecht)
+upperInterface.set_polarization(Senkrecht)
+lowerInterface.set_polarization(Senkrecht)
 senkrechtReflection = el.calculateFilmReflection(
-    lowerInterface.reflectionInto(),
-    upperInterface.reflectionInto(),
-    upperInterface.transmissionInto(),
-    upperInterface.transmissionBack(),
+    lowerInterface.reflection_into(),
+    upperInterface.reflection_into(),
+    upperInterface.transmission_into(),
+    upperInterface.transmission_back(),
     phaseDifference,
 )
 
-lowerInterface.setPolarization(Parallel)
-upperInterface.setPolarization(Parallel)
+lowerInterface.set_polarization(Parallel)
+upperInterface.set_polarization(Parallel)
 parallelReflection = el.calculateFilmReflection(
-    lowerInterface.reflectionInto(),
-    upperInterface.reflectionInto(),
-    upperInterface.transmissionInto(),
-    upperInterface.transmissionBack(),
+    lowerInterface.reflection_into(),
+    upperInterface.reflection_into(),
+    upperInterface.transmission_into(),
+    upperInterface.transmission_back(),
     phaseDifference,
 )
 

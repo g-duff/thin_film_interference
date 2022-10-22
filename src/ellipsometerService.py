@@ -37,14 +37,14 @@ def ellipsometry(
     substrateInterface = opticalInterfaces.pop()
 
     for o in opticalInterfaces + [substrateInterface]:
-        o.setPolarization(Parallel)
+        o.set_polarization(Parallel)
 
     parallelReflection = filmStackResponse(
         opticalInterfaces, accumulatedPhases, substrateInterface
     )
 
     for o in opticalInterfaces + [substrateInterface]:
-        o.setPolarization(Senkrecht)
+        o.set_polarization(Senkrecht)
 
     senkrechtReflection = filmStackResponse(
         opticalInterfaces, accumulatedPhases, substrateInterface
@@ -70,13 +70,13 @@ def filmStackResponse(
     return functools.reduce(
         lambda reflectionOutOf, opticalProperties: calculateFilmReflection(
             reflectionOutOf,
-            opticalProperties[0].reflectionInto(),
-            opticalProperties[0].transmissionInto(),
-            opticalProperties[0].transmissionBack(),
+            opticalProperties[0].reflection_into(),
+            opticalProperties[0].transmission_into(),
+            opticalProperties[0].transmission_back(),
             opticalProperties[1],
         ),
         zip(opticalInterfaces[::-1], accumulatedPhases[::-1]),
-        substrateInterface.reflectionInto(),
+        substrateInterface.reflection_into(),
     )
 
 
