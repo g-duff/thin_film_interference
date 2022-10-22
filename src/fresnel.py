@@ -9,12 +9,8 @@ class Senkrecht:
         incidentAngle,
         transmissionAngle,
     ):
-        numerator = incidentRefractiveIndex * np.cos(
-            incidentAngle
-        ) - transmissionRefractiveIndex * np.cos(transmissionAngle)
-        denominator = incidentRefractiveIndex * np.cos(
-            incidentAngle
-        ) + transmissionRefractiveIndex * np.cos(transmissionAngle)
+        numerator = -1 * np.sin(incidentAngle - transmissionAngle)
+        denominator = np.sin(incidentAngle + transmissionAngle)
         return numerator / denominator
 
     @staticmethod
