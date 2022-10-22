@@ -1,4 +1,4 @@
-import src.ellipsometerService as ec
+import src.ellipsometer as ec
 import unittest
 import numpy as np
 

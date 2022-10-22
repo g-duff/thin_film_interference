@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import src.ellipsometerService as el
+import src.ellipsometer as el
 from src.optical_boundary import OpticalBoundary
 from src.optical_path import OpticalPath
 from src.fresnel import Parallel, Senkrecht

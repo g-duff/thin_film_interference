@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import src.ellipsometerService as el
+import src.ellipsometer as el
 
 filmThicknesses = [220, 3000]
 filmRefractiveIndices = [3.8, 1.45]

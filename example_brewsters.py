@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import src.ellipsometerService as el
+import src.ellipsometer as el
 import src.fresnel as fr
 
 
