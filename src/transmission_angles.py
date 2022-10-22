@@ -2,7 +2,7 @@
 import numpy as np
 
 
-def propagate_transmission_angles(incident_angle, refractive_indexes):
+def cascade_transmission_angles(incident_angle, refractive_indexes):
     '''Calculate ray angles after transmission through multiple boundary'''
 
     refractive_index_pairs = zip(

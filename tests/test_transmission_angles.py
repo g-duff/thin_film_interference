@@ -42,7 +42,7 @@ class TransmissionAngles(unittest.TestCase):
         incident_angle = np.deg2rad(45)
 
         # When
-        transmission_angles = ta.propagate_transmission_angles(
+        transmission_angles = ta.cascade_transmission_angles(
             incident_angle, substrate_refractive_indices
         )
 

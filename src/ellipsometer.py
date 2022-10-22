@@ -2,7 +2,7 @@
 
 import functools
 import numpy as np
-from src.transmission_angles import propagate_transmission_angles
+from src.transmission_angles import cascade_transmission_angles
 from src.fresnel import Parallel, Senkrecht
 from src.optical_path import OpticalPath
 from src.optical_boundary import OpticalBoundary
@@ -23,7 +23,7 @@ def ellipsometry(
     all_refractive_indexes = [cover_refractive_index] + \
         film_refractive_indexes + [substrate_refractive_index]
 
-    transmitted_angles = propagate_transmission_angles(
+    transmitted_angles = cascade_transmission_angles(
         incident_angle, all_refractive_indexes)
 
     free_space_wavenumbers = tau / free_space_wavelengths
