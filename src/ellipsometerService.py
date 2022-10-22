@@ -3,7 +3,7 @@ import functools
 from src.transmissionAngleService import propagateTransmissionAngles
 from src.fresnel import Parallel, Senkrecht
 from src.opticalPathDomain import OpticalPath
-from src.opticalInterfaceDomain import OpticalInterface
+from src.optical_boundary import OpticalInterface
 
 tau = 2 * np.pi
 
