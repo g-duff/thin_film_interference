@@ -1,3 +1,5 @@
+'''Calculate ellipsometry parameters psi, delta'''
+
 import numpy as np
 import functools
 from src.transmission_angles import propagate_transmission_angles
@@ -16,6 +18,7 @@ def ellipsometry(
     substrateRefractiveIndex,
     coverRefractiveIndex=1,
 ):
+    '''Calculate ellipsometry parameters psi, delta from film stack parameters'''
 
     refractiveIndexPairs = pairParameters(
         coverRefractiveIndex, filmRefractiveIndexes, substrateRefractiveIndex
@@ -53,6 +56,7 @@ def ellipsometry(
 
 
 def pairParameters(firstItem, middleItems, lastItem):
+    '''Group list of parameters into pairs'''
     return list(
         zip(
             [firstItem] + middleItems,
@@ -66,6 +70,7 @@ def filmStackResponse(
     accumulatedPhases,
     substrateInterface,
 ):
+    '''Reflection from multiple stacked thin films'''
     return functools.reduce(
         lambda reflectionOutOf, opticalProperties: calculateFilmReflection(
             reflectionOutOf,
@@ -86,12 +91,14 @@ def calculateFilmReflection(
     transmissionBack,
     accumulatedPhase,
 ):
+    '''Reflection from single thin film'''
     numerator = transmissionInto * reflectionOutOf * transmissionBack
     demoninator = np.exp(-1j * accumulatedPhase) + reflectionInto * reflectionOutOf
     return reflectionInto + numerator / demoninator
 
 
 def reflectionToPsiDelta(senkrechtReflection, parallelReflection):
+    '''Convert reflection coefficients to ellipsometry parameters'''
     reflectionRatio = parallelReflection / senkrechtReflection
     psi = np.arctan(np.abs(reflectionRatio))
     delta = np.angle(reflectionRatio)
