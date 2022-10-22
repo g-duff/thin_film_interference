@@ -11,64 +11,66 @@ tau = 2 * np.pi
 
 
 def ellipsometry(
-    freeSpaceWavelengths,
-    incidentAngle,
-    filmRefractiveIndexes,
-    filmThicknesses,
-    substrateRefractiveIndex,
-    coverRefractiveIndex=1,
+    free_space_wavelengths,
+    incident_angle,
+    film_refractive_indexes,
+    film_thicknesses,
+    substrate_refractive_index,
+    cover_refractive_index=1,
 ):
     '''Calculate ellipsometry parameters psi, delta from film stack parameters'''
 
-    refractiveIndexPairs = pairParameters(
-        coverRefractiveIndex, filmRefractiveIndexes, substrateRefractiveIndex
+    refractive_index_pairs = pairParameters(
+        cover_refractive_index, film_refractive_indexes, substrate_refractive_index
     )
-    transmittedAngles = propagate_transmission_angles(incidentAngle, refractiveIndexPairs)
+    transmitted_angles = propagate_transmission_angles(
+        incident_angle, refractive_index_pairs)
 
-    freeSpaceWavenumbers = tau / freeSpaceWavelengths
-    pathParameters = zip(filmRefractiveIndexes, filmThicknesses, transmittedAngles)
-    accumulatedPhases = [
-        OpticalPath(*p).accumulate_phase(freeSpaceWavenumbers) for p in pathParameters
+    free_space_wavenumbers = tau / free_space_wavelengths
+    path_parameters = zip(film_refractive_indexes,
+                         film_thicknesses, transmitted_angles)
+    accumulated_phases = [
+        OpticalPath(*p).accumulate_phase(free_space_wavenumbers) for p in path_parameters
     ]
 
-    anglePairs = pairParameters(
-        incidentAngle, transmittedAngles, transmittedAngles.pop()
+    angle_pairs = pairParameters(
+        incident_angle, transmitted_angles, transmitted_angles.pop()
     )
-    opticalInterfaces = [OpticalBoundary(*p) for p in anglePairs]
+    optical_interfaces = [OpticalBoundary(*p) for p in angle_pairs]
 
-    substrateInterface = opticalInterfaces.pop()
+    substrate_interface = optical_interfaces.pop()
 
-    for o in opticalInterfaces + [substrateInterface]:
-        o.set_polarization(Parallel)
+    for o_i in optical_interfaces + [substrate_interface]:
+        o_i.set_polarization(Parallel)
 
-    parallelReflection = filmStackResponse(
-        opticalInterfaces, accumulatedPhases, substrateInterface
-    )
-
-    for o in opticalInterfaces + [substrateInterface]:
-        o.set_polarization(Senkrecht)
-
-    senkrechtReflection = filmStackResponse(
-        opticalInterfaces, accumulatedPhases, substrateInterface
+    parallel_reflection = filmStackResponse(
+        optical_interfaces, accumulated_phases, substrate_interface
     )
 
-    return reflectionToPsiDelta(senkrechtReflection, parallelReflection)
+    for o_i in optical_interfaces + [substrate_interface]:
+        o_i.set_polarization(Senkrecht)
+
+    senkrecht_reflection = filmStackResponse(
+        optical_interfaces, accumulated_phases, substrate_interface
+    )
+
+    return reflectionToPsiDelta(senkrecht_reflection, parallel_reflection)
 
 
-def pairParameters(firstItem, middleItems, lastItem):
+def pairParameters(first_item, middle_items, last_item):
     '''Group list of parameters into pairs'''
     return list(
         zip(
-            [firstItem] + middleItems,
-            middleItems + [lastItem],
+            [first_item] + middle_items,
+            middle_items + [last_item],
         )
     )
 
 
 def filmStackResponse(
-    opticalInterfaces,
-    accumulatedPhases,
-    substrateInterface,
+    optical_interfaces,
+    accumulated_phases,
+    substrate_interface,
 ):
     '''Reflection from multiple stacked thin films'''
     return functools.reduce(
@@ -79,27 +81,28 @@ def filmStackResponse(
             opticalProperties[0].transmission_back(),
             opticalProperties[1],
         ),
-        zip(opticalInterfaces[::-1], accumulatedPhases[::-1]),
-        substrateInterface.reflection_into(),
+        zip(optical_interfaces[::-1], accumulated_phases[::-1]),
+        substrate_interface.reflection_into(),
     )
 
 
 def calculateFilmReflection(
-    reflectionOutOf,
-    reflectionInto,
-    transmissionInto,
-    transmissionBack,
-    accumulatedPhase,
+    reflection_out_of,
+    reflection_into,
+    transmission_into,
+    transmission_back,
+    accumulated_phase,
 ):
     '''Reflection from single thin film'''
-    numerator = transmissionInto * reflectionOutOf * transmissionBack
-    demoninator = np.exp(-1j * accumulatedPhase) + reflectionInto * reflectionOutOf
-    return reflectionInto + numerator / demoninator
+    numerator = transmission_into * reflection_out_of * transmission_back
+    demoninator = np.exp(-1j * accumulated_phase) + \
+        reflection_into * reflection_out_of
+    return reflection_into + numerator / demoninator
 
 
-def reflectionToPsiDelta(senkrechtReflection, parallelReflection):
+def reflectionToPsiDelta(senkrecht_reflection, parallel_reflection):
     '''Convert reflection coefficients to ellipsometry parameters'''
-    reflectionRatio = parallelReflection / senkrechtReflection
-    psi = np.arctan(np.abs(reflectionRatio))
-    delta = np.angle(reflectionRatio)
+    reflection_ratio = parallel_reflection / senkrecht_reflection
+    psi = np.arctan(np.abs(reflection_ratio))
+    delta = np.angle(reflection_ratio)
     return psi, delta
