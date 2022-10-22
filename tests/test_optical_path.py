@@ -1,7 +1,7 @@
 # pylint: disable = import-error, missing-class-docstring, missing-function-docstring, missing-module-docstring
 import unittest
 import numpy as np
-from src.optical_path import OpticalPath
+from src.optical_path import accumulate_phase
 
 degrees = np.pi / 180
 
@@ -16,24 +16,21 @@ class AccumulatePhase(unittest.TestCase):
 
         free_space_wavelength = 800
         transmission_angle = 0
-        film_refractive_index = 2.0
-        free_space_wavenumber = tau / free_space_wavelength
+        wavenumber = tau / free_space_wavelength
 
         comparison_factors = (0, 1 / 2, 1 / 4, 1 / 6)
-        film_thicknesses = [cf * free_space_wavelength for cf in comparison_factors]
-        test_optical_paths = [
-            OpticalPath(film_refractive_index, t, transmission_angle)
-            for t in film_thicknesses
-        ]
+        film_thicknesses = [
+            cf * free_space_wavelength for cf in comparison_factors]
 
         # When
         actual_phase_difference = [
-            o.accumulate_phase(free_space_wavenumber) for o in test_optical_paths
+            accumulate_phase(wavenumber, transmission_angle, t)
+            for t in film_thicknesses
         ]
 
         # Then
         expected_phase_difference = [
-            cf * 2 * film_refractive_index * tau for cf in comparison_factors
+            cf * 2 * tau for cf in comparison_factors
         ]
         phase_residuals = (
             pout - pcomp
@@ -52,24 +49,20 @@ class AccumulatePhase(unittest.TestCase):
         tau = 2 * np.pi
         free_space_wavelength = 800
         transmission_angle = 60 * degrees
-        film_refractive_index = 2.0
-        free_space_wavenumber = tau / free_space_wavelength
+        wavenumber = tau / free_space_wavelength
 
         comparison_factors = (0, 1 / 2, 1 / 4, 1 / 6)
-        film_thicknesses = [cf * free_space_wavelength for cf in comparison_factors]
-        test_optical_paths = [
-            OpticalPath(film_refractive_index, t, transmission_angle)
-            for t in film_thicknesses
-        ]
+        film_thicknesses = [
+            cf * free_space_wavelength for cf in comparison_factors]
 
         # When
         actual_phase_difference = [
-            o.accumulate_phase(free_space_wavenumber) for o in test_optical_paths
+            accumulate_phase(wavenumber, transmission_angle, t)
+            for t in film_thicknesses
         ]
-
         # Then
         expected_phase_difference = [
-            cf * 2 * film_refractive_index * tau * 0.5 for cf in comparison_factors
+            cf * 2 * tau * 0.5 for cf in comparison_factors
         ]
         phase_residuals = (
             pout - pcomp
