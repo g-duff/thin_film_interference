@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import src.ellipsometerService as el
 from src.optical_boundary import OpticalBoundary
-from src.opticalPathDomain import OpticalPath
+from src.optical_path import OpticalPath
 from src.fresnel import Parallel, Senkrecht
 
 coverRefractiveIndex = 1.0
