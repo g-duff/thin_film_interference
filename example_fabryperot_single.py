@@ -20,10 +20,10 @@ transmissionAngle = el.calculateTransmissionAngle(
 )
 
 upperInterface = OpticalBoundary(
-    (coverRefractiveIndex, filmRefractiveIndex), (incidentAngle, rayAngleInFilm)
+    incidentAngle, rayAngleInFilm
 )
 lowerInterface = OpticalBoundary(
-    (filmRefractiveIndex, substrateRefractiveIndex), (rayAngleInFilm, transmissionAngle)
+    rayAngleInFilm, transmissionAngle
 )
 
 freeSpaceWavenumber = 2 * np.pi / freeSpaceWavelength

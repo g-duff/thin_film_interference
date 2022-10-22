@@ -31,8 +31,7 @@ def ellipsometry(
     anglePairs = pairParameters(
         incidentAngle, transmittedAngles, transmittedAngles.pop()
     )
-    interfaceParameters = zip(refractiveIndexPairs, anglePairs)
-    opticalInterfaces = [OpticalBoundary(*p) for p in interfaceParameters]
+    opticalInterfaces = [OpticalBoundary(*p) for p in anglePairs]
 
     substrateInterface = opticalInterfaces.pop()
 

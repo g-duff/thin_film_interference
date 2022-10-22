@@ -2,9 +2,8 @@
 
 class OpticalBoundary:
     '''Optical Interface class, encapsulating Fresnel coefficients'''
-    def __init__(self, refractiveIndexPair, rayAnglePair):
-        self.refractiveIndexPair = refractiveIndexPair
-        self.rayAnglePair = rayAnglePair
+    def __init__(self, incident_ray_angle, transmitted_ray_angle):
+        self.rayAnglePair = (incident_ray_angle, transmitted_ray_angle)
 
     def set_polarization(self, Polarization):
         '''Set polarization for reflection and transmission calculations'''
