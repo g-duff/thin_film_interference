@@ -2,8 +2,11 @@
 import numpy as np
 
 
-def propagate_transmission_angles(incident_angle, refractive_index_pairs):
+def propagate_transmission_angles(incident_angle, refractive_indexes):
     '''Calculate ray angles after transmission through multiple boundary'''
+
+    refractive_index_pairs = zip(
+        refractive_indexes[:-1], refractive_indexes[1:])
     return [
         incident_angle := calculate_transmission_angle(
             coverRefractiveIndex, lowerRefractiveIndex, incident_angle

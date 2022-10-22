@@ -37,8 +37,7 @@ class TransmissionAngles(unittest.TestCase):
         # Given
         cover_refractive_index = 2
         substrate_refractive_indices = [
-            (cover_refractive_index, np.sqrt(2)),
-            (np.sqrt(2), cover_refractive_index),
+            cover_refractive_index, np.sqrt(2), cover_refractive_index,
         ]
         incident_angle = np.deg2rad(45)
 
