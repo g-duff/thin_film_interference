@@ -19,24 +19,21 @@ def ellipsometry(
     transmitted_angles = cascade_transmission_angles(
         illumination_angle, refractive_indexes)
 
-    wavenumbers_in_layer = [
-        ri * tau / free_space_wavelengths for ri in refractive_indexes[1:-1]]
-
     last_trasmission_angle = transmitted_angles.pop()
     senkrecht_reflection = Senkrecht.reflection(
         transmitted_angles[-1], last_trasmission_angle)
     parallel_reflection = Parallel.reflection(
         transmitted_angles[-1], last_trasmission_angle)
 
-    sample_parameters = zip(wavenumbers_in_layer[::-1],
+    sample_parameters = zip(refractive_indexes[-2::-1],
                             film_thicknesses[::-1],
                             transmitted_angles[-1::-1],
                             transmitted_angles[-2::-1] + [illumination_angle]
                             )
 
-    for wavenumber, thickness, ray_angle_in_layer, incident_ray_angle in sample_parameters:
+    for refractive_index, thickness, ray_angle_in_layer, incident_ray_angle in sample_parameters:
         accumulated_phase = accumulate_phase(
-            wavenumber, ray_angle_in_layer, thickness)
+            free_space_wavelengths, ray_angle_in_layer, refractive_index,  thickness)
         parallel_reflection = calculate_film_reflection(
             reflection_out_of=parallel_reflection,
             reflection_into=Parallel.reflection(
