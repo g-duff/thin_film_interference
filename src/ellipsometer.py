@@ -2,7 +2,7 @@
 
 import functools
 import numpy as np
-from src.transmission_angles import propagate_transmission_angles
+from src.transmission_angles import cascade_transmission_angles
 from src.fresnel import Parallel, Senkrecht
 from src.optical_path import OpticalPath
 from src.optical_boundary import OpticalBoundary
@@ -20,15 +20,15 @@ def ellipsometry(
 ):
     '''Calculate ellipsometry parameters psi, delta from film stack parameters'''
 
-    refractive_index_pairs = pair_parameters(
-        cover_refractive_index, film_refractive_indexes, substrate_refractive_index
-    )
-    transmitted_angles = propagate_transmission_angles(
-        incident_angle, refractive_index_pairs)
+    all_refractive_indexes = [cover_refractive_index] + \
+        film_refractive_indexes + [substrate_refractive_index]
+
+    transmitted_angles = cascade_transmission_angles(
+        incident_angle, all_refractive_indexes)
 
     free_space_wavenumbers = tau / free_space_wavelengths
     path_parameters = zip(film_refractive_indexes,
-                         film_thicknesses, transmitted_angles)
+                          film_thicknesses, transmitted_angles)
     accumulated_phases = [
         OpticalPath(*p).accumulate_phase(free_space_wavenumbers) for p in path_parameters
     ]
