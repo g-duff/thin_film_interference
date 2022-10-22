@@ -34,6 +34,7 @@ def ellipsometry(
     for refractive_index, thickness, ray_angle_in_layer, incident_ray_angle in sample_parameters:
         accumulated_phase = accumulate_phase(
             free_space_wavelengths, ray_angle_in_layer, refractive_index,  thickness)
+
         parallel_reflection = calculate_film_reflection(
             reflection_out_of=parallel_reflection,
             reflection_into=Parallel.reflection(
