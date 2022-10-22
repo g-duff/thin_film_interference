@@ -2,23 +2,23 @@
 import numpy as np
 
 
-def propagate_transmission_angles(incidentAngle, refractiveIndexPairs):
+def propagate_transmission_angles(incident_angle, refractive_index_pairs):
     '''Calculate ray angles after transmission through multiple boundary'''
     return [
-        incidentAngle := calculate_transmission_angle(
-            coverRefractiveIndex, lowerRefractiveIndex, incidentAngle
+        incident_angle := calculate_transmission_angle(
+            coverRefractiveIndex, lowerRefractiveIndex, incident_angle
         )
-        for coverRefractiveIndex, lowerRefractiveIndex in refractiveIndexPairs
+        for coverRefractiveIndex, lowerRefractiveIndex in refractive_index_pairs
     ]
 
 
 def calculate_transmission_angle(
-    incidenceRefractiveIndex, transmissionRefractiveIndex, incidentAngle
+    incidence_refractive_index, transmission_refractive_index, incident_angle
 ):
     '''Calculate a ray angle after transmission through a single boundary'''
-    sinOfAngleOfTransmission = (
-        np.sin(incidentAngle) * incidenceRefractiveIndex /
-        transmissionRefractiveIndex
+    sin_of_transmission_angle = (
+        np.sin(incident_angle) * incidence_refractive_index /
+        transmission_refractive_index
     )
-    angleOfTransmission = np.arcsin(sinOfAngleOfTransmission)
-    return angleOfTransmission
+    angle_of_transmission = np.arcsin(sin_of_transmission_angle)
+    return angle_of_transmission
