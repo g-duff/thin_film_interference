@@ -100,7 +100,7 @@ def calculate_film_reflection(
 ):
     '''Reflection from single thin film'''
     numerator = transmission_into * reflection_out_of * transmission_back
-    demoninator = np.exp(-1j * accumulated_phase) + \
+    demoninator = np.exp(-1j * 2 * accumulated_phase) + \
         reflection_into * reflection_out_of
     return reflection_into + numerator / demoninator
 
