@@ -13,7 +13,7 @@ class Ellipsometry(unittest.TestCase):
 
         substrate_refractive_index = 3.8
         cover_refractive_index = 1.0
-        refractive_indices = [3.8, 1.45]
+        refractive_indices = [cover_refractive_index] + [3.8, 1.45] + [substrate_refractive_index]
         film_thicknesses = [220, 3000]
         incident_angle = np.deg2rad(65)
 
@@ -23,8 +23,6 @@ class Ellipsometry(unittest.TestCase):
             incident_angle,
             refractive_indices,
             film_thicknesses,
-            substrate_refractive_index,
-            cover_refractive_index,
         )
 
         # Then

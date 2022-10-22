@@ -11,21 +11,16 @@ tau = 2 * np.pi
 def ellipsometry(
     free_space_wavelengths,
     illumination_angle,
-    film_refractive_indexes,
+    refractive_indexes,
     film_thicknesses,
-    substrate_refractive_index,
-    cover_refractive_index=1,
 ):
     '''Calculate ellipsometry parameters psi, delta from film stack parameters'''
 
-    all_refractive_indexes = [cover_refractive_index] + \
-        film_refractive_indexes + [substrate_refractive_index]
-
     transmitted_angles = cascade_transmission_angles(
-        illumination_angle, all_refractive_indexes)
+        illumination_angle, refractive_indexes)
 
     wavenumbers_in_layer = [
-        ri * tau / free_space_wavelengths for ri in film_refractive_indexes]
+        ri * tau / free_space_wavelengths for ri in refractive_indexes[1:-1]]
 
     last_trasmission_angle = transmitted_angles.pop()
     senkrecht_reflection = Senkrecht.reflection(
