@@ -1,7 +1,7 @@
 # pylint: disable = import-error, missing-class-docstring, missing-function-docstring, missing-module-docstring
-import src.transmission_angles as ta
 import unittest
 import numpy as np
+import src.transmission_angles as ta
 
 
 class transmissionAngles(unittest.TestCase):

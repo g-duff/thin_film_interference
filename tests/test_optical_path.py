@@ -1,7 +1,7 @@
 # pylint: disable = import-error, missing-class-docstring, missing-function-docstring, missing-module-docstring
-from src.optical_path import OpticalPath
 import unittest
 import numpy as np
+from src.optical_path import OpticalPath
 
 degrees = np.pi / 180
 

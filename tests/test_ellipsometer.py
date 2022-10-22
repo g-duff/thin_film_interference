@@ -1,7 +1,7 @@
 # pylint: disable = import-error, missing-class-docstring, missing-function-docstring, missing-module-docstring
-import src.ellipsometer as ec
 import unittest
 import numpy as np
+import src.ellipsometer as ec
 
 
 class Ellipsometry(unittest.TestCase):

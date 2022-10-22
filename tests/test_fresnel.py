@@ -1,8 +1,8 @@
 # pylint: disable = import-error, missing-class-docstring, missing-function-docstring, missing-module-docstring
-from src.fresnel import Parallel, Senkrecht
-import src.transmission_angles as ta
 import numpy as np
 import unittest
+from src.fresnel import Parallel, Senkrecht
+import src.transmission_angles as ta
 
 
 class Fresnel(unittest.TestCase):
