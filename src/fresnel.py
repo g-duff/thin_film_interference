@@ -1,4 +1,4 @@
-from numpy import cos
+import numpy as np
 
 
 class Senkrecht:
@@ -9,12 +9,12 @@ class Senkrecht:
         incidentAngle,
         transmissionAngle,
     ):
-        numerator = incidentRefractiveIndex * cos(
+        numerator = incidentRefractiveIndex * np.cos(
             incidentAngle
-        ) - transmissionRefractiveIndex * cos(transmissionAngle)
-        denominator = incidentRefractiveIndex * cos(
+        ) - transmissionRefractiveIndex * np.cos(transmissionAngle)
+        denominator = incidentRefractiveIndex * np.cos(
             incidentAngle
-        ) + transmissionRefractiveIndex * cos(transmissionAngle)
+        ) + transmissionRefractiveIndex * np.cos(transmissionAngle)
         return numerator / denominator
 
     @staticmethod
@@ -24,10 +24,10 @@ class Senkrecht:
         incidentAngle,
         transmissionAngle,
     ):
-        numerator = 2 * incidentRefractiveIndex * cos(incidentAngle)
-        denominator = incidentRefractiveIndex * cos(
+        numerator = 2 * incidentRefractiveIndex * np.cos(incidentAngle)
+        denominator = incidentRefractiveIndex * np.cos(
             incidentAngle
-        ) + transmissionRefractiveIndex * cos(transmissionAngle)
+        ) + transmissionRefractiveIndex * np.cos(transmissionAngle)
         return numerator / denominator
 
 
@@ -39,12 +39,12 @@ class Parallel:
         incidentAngle,
         transmissionAngle,
     ):
-        numerator = transmissionRefractiveIndex * cos(
+        numerator = transmissionRefractiveIndex * np.cos(
             incidentAngle
-        ) - incidentRefractiveIndex * cos(transmissionAngle)
-        denominator = transmissionRefractiveIndex * cos(
+        ) - incidentRefractiveIndex * np.cos(transmissionAngle)
+        denominator = transmissionRefractiveIndex * np.cos(
             incidentAngle
-        ) + incidentRefractiveIndex * cos(transmissionAngle)
+        ) + incidentRefractiveIndex * np.cos(transmissionAngle)
         return numerator / denominator
 
     @staticmethod
@@ -54,8 +54,8 @@ class Parallel:
         incidentAngle,
         transmissionAngle,
     ):
-        numerator = 2 * incidentRefractiveIndex * cos(incidentAngle)
-        denominator = transmissionRefractiveIndex * cos(
+        numerator = 2 * incidentRefractiveIndex * np.cos(incidentAngle)
+        denominator = transmissionRefractiveIndex * np.cos(
             incidentAngle
-        ) + incidentRefractiveIndex * cos(transmissionAngle)
+        ) + incidentRefractiveIndex * np.cos(transmissionAngle)
         return numerator / denominator
