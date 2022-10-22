@@ -3,7 +3,7 @@ import functools
 from src.transmissionAngleService import propagateTransmissionAngles
 from src.fresnel import Parallel, Senkrecht
 from src.opticalPathDomain import OpticalPath
-from src.optical_boundary import OpticalInterface
+from src.optical_boundary import OpticalBoundary
 
 tau = 2 * np.pi
 
@@ -32,7 +32,7 @@ def ellipsometry(
         incidentAngle, transmittedAngles, transmittedAngles.pop()
     )
     interfaceParameters = zip(refractiveIndexPairs, anglePairs)
-    opticalInterfaces = [OpticalInterface(*p) for p in interfaceParameters]
+    opticalInterfaces = [OpticalBoundary(*p) for p in interfaceParameters]
 
     substrateInterface = opticalInterfaces.pop()
 

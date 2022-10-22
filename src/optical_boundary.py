@@ -1,6 +1,6 @@
 '''Optical Interface calculations'''
 
-class OpticalInterface:
+class OpticalBoundary:
     '''Optical Interface class, encapsulating Fresnel coefficients'''
     def __init__(self, refractiveIndexPair, rayAnglePair):
         self.refractiveIndexPair = refractiveIndexPair

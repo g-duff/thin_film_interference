@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import src.ellipsometerService as el
-from src.optical_boundary import OpticalInterface
+from src.optical_boundary import OpticalBoundary
 from src.opticalPathDomain import OpticalPath
 from src.fresnel import Parallel, Senkrecht
 
@@ -19,10 +19,10 @@ transmissionAngle = el.calculateTransmissionAngle(
     filmRefractiveIndex, substrateRefractiveIndex, rayAngleInFilm
 )
 
-upperInterface = OpticalInterface(
+upperInterface = OpticalBoundary(
     (coverRefractiveIndex, filmRefractiveIndex), (incidentAngle, rayAngleInFilm)
 )
-lowerInterface = OpticalInterface(
+lowerInterface = OpticalBoundary(
     (filmRefractiveIndex, substrateRefractiveIndex), (rayAngleInFilm, transmissionAngle)
 )
 
