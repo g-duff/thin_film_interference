@@ -1,7 +1,7 @@
 '''Calculate ellipsometry parameters psi, delta'''
 
-import numpy as np
 import functools
+import numpy as np
 from src.transmission_angles import propagate_transmission_angles
 from src.fresnel import Parallel, Senkrecht
 from src.optical_path import OpticalPath
