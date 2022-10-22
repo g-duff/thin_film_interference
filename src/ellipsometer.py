@@ -24,9 +24,8 @@ def ellipsometry(
     transmitted_angles = cascade_transmission_angles(
         illumination_angle, all_refractive_indexes)
 
-    free_space_wavenumbers = tau / free_space_wavelengths
     wavenumbers_in_layer = [
-        ri * free_space_wavenumbers for ri in film_refractive_indexes]
+        ri * tau / free_space_wavelengths for ri in film_refractive_indexes]
 
     last_trasmission_angle = transmitted_angles.pop()
     senkrecht_reflection = Senkrecht.reflection(
