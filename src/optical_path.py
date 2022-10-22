@@ -2,12 +2,12 @@ from numpy import cos
 
 
 class OpticalPath:
-    def __init__(self, refractiveIndex, thickness, rayAngle):
-        self.refractiveIndex = refractiveIndex
+    def __init__(self, refractive_index, thickness, ray_angle):
+        self.refractive_index = refractive_index
         self.thickness = thickness
-        self.rayAngle = rayAngle
+        self.ray_angle = ray_angle
 
-    def accumulatePhase(self, freeSpaceWavenumber):
-        opticalThickness = self.refractiveIndex * self.thickness
-        opticalPathLength = 2 * opticalThickness * cos(self.rayAngle)
-        return freeSpaceWavenumber * opticalPathLength
+    def accumulatePhase(self, free_space_wavenumber):
+        optical_thickness = self.refractive_index * self.thickness
+        optical_path_length = 2 * optical_thickness * cos(self.ray_angle)
+        return free_space_wavenumber * optical_path_length
