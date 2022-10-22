@@ -20,7 +20,7 @@ def ellipsometry(
 ):
     '''Calculate ellipsometry parameters psi, delta from film stack parameters'''
 
-    refractive_index_pairs = pairParameters(
+    refractive_index_pairs = pair_parameters(
         cover_refractive_index, film_refractive_indexes, substrate_refractive_index
     )
     transmitted_angles = propagate_transmission_angles(
@@ -33,7 +33,7 @@ def ellipsometry(
         OpticalPath(*p).accumulate_phase(free_space_wavenumbers) for p in path_parameters
     ]
 
-    angle_pairs = pairParameters(
+    angle_pairs = pair_parameters(
         incident_angle, transmitted_angles, transmitted_angles.pop()
     )
     optical_interfaces = [OpticalBoundary(*p) for p in angle_pairs]
@@ -43,21 +43,21 @@ def ellipsometry(
     for o_i in optical_interfaces + [substrate_interface]:
         o_i.set_polarization(Parallel)
 
-    parallel_reflection = filmStackResponse(
+    parallel_reflection = film_stack_response(
         optical_interfaces, accumulated_phases, substrate_interface
     )
 
     for o_i in optical_interfaces + [substrate_interface]:
         o_i.set_polarization(Senkrecht)
 
-    senkrecht_reflection = filmStackResponse(
+    senkrecht_reflection = film_stack_response(
         optical_interfaces, accumulated_phases, substrate_interface
     )
 
-    return reflectionToPsiDelta(senkrecht_reflection, parallel_reflection)
+    return reflection_to_psi_delta(senkrecht_reflection, parallel_reflection)
 
 
-def pairParameters(first_item, middle_items, last_item):
+def pair_parameters(first_item, middle_items, last_item):
     '''Group list of parameters into pairs'''
     return list(
         zip(
@@ -67,14 +67,14 @@ def pairParameters(first_item, middle_items, last_item):
     )
 
 
-def filmStackResponse(
+def film_stack_response(
     optical_interfaces,
     accumulated_phases,
     substrate_interface,
 ):
     '''Reflection from multiple stacked thin films'''
     return functools.reduce(
-        lambda reflectionOutOf, opticalProperties: calculateFilmReflection(
+        lambda reflectionOutOf, opticalProperties: calculate_film_reflection(
             reflectionOutOf,
             opticalProperties[0].reflection_into(),
             opticalProperties[0].transmission_into(),
@@ -86,7 +86,7 @@ def filmStackResponse(
     )
 
 
-def calculateFilmReflection(
+def calculate_film_reflection(
     reflection_out_of,
     reflection_into,
     transmission_into,
@@ -100,7 +100,7 @@ def calculateFilmReflection(
     return reflection_into + numerator / demoninator
 
 
-def reflectionToPsiDelta(senkrecht_reflection, parallel_reflection):
+def reflection_to_psi_delta(senkrecht_reflection, parallel_reflection):
     '''Convert reflection coefficients to ellipsometry parameters'''
     reflection_ratio = parallel_reflection / senkrecht_reflection
     psi = np.arctan(np.abs(reflection_ratio))

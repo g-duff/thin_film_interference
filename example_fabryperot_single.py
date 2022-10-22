@@ -33,7 +33,7 @@ phaseDifference = OpticalPath(
 
 upperInterface.set_polarization(Senkrecht)
 lowerInterface.set_polarization(Senkrecht)
-senkrechtReflection = el.calculateFilmReflection(
+senkrechtReflection = el.calculate_film_reflection(
     lowerInterface.reflection_into(),
     upperInterface.reflection_into(),
     upperInterface.transmission_into(),
@@ -43,7 +43,7 @@ senkrechtReflection = el.calculateFilmReflection(
 
 lowerInterface.set_polarization(Parallel)
 upperInterface.set_polarization(Parallel)
-parallelReflection = el.calculateFilmReflection(
+parallelReflection = el.calculate_film_reflection(
     lowerInterface.reflection_into(),
     upperInterface.reflection_into(),
     upperInterface.transmission_into(),
