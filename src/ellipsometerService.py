@@ -1,6 +1,6 @@
 import numpy as np
 import functools
-from src.transmission_angles import propagateTransmissionAngles
+from src.transmission_angles import propagate_transmission_angles
 from src.fresnel import Parallel, Senkrecht
 from src.optical_path import OpticalPath
 from src.optical_boundary import OpticalBoundary
@@ -20,7 +20,7 @@ def ellipsometry(
     refractiveIndexPairs = pairParameters(
         coverRefractiveIndex, filmRefractiveIndexes, substrateRefractiveIndex
     )
-    transmittedAngles = propagateTransmissionAngles(incidentAngle, refractiveIndexPairs)
+    transmittedAngles = propagate_transmission_angles(incidentAngle, refractiveIndexPairs)
 
     freeSpaceWavenumbers = tau / freeSpaceWavelengths
     pathParameters = zip(filmRefractiveIndexes, filmThicknesses, transmittedAngles)

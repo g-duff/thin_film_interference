@@ -11,7 +11,7 @@ class transmissionAngles(unittest.TestCase):
         incidentAngle = 0
 
         # When
-        transmissionAngle = ta.calculateTransmissionAngle(
+        transmissionAngle = ta.calculate_transmission_angle(
             coverRefractiveIndex, substrateRefractiveIndex, incidentAngle
         )
 
@@ -25,7 +25,7 @@ class transmissionAngles(unittest.TestCase):
         incidentAngle = np.deg2rad(45)
 
         # When
-        transmissionAngle = ta.calculateTransmissionAngle(
+        transmissionAngle = ta.calculate_transmission_angle(
             coverRefractiveIndex, substrateRefractiveIndex, incidentAngle
         )
 
@@ -42,7 +42,7 @@ class transmissionAngles(unittest.TestCase):
         incidentAngle = np.deg2rad(45)
 
         # When
-        transmissionAngles = ta.propagateTransmissionAngles(
+        transmissionAngles = ta.propagate_transmission_angles(
             incidentAngle, substrateRefractiveIndices
         )
 
