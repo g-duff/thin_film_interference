@@ -29,7 +29,7 @@ lowerInterface = OpticalBoundary(
 freeSpaceWavenumber = 2 * np.pi / freeSpaceWavelength
 phaseDifference = OpticalPath(
     filmRefractiveIndex, filmThickness, rayAngleInFilm
-).accumulatePhase(freeSpaceWavenumber)
+).accumulate_phase(freeSpaceWavenumber)
 
 upperInterface.set_polarization(Senkrecht)
 lowerInterface.set_polarization(Senkrecht)

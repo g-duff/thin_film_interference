@@ -25,7 +25,7 @@ def ellipsometry(
     freeSpaceWavenumbers = tau / freeSpaceWavelengths
     pathParameters = zip(filmRefractiveIndexes, filmThicknesses, transmittedAngles)
     accumulatedPhases = [
-        OpticalPath(*p).accumulatePhase(freeSpaceWavenumbers) for p in pathParameters
+        OpticalPath(*p).accumulate_phase(freeSpaceWavenumbers) for p in pathParameters
     ]
 
     anglePairs = pairParameters(

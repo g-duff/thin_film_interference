@@ -27,7 +27,7 @@ class accumulatePhase(unittest.TestCase):
 
         # When
         actualPhaseDifference = [
-            o.accumulatePhase(freeSpaceWavenumber) for o in testOpticalPaths
+            o.accumulate_phase(freeSpaceWavenumber) for o in testOpticalPaths
         ]
 
         # Then
@@ -63,7 +63,7 @@ class accumulatePhase(unittest.TestCase):
 
         # When
         actualPhaseDifference = [
-            o.accumulatePhase(freeSpaceWavenumber) for o in testOpticalPaths
+            o.accumulate_phase(freeSpaceWavenumber) for o in testOpticalPaths
         ]
 
         # Then
