@@ -6,78 +6,78 @@ from src.optical_path import OpticalPath
 degrees = np.pi / 180
 
 
-class accumulatePhase(unittest.TestCase):
-    def test_accumulatePhase_normalIncidence(self):
+class AccumulatePhase(unittest.TestCase):
+    def test_accumulate_phase_normal_incidence(self):
         """Phase difference from reflections indide a film at normal incidence
         tested against film thicknesses of fractional wavelengths"""
 
         # Given
         tau = 2 * np.pi
 
-        freeSpaceWavelength = 800
-        transmissionAngle = 0
-        filmRefractiveIndex = 2.0
-        freeSpaceWavenumber = tau / freeSpaceWavelength
+        free_space_wavelength = 800
+        transmission_angle = 0
+        film_refractive_index = 2.0
+        free_space_wavenumber = tau / free_space_wavelength
 
-        comparisonFactors = (0, 1 / 2, 1 / 4, 1 / 6)
-        filmThicknesses = [cf * freeSpaceWavelength for cf in comparisonFactors]
-        testOpticalPaths = [
-            OpticalPath(filmRefractiveIndex, t, transmissionAngle)
-            for t in filmThicknesses
+        comparison_factors = (0, 1 / 2, 1 / 4, 1 / 6)
+        film_thicknesses = [cf * free_space_wavelength for cf in comparison_factors]
+        test_optical_paths = [
+            OpticalPath(film_refractive_index, t, transmission_angle)
+            for t in film_thicknesses
         ]
 
         # When
-        actualPhaseDifference = [
-            o.accumulate_phase(freeSpaceWavenumber) for o in testOpticalPaths
+        actual_phase_difference = [
+            o.accumulate_phase(free_space_wavenumber) for o in test_optical_paths
         ]
 
         # Then
-        expectedPhaseDifference = [
-            cf * 2 * filmRefractiveIndex * tau for cf in comparisonFactors
+        expected_phase_difference = [
+            cf * 2 * film_refractive_index * tau for cf in comparison_factors
         ]
-        phaseResiduals = (
+        phase_residuals = (
             pout - pcomp
-            for pout, pcomp in zip(actualPhaseDifference, expectedPhaseDifference)
+            for pout, pcomp in zip(actual_phase_difference, expected_phase_difference)
         )
-        phaseResiduals = sum(phaseResiduals)
+        phase_residuals = sum(phase_residuals)
 
-        self.assertAlmostEqual(phaseResiduals, 0)
+        self.assertAlmostEqual(phase_residuals, 0)
 
-    def test_accumulatePhase_angledincidence(self):
+    def test_accumulate_phase_angledincidence(self):
         """Phase difference from reflections indide a film at 60 degrees
         tested against film thicknesses of fractional wavelengths and
         exact cosine values"""
 
         # Given
         tau = 2 * np.pi
-        freeSpaceWavelength = 800
-        transmissionAngle = 60 * degrees
-        filmRefractiveIndex = 2.0
-        freeSpaceWavenumber = tau / freeSpaceWavelength
+        free_space_wavelength = 800
+        transmission_angle = 60 * degrees
+        film_refractive_index = 2.0
+        free_space_wavenumber = tau / free_space_wavelength
 
-        comparisonFactors = (0, 1 / 2, 1 / 4, 1 / 6)
-        filmThicknesses = [cf * freeSpaceWavelength for cf in comparisonFactors]
-        testOpticalPaths = [
-            OpticalPath(filmRefractiveIndex, t, transmissionAngle)
-            for t in filmThicknesses
+        comparison_factors = (0, 1 / 2, 1 / 4, 1 / 6)
+        film_thicknesses = [cf * free_space_wavelength for cf in comparison_factors]
+        test_optical_paths = [
+            OpticalPath(film_refractive_index, t, transmission_angle)
+            for t in film_thicknesses
         ]
 
         # When
-        actualPhaseDifference = [
-            o.accumulate_phase(freeSpaceWavenumber) for o in testOpticalPaths
+        actual_phase_difference = [
+            o.accumulate_phase(free_space_wavenumber) for o in test_optical_paths
         ]
 
         # Then
-        expectedPhaseDifference = [
-            cf * 2 * filmRefractiveIndex * tau * 0.5 for cf in comparisonFactors
+        expected_phase_difference = [
+            cf * 2 * film_refractive_index * tau * 0.5 for cf in comparison_factors
         ]
-        phaseResiduals = (
+        phase_residuals = (
             pout - pcomp
-            for pout, pcomp in zip(actualPhaseDifference, expectedPhaseDifference)
+            for pout, pcomp in zip(actual_phase_difference, expected_phase_difference)
         )
-        phaseResiduals = sum(phaseResiduals)
+        phase_residuals = sum(phase_residuals)
 
-        self.assertAlmostEqual(phaseResiduals, 0)
+        self.assertAlmostEqual(phase_residuals, 0)
 
 
 if __name__ == "__main__":
