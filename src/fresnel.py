@@ -33,12 +33,8 @@ class Parallel:
         incidentAngle,
         transmissionAngle,
     ):
-        numerator = transmissionRefractiveIndex * np.cos(
-            incidentAngle
-        ) - incidentRefractiveIndex * np.cos(transmissionAngle)
-        denominator = transmissionRefractiveIndex * np.cos(
-            incidentAngle
-        ) + incidentRefractiveIndex * np.cos(transmissionAngle)
+        numerator = np.tan(incidentAngle - transmissionAngle)
+        denominator = np.tan(incidentAngle + transmissionAngle)
         return numerator / denominator
 
     @staticmethod
