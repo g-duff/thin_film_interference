@@ -33,3 +33,7 @@ psi, delta = ellipsometry(
     film_thicknesses,
 )
 ```
+
+# Contributing
+
+Contributions and conversations warmly welcome.
