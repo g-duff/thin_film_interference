@@ -8,12 +8,28 @@
 
 ![image](./example_figures/psi_delta.png)
 
+# Usage
 
-* `fabryperot_single`: A Fabry-Pérot cavity from a single thin silica layer. This example calculates the reflection spectra from the cavity for s and p polarisations and exposes some of the more fundamental functions used in psi_delta and fabryperot_multi.
+Interface:
+```py
+def ellipsometry(free_space_wavelengths: list | np.array,
+    illumination_angle: float,
+    refractive_indexes: list | np.array,
+    film_thicknesses: list | np.array) -> (psi, delta)
+```
 
-![image](./example_figures/fabryperot_single.png)
+Example function call:
+```py
+cover_refractive_index = 1.0
+substrate_refractive_index = 3.8
+refractive_indices = [cover_refractive_index, 3.8, 1.45, substrate_refractive_index]
+film_thicknesses = [220, 3000]
+incident_angle = np.deg2rad(65)
 
-
-* `brewsters`: [Brewster's angle](https://en.wikipedia.org/wiki/Brewster's_angle) is the angle at which light of a particular polarisation is perfectly transmitted through a transparent dielectric surface. This example plots reflection and transmission of s and p polarised light in air incident on a glass surface.
-
-![image](./example_figures/brewsters.png)
+psi, delta = ellipsometry(
+    free_space_wavelength,
+    incident_angle,
+    refractive_indices,
+    film_thicknesses,
+)
+```
