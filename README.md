@@ -34,6 +34,10 @@ psi, delta = ellipsometry(
 )
 ```
 
+## Testing
+
+Benchmarked against [regress-pro](https://github.com/franko/regress-pro).
+
 ## Contributing
 
 Contributions and conversations warmly welcome.
