@@ -8,7 +8,7 @@
 
 ![image](./example_figures/psi_delta.png)
 
-# Usage
+## Usage
 
 Interface:
 ```py
@@ -33,3 +33,11 @@ psi, delta = ellipsometry(
     film_thicknesses,
 )
 ```
+
+## Testing
+
+Benchmarked against [regress-pro](https://github.com/franko/regress-pro).
+
+## Contributing
+
+Contributions and conversations warmly welcome.
