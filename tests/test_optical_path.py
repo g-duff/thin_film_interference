@@ -18,13 +18,14 @@ class AccumulatePhase(unittest.TestCase):
         ray_angle = 0
         refractive_index = 2
 
+        free_space_wavenumber = tau / free_space_wavelength
         comparison_factors = (0, 1 / 2, 1 / 4, 1 / 6)
         film_thicknesses = [
             cf * free_space_wavelength for cf in comparison_factors]
 
         # When
         actual_phase_difference = [
-            accumulate_phase(free_space_wavelength, ray_angle, refractive_index, t)
+            accumulate_phase(free_space_wavenumber, ray_angle, refractive_index, t)
             for t in film_thicknesses
         ]
 
@@ -51,13 +52,14 @@ class AccumulatePhase(unittest.TestCase):
         ray_angle = 60 * degrees
         refractive_index = 2
 
+        free_space_wavenumber = tau / free_space_wavelength
         comparison_factors = (0, 1 / 2, 1 / 4, 1 / 6)
         film_thicknesses = [
             cf * free_space_wavelength for cf in comparison_factors]
 
         # When
         actual_phase_difference = [
-            accumulate_phase(free_space_wavelength, ray_angle, refractive_index, t)
+            accumulate_phase(free_space_wavenumber, ray_angle, refractive_index, t)
             for t in film_thicknesses
         ]
         # Then
