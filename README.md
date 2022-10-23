@@ -8,7 +8,7 @@
 
 ![image](./example_figures/psi_delta.png)
 
-# Usage
+## Usage
 
 Interface:
 ```py
@@ -34,6 +34,6 @@ psi, delta = ellipsometry(
 )
 ```
 
-# Contributing
+## Contributing
 
 Contributions and conversations warmly welcome.
