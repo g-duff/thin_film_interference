@@ -1,2 +1,3 @@
 .venv
 dist
+src/thin_film_interference.egg-info
