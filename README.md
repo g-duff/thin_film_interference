@@ -1,10 +1,10 @@
 # Thin Film Interference
 
-This collection of python functions models interference in thin films using simple analytical functions and a recursive algorithm. The functions are applied to calculating the ellipsometry parameters psi and delta and Fabry Perot reflections from an n-layer thin film stack.
+## Features
 
-## Examples
-
-* `psi_delta`: Psi and Delta are parameters used in [ellipsometry](https://en.wikipedia.org/wiki/Ellipsometry) to calculate the thickness and refractive index of thin films. This example calculates and plots psi and delta for a non-dispersive silicon-on-insulator thin film stack.
+* Ellipsometry parameters psi and delta
+* Arbitrary number of layers
+* All-numpy implementation
 
 ![image](./example_figures/psi_delta.png)
 
