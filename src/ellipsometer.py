@@ -3,7 +3,6 @@
 import numpy as np
 from src.transmission_angles import cascade_transmission_angles
 from src.fresnel import Parallel, Senkrecht
-from src.optical_path import accumulate_phase
 
 tau = 2 * np.pi
 
@@ -16,58 +15,50 @@ def ellipsometry(
 ):
     '''Calculate ellipsometry parameters psi, delta from film stack parameters'''
 
-    transmitted_angles = cascade_transmission_angles(
+    all_angles = [illumination_angle] + cascade_transmission_angles(
         illumination_angle, refractive_indexes)
 
-    last_refractive_index = refractive_indexes.pop()
-    last_trasmission_angle = transmitted_angles.pop()
+    wavevector_normal_components = [n*np.cos(angle) * tau / free_space_wavelengths
+                                    for n, angle in zip(refractive_indexes, all_angles)]
 
     senkrecht_reflection = Senkrecht.reflection(
-        refractive_indexes[-1]*np.cos(transmitted_angles[-1]), last_refractive_index*np.cos(last_trasmission_angle))
+        wavevector_normal_components[-2], wavevector_normal_components[-1])
     parallel_reflection = Parallel.reflection(
-        refractive_indexes[-1]*np.cos(transmitted_angles[-1]
-                                      ), last_refractive_index*np.cos(last_trasmission_angle),
-        refractive_indexes[-1], last_refractive_index)
+        wavevector_normal_components[-2], wavevector_normal_components[-1],
+        refractive_indexes[-2], refractive_indexes[-1])
 
-    free_space_wavenumbers = tau / free_space_wavelengths
+    sample_parameters = zip(
+        refractive_indexes[-3::-1],
+        wavevector_normal_components[-3::-1],
+        refractive_indexes[-2::-1],
+        wavevector_normal_components[-2::-1],
+        film_thicknesses[::-1],
+    )
 
-    sample_parameters = zip(refractive_indexes[-1::-1],
-                            refractive_indexes[-2::-1],
-                            film_thicknesses[::-1],
-                            transmitted_angles[-1::-1],
-                            transmitted_angles[-2::-1] + [illumination_angle]
-                            )
+    for incident_refractive_index, incident_wavevector_normal_component, layer_refractive_index, layer_wavevector_normal_component, layer_thickness in sample_parameters:
 
-    for transmission_refractive_index, incident_refractive_index, thickness, ray_angle_in_layer, incident_ray_angle in sample_parameters:
-        accumulated_phase = accumulate_phase(
-            free_space_wavenumbers, ray_angle_in_layer, transmission_refractive_index,  thickness)
-
-        incident_wavevector_normal_component = incident_refractive_index * \
-            np.cos(incident_ray_angle)
-        transmission_wavevector_normal_component = transmission_refractive_index * \
-            np.cos(ray_angle_in_layer)
-
+        accumulated_phase = 2 * layer_thickness * layer_wavevector_normal_component
         parallel_reflection = calculate_film_reflection(
             reflection_out_of=parallel_reflection,
             reflection_into=Parallel.reflection(
-                incident_wavevector_normal_component, transmission_wavevector_normal_component,
-                incident_refractive_index, transmission_refractive_index),
+                incident_wavevector_normal_component, layer_wavevector_normal_component,
+                incident_refractive_index, layer_refractive_index),
             transmission_into=Parallel.transmission(
-                incident_wavevector_normal_component, transmission_wavevector_normal_component,
-                incident_refractive_index, transmission_refractive_index),
-            transmission_back=Parallel.transmission(
-                transmission_wavevector_normal_component, incident_wavevector_normal_component,
-                transmission_refractive_index, incident_refractive_index),
+                incident_wavevector_normal_component, layer_wavevector_normal_component,
+                incident_refractive_index, layer_refractive_index),
+            transmission_back=Parallel.transmission(  # pylint: disable = arguments-out-of-order
+                layer_wavevector_normal_component, incident_wavevector_normal_component,
+                layer_refractive_index, incident_refractive_index),
             accumulated_phase=accumulated_phase
         )
         senkrecht_reflection = calculate_film_reflection(
             reflection_out_of=senkrecht_reflection,
             reflection_into=Senkrecht.reflection(
-                incident_wavevector_normal_component, transmission_wavevector_normal_component),
+                incident_wavevector_normal_component, layer_wavevector_normal_component),
             transmission_into=Senkrecht.transmission(
-                incident_wavevector_normal_component, transmission_wavevector_normal_component),
-            transmission_back=Senkrecht.transmission(
-                transmission_wavevector_normal_component, incident_wavevector_normal_component),
+                incident_wavevector_normal_component, layer_wavevector_normal_component),
+            transmission_back=Senkrecht.transmission(  # pylint: disable = arguments-out-of-order
+                layer_wavevector_normal_component, incident_wavevector_normal_component),
             accumulated_phase=accumulated_phase
         )
 
