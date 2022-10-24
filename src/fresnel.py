@@ -1,7 +1,5 @@
 '''Fresnel reflection and transmission coefficients'''
 
-import numpy as np
-
 
 class Senkrecht:
     '''Senkrecht, or Perpendicular polarization'''
@@ -33,22 +31,28 @@ class Parallel:
     '''Parallel polarization'''
     @staticmethod
     def reflection(
-        incident_angle,
-        transmission_angle,
+        incident_wavevector_normal_component,
+        transmission_wavevector_normal_component,
+        incident_refractive_index,
+        transmission_refractive_index,
     ):
         '''Calculate reflection coefficient'''
-        numerator = np.tan(incident_angle - transmission_angle)
-        denominator = np.tan(incident_angle + transmission_angle)
+        numerator = incident_wavevector_normal_component * transmission_refractive_index**2 - \
+            transmission_wavevector_normal_component * incident_refractive_index**2
+        denominator = incident_wavevector_normal_component * transmission_refractive_index**2 + \
+            transmission_wavevector_normal_component * incident_refractive_index**2
         return numerator / denominator
 
     @staticmethod
     def transmission(
-        incident_angle,
-        transmission_angle,
+        incident_wavevector_normal_component,
+        transmission_wavevector_normal_component,
+        incident_refractive_index,
+        transmission_refractive_index,
     ):
         '''Calculate transmission coefficient'''
-        numerator = 2 * np.sin(transmission_angle) * np.cos(incident_angle)
-        denominator = np.sin(incident_angle + transmission_angle) * np.cos(
-            incident_angle - transmission_angle
-        )
+        numerator = 2 * incident_wavevector_normal_component * \
+            incident_refractive_index * transmission_refractive_index
+        denominator = incident_wavevector_normal_component * transmission_refractive_index**2 + \
+            transmission_wavevector_normal_component * incident_refractive_index**2
         return numerator / denominator
