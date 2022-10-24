@@ -1,7 +1,6 @@
 '''Calculate ellipsometry parameters psi, delta'''
 
 import numpy as np
-from src.transmission_angles import cascade_transmission_angles
 from src.fresnel import Parallel, Senkrecht
 
 
@@ -13,11 +12,10 @@ def ellipsometry(
 ):
     '''Calculate ellipsometry parameters psi, delta from film stack parameters'''
 
-    all_angles = [illumination_angle] + cascade_transmission_angles(
-        illumination_angle, refractive_indexes)
-
-    wavevector_normal_components = [n*np.cos(angle) * 2 * np.pi / free_space_wavelengths
-                                    for n, angle in zip(refractive_indexes, all_angles)]
+    free_space_wavevectors = 2 * np.pi / free_space_wavelengths
+    wavevector_normal_components = [free_space_wavevectors * np.sqrt(
+        n**2 - (np.sin(illumination_angle) * refractive_indexes[0])**2)
+        for n in refractive_indexes]
 
     senkrecht_reflection = Senkrecht.reflection(
         wavevector_normal_components[-2], wavevector_normal_components[-1])
