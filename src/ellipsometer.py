@@ -4,8 +4,6 @@ import numpy as np
 from src.transmission_angles import cascade_transmission_angles
 from src.fresnel import Parallel, Senkrecht
 
-tau = 2 * np.pi
-
 
 def ellipsometry(
     free_space_wavelengths,
@@ -18,7 +16,7 @@ def ellipsometry(
     all_angles = [illumination_angle] + cascade_transmission_angles(
         illumination_angle, refractive_indexes)
 
-    wavevector_normal_components = [n*np.cos(angle) * tau / free_space_wavelengths
+    wavevector_normal_components = [n*np.cos(angle) * 2 * np.pi / free_space_wavelengths
                                     for n, angle in zip(refractive_indexes, all_angles)]
 
     senkrecht_reflection = Senkrecht.reflection(
