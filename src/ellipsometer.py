@@ -32,31 +32,31 @@ def ellipsometry(
 
     for (wave_in_film, incident_wave), layer_thickness in zip(waves, reversed(film_thicknesses)):
 
-        layer_refractive_index, layer_wavevector_normal_component = wave_in_film
+        film_refractive_index, film_wavevector_normal_component = wave_in_film
         incident_refractive_index, incident_wavevector_normal_component = incident_wave
 
-        accumulated_phase = 2 * layer_thickness * layer_wavevector_normal_component
+        accumulated_phase = 2 * layer_thickness * film_wavevector_normal_component
         parallel_reflection = calculate_film_reflection(
             reflection_out_of=parallel_reflection,
             reflection_into=Parallel.reflection(
-                incident_wavevector_normal_component, layer_wavevector_normal_component,
-                incident_refractive_index, layer_refractive_index),
+                incident_wavevector_normal_component, film_wavevector_normal_component,
+                incident_refractive_index, film_refractive_index),
             transmission_into=Parallel.transmission(
-                incident_wavevector_normal_component, layer_wavevector_normal_component,
-                incident_refractive_index, layer_refractive_index),
+                incident_wavevector_normal_component, film_wavevector_normal_component,
+                incident_refractive_index, film_refractive_index),
             transmission_back=Parallel.transmission(  # pylint: disable = arguments-out-of-order
-                layer_wavevector_normal_component, incident_wavevector_normal_component,
-                layer_refractive_index, incident_refractive_index),
+                film_wavevector_normal_component, incident_wavevector_normal_component,
+                film_refractive_index, incident_refractive_index),
             accumulated_phase=accumulated_phase
         )
         senkrecht_reflection = calculate_film_reflection(
             reflection_out_of=senkrecht_reflection,
             reflection_into=Senkrecht.reflection(
-                incident_wavevector_normal_component, layer_wavevector_normal_component),
+                incident_wavevector_normal_component, film_wavevector_normal_component),
             transmission_into=Senkrecht.transmission(
-                incident_wavevector_normal_component, layer_wavevector_normal_component),
+                incident_wavevector_normal_component, film_wavevector_normal_component),
             transmission_back=Senkrecht.transmission(  # pylint: disable = arguments-out-of-order
-                layer_wavevector_normal_component, incident_wavevector_normal_component),
+                film_wavevector_normal_component, incident_wavevector_normal_component),
             accumulated_phase=accumulated_phase
         )
 
