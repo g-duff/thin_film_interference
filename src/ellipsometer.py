@@ -1,5 +1,6 @@
 '''Calculate ellipsometry parameters psi, delta'''
 
+from itertools import tee
 import numpy as np
 from src.fresnel import Parallel, Senkrecht
 
@@ -23,15 +24,14 @@ def ellipsometry(
         wavevector_normal_components[-2], wavevector_normal_components[-1],
         refractive_indexes[-2], refractive_indexes[-1])
 
-    sample_parameters = zip(
-        refractive_indexes[-3::-1],
-        wavevector_normal_components[-3::-1],
-        refractive_indexes[-2::-1],
-        wavevector_normal_components[-2::-1],
-        film_thicknesses[::-1],
+    waves = pairwise(
+        zip(refractive_indexes[-2::-1], wavevector_normal_components[-2::-1])
     )
 
-    for incident_refractive_index, incident_wavevector_normal_component, layer_refractive_index, layer_wavevector_normal_component, layer_thickness in sample_parameters:
+    for (wave_in_film, incident_wave), layer_thickness in zip(waves, reversed(film_thicknesses)):
+
+        layer_refractive_index, layer_wavevector_normal_component = wave_in_film
+        incident_refractive_index, incident_wavevector_normal_component = incident_wave
 
         accumulated_phase = 2 * layer_thickness * layer_wavevector_normal_component
         parallel_reflection = calculate_film_reflection(
@@ -59,6 +59,13 @@ def ellipsometry(
         )
 
     return reflection_to_psi_delta(senkrecht_reflection, parallel_reflection)
+
+
+def pairwise(iterable):
+    ''' pairwise('ABCDEFG') --> AB BC CD DE EF FG'''
+    a, b = tee(iterable)
+    next(b, None)
+    return zip(a, b)
 
 
 def calculate_film_reflection(
