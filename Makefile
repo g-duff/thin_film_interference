@@ -11,5 +11,8 @@ dev_dependencies: .venv
 lint_check:
 	${environment_bin}/pylint ./{src,tests}/*py
 
+test:
+	${environment_bin}/python3 -m unittest discover ./tests/ 'test_*.py'
+
 .venv:
 	python3 -m venv ./.venv
