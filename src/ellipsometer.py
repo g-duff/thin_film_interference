@@ -14,6 +14,7 @@ def ellipsometry(
     '''Calculate ellipsometry parameters psi, delta from film stack parameters'''
 
     refractive_indexes.reverse()
+    film_thicknesses.reverse()
 
     free_space_wavevectors = 2 * np.pi / free_space_wavelengths
     wavevector_normal_components = [free_space_wavevectors * np.sqrt(
@@ -30,7 +31,7 @@ def ellipsometry(
         zip(refractive_indexes[1::], wavevector_normal_components[1::])
     )
 
-    for (wave_in_film, incident_wave), layer_thickness in zip(waves, reversed(film_thicknesses)):
+    for (wave_in_film, incident_wave), layer_thickness in zip(waves, film_thicknesses):
 
         film_refractive_index, film_wavevector_normal_component = wave_in_film
         incident_refractive_index, incident_wavevector_normal_component = incident_wave
