@@ -1,14 +1,15 @@
 SHELL = /bin/sh
+environment_bin := ./.venv/bin
 
 build:
-	./.venv/bin/python3 -m build
+	${environment_bin}/python3 -m build
 
 dev_dependencies: .venv
-	./.venv/bin/pip3 install --upgrade pip
-	./.venv/bin/pip3 install -r ./requirements/dev.txt
+	${environment_bin}/pip3 install --upgrade pip
+	${environment_bin}/pip3 install -r ./requirements/dev.txt
 
 lint_check:
-	./.venv/bin/pylint ./{src,tests}/*py
+	${environment_bin}/pylint ./{src,tests}/*py
 
 .venv:
 	python3 -m venv ./.venv
