@@ -83,15 +83,15 @@ int main (void) {
         wavevector_normal_components[number_of_layers-2], wavevector_normal_components[number_of_layers-1],
         refractive_indexes[number_of_layers-2], refractive_indexes[number_of_layers-1]);
 
-    for (int i=number_of_films-1; i>-1; i--) {
+    for (int i=number_of_films; i>0; i--) {
 
-        float film_thickness = thicknesses[i];
+        float film_thickness = thicknesses[i-1];
 
-        float film_refractive_index = refractive_indexes[i+1];
-        float complex film_wavevector_normal_component = wavevector_normal_components[i+1];
+        float film_refractive_index = refractive_indexes[i];
+        float complex film_wavevector_normal_component = wavevector_normal_components[i];
 
-        float incident_refractive_index = refractive_indexes[i];
-        float complex incident_wavevector_normal_component = wavevector_normal_components[i];
+        float incident_refractive_index = refractive_indexes[i-1];
+        float complex incident_wavevector_normal_component = wavevector_normal_components[i-1];
 
         float complex accumulated_phase = 2 * film_thickness * film_wavevector_normal_component;
 
