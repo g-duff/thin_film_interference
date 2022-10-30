@@ -69,7 +69,7 @@ int main (void) {
     const float wavelength = 500.056;
     const float incident_angle = 65.0 * M_PI /180.0;
 
-    float freespace_wavevector = 2.0*M_PI/wavelength;
+    const float freespace_wavevector = 2.0*M_PI/wavelength;
     float complex wavevector_normal_components[NUMBER_OF_LAYERS];
 
     for (int i=0; i<NUMBER_OF_LAYERS; i++) {
