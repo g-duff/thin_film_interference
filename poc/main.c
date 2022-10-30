@@ -84,15 +84,17 @@ int main (void) {
         refractive_indexes[2], refractive_indexes[3]);
 
     for (int i=number_of_films-1; i>-1; i--) {
+
         float film_thickness = thicknesses[i];
+
         float film_refractive_index = refractive_indexes[i+1];
         float complex film_wavevector_normal_component = wavevector_normal_components[i+1];
-        
+
         float incident_refractive_index = refractive_indexes[i];
         float complex incident_wavevector_normal_component = wavevector_normal_components[i];
 
         float complex accumulated_phase = 2 * film_thickness * film_wavevector_normal_component;
-        
+
         parallel_reflection = calculate_film_reflection(
             parallel_reflection,
             calculate_parallel_reflection(
