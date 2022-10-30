@@ -35,14 +35,14 @@ float complex calculate_parallel_reflection(
 }
 
 float complex calculate_parallel_transmission(
-        float complex incident_wavevector_normal_component,
-        float complex transmission_wavevector_normal_component,
-        float complex incident_refractive_index,
-        float complex transmission_refractive_index
+        float complex *incident_wavevector_normal_component,
+        float complex *transmission_wavevector_normal_component,
+        const float complex *incident_refractive_index,
+        const float complex *transmission_refractive_index
 ) {
-        float complex numerator = 2 * incident_wavevector_normal_component * incident_refractive_index * transmission_refractive_index;
-        float complex denominator = incident_wavevector_normal_component * pow(transmission_refractive_index,2) + 
-            transmission_wavevector_normal_component * pow(incident_refractive_index,2);
+        float complex numerator = 2 * (*incident_wavevector_normal_component) * (*incident_refractive_index) * (*transmission_refractive_index);
+        float complex denominator = (*incident_wavevector_normal_component) * pow(*transmission_refractive_index,2) + 
+            (*transmission_wavevector_normal_component) * pow(*incident_refractive_index,2);
         return numerator / denominator;
 }
 
@@ -101,11 +101,11 @@ int main (void) {
                 &incident_wavevector_normal_component, &film_wavevector_normal_component,
                 &incident_refractive_index, &film_refractive_index),
             calculate_parallel_transmission(
-                incident_wavevector_normal_component, film_wavevector_normal_component,
-                incident_refractive_index, film_refractive_index),
+                &incident_wavevector_normal_component, &film_wavevector_normal_component,
+                &incident_refractive_index, &film_refractive_index),
             calculate_parallel_transmission(
-                film_wavevector_normal_component, incident_wavevector_normal_component,
-                film_refractive_index, incident_refractive_index),
+                &film_wavevector_normal_component, &incident_wavevector_normal_component,
+                &film_refractive_index, &incident_refractive_index),
             accumulated_phase
         );
 
