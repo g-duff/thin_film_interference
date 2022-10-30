@@ -81,7 +81,7 @@ int main (void) {
         wavevector_normal_components[number_of_layers-2], wavevector_normal_components[number_of_layers-1]);
     float complex parallel_reflection = calculate_parallel_reflection(
         wavevector_normal_components[number_of_layers-2], wavevector_normal_components[number_of_layers-1],
-        refractive_indexes[2], refractive_indexes[3]);
+        refractive_indexes[number_of_layers-2], refractive_indexes[number_of_layers-1]);
 
     for (int i=number_of_films-1; i>-1; i--) {
 
