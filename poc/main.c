@@ -4,11 +4,11 @@
 
 
 float complex calculate_senkrecht_reflection (
-    float complex incident_wavevector_normal_component,
-    float complex transmission_wavevector_normal_component
+    float complex *incident_wavevector_normal_component,
+    float complex *transmission_wavevector_normal_component
 ) {
-    float complex numerator = incident_wavevector_normal_component - transmission_wavevector_normal_component;
-    float complex denominator = incident_wavevector_normal_component + transmission_wavevector_normal_component;
+    float complex numerator = (*incident_wavevector_normal_component) - (*transmission_wavevector_normal_component);
+    float complex denominator = (*incident_wavevector_normal_component) + (*transmission_wavevector_normal_component);
     return numerator / denominator;
 }
 
@@ -78,7 +78,7 @@ int main (void) {
     }
 
     float complex senkrecht_reflection = calculate_senkrecht_reflection(
-        wavevector_normal_components[number_of_layers-2], wavevector_normal_components[number_of_layers-1]);
+        &wavevector_normal_components[number_of_layers-2], &wavevector_normal_components[number_of_layers-1]);
     float complex parallel_reflection = calculate_parallel_reflection(
         wavevector_normal_components[number_of_layers-2], wavevector_normal_components[number_of_layers-1],
         refractive_indexes[number_of_layers-2], refractive_indexes[number_of_layers-1]);
@@ -112,7 +112,7 @@ int main (void) {
         senkrecht_reflection = calculate_film_reflection(
             senkrecht_reflection,
             calculate_senkrecht_reflection(
-                incident_wavevector_normal_component, film_wavevector_normal_component),
+                &incident_wavevector_normal_component, &film_wavevector_normal_component),
             calculate_senkrecht_transmission(
                 incident_wavevector_normal_component, film_wavevector_normal_component),
             calculate_senkrecht_transmission(
