@@ -60,27 +60,27 @@ float complex calculate_film_reflection(
 }
 
 int main (void) {
-    const int number_of_films = 2;
-    const float thicknesses[number_of_films] = {220, 3000};
+    const int NUMBER_OF_FILMS = 2;
+    const int NUMBER_OF_LAYERS = NUMBER_OF_FILMS+2;
     
-    const int number_of_layers = number_of_films+2;
-    const float complex refractive_indexes[number_of_layers] = {1.0, 3.8, 1.45, 3.8};
+    const float thicknesses[NUMBER_OF_FILMS] = {220, 3000};
+    const float complex refractive_indexes[NUMBER_OF_LAYERS] = {1.0, 3.8, 1.45, 3.8};
 
     const float wavelength = 500.056;
     const float incident_angle = 65.0 * M_PI /180.0;
 
     float freespace_wavevector = 2.0*M_PI/wavelength;
-    float complex wavevector_normal_components[number_of_layers];
+    float complex wavevector_normal_components[NUMBER_OF_LAYERS];
 
-    for (int i=0; i<number_of_layers; i++) {
+    for (int i=0; i<NUMBER_OF_LAYERS; i++) {
         float n = refractive_indexes[i];
         wavevector_normal_components[i] = freespace_wavevector * csqrt(pow(n, 2) - pow(sin(incident_angle) * refractive_indexes[0], 2));
     }
 
-    const float complex *film_refractive_index = &refractive_indexes[number_of_layers-1];
+    const float complex *film_refractive_index = &refractive_indexes[NUMBER_OF_LAYERS-1];
     const float complex *incident_refractive_index = film_refractive_index-1;
     
-    float complex *film_wavevector_normal_component = &wavevector_normal_components[number_of_layers-1];
+    float complex *film_wavevector_normal_component = &wavevector_normal_components[NUMBER_OF_LAYERS-1];
     float complex *incident_wavevector_normal_component = film_wavevector_normal_component-1;
 
     float complex senkrecht_reflection = calculate_senkrecht_reflection(
@@ -89,7 +89,7 @@ int main (void) {
                 incident_wavevector_normal_component, film_wavevector_normal_component,
                 incident_refractive_index, film_refractive_index);
 
-    for (int i=number_of_films-1; i>-1; i--) {
+    for (int i=NUMBER_OF_FILMS-1; i>-1; i--) {
 
         film_refractive_index--;
         film_wavevector_normal_component--;
