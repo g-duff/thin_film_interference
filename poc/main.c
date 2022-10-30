@@ -21,7 +21,6 @@ float complex calculate_senkrecht_transmission (
     return numerator / denominator;
 }
 
-
 float complex calculate_parallel_reflection(
         float complex incident_wavevector_normal_component,
         float complex transmission_wavevector_normal_component,
@@ -105,6 +104,7 @@ int main (void) {
                 film_refractive_index, incident_refractive_index),
             accumulated_phase
         );
+
         senkrecht_reflection = calculate_film_reflection(
             senkrecht_reflection,
             calculate_senkrecht_reflection(
