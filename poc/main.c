@@ -62,16 +62,18 @@ float complex calculate_film_reflection(
 
 int main (void) {
     const int number_of_films = 2;
-    const float thicknesses[] = {220, 3000};
+    const float thicknesses[number_of_films] = {220, 3000};
     
-    const float refractive_indexes[number_of_films+2] = {1.0, 3.8, 1.45, 3.8};
+    const int number_of_layers = number_of_films+2;
+    const float refractive_indexes[number_of_layers] = {1.0, 3.8, 1.45, 3.8};
+
     const float wavelength = 500.056;
     const float incident_angle = 65.0 * M_PI /180.0;
 
     float freespace_wavevector = 2.0*M_PI/wavelength;
-    float complex wavevector_normal_components[4];
+    float complex wavevector_normal_components[number_of_layers];
 
-    for (int i=0; i<4; i++) {
+    for (int i=0; i<number_of_layers; i++) {
         float n = refractive_indexes[i];
         wavevector_normal_components[i] = freespace_wavevector * csqrt(pow(n, 2) - pow(sin(incident_angle) * refractive_indexes[0], 2));
     }
