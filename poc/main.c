@@ -13,11 +13,11 @@ float complex calculate_senkrecht_reflection (
 }
 
 float complex calculate_senkrecht_transmission (
-    float complex incident_wavevector_normal_component,
-    float complex transmission_wavevector_normal_component
+    float complex *incident_wavevector_normal_component,
+    float complex *transmission_wavevector_normal_component
 ) {
-    float complex numerator = 2 * incident_wavevector_normal_component;
-    float complex denominator = incident_wavevector_normal_component + transmission_wavevector_normal_component;
+    float complex numerator = 2 * (*incident_wavevector_normal_component);
+    float complex denominator = (*incident_wavevector_normal_component) + (*transmission_wavevector_normal_component);
     return numerator / denominator;
 }
 
@@ -114,9 +114,9 @@ int main (void) {
             calculate_senkrecht_reflection(
                 &incident_wavevector_normal_component, &film_wavevector_normal_component),
             calculate_senkrecht_transmission(
-                incident_wavevector_normal_component, film_wavevector_normal_component),
+                &incident_wavevector_normal_component, &film_wavevector_normal_component),
             calculate_senkrecht_transmission(
-                film_wavevector_normal_component, incident_wavevector_normal_component),
+                &film_wavevector_normal_component, &incident_wavevector_normal_component),
             accumulated_phase
         );
     }
