@@ -77,46 +77,50 @@ int main (void) {
         wavevector_normal_components[i] = freespace_wavevector * csqrt(pow(n, 2) - pow(sin(incident_angle) * refractive_indexes[0], 2));
     }
 
+    const float complex *film_refractive_index = &refractive_indexes[number_of_layers-1];
+    const float complex *incident_refractive_index = film_refractive_index-1;
+    
+    float complex *film_wavevector_normal_component = &wavevector_normal_components[number_of_layers-1];
+    float complex *incident_wavevector_normal_component = film_wavevector_normal_component-1;
+
     float complex senkrecht_reflection = calculate_senkrecht_reflection(
-        &wavevector_normal_components[number_of_layers-2], &wavevector_normal_components[number_of_layers-1]);
+        incident_wavevector_normal_component, film_wavevector_normal_component);
     float complex parallel_reflection = calculate_parallel_reflection(
-        &wavevector_normal_components[number_of_layers-2], &wavevector_normal_components[number_of_layers-1],
-        &refractive_indexes[number_of_layers-2], &refractive_indexes[number_of_layers-1]);
+                incident_wavevector_normal_component, film_wavevector_normal_component,
+                incident_refractive_index, film_refractive_index);
 
-    for (int i=number_of_films; i>0; i--) {
+    for (int i=number_of_films-1; i>-1; i--) {
 
-        const float *film_thickness = &thicknesses[i-1];
-
-        const float complex film_refractive_index = refractive_indexes[i];
-        float complex film_wavevector_normal_component = wavevector_normal_components[i];
-
-        const float complex incident_refractive_index = refractive_indexes[i-1];
-        float complex incident_wavevector_normal_component = wavevector_normal_components[i-1];
-
-        float complex accumulated_phase = 2 * (*film_thickness) * film_wavevector_normal_component;
+        film_refractive_index--;
+        film_wavevector_normal_component--;
+        incident_refractive_index--;
+        incident_wavevector_normal_component--;
+        
+        const float film_thickness = thicknesses[i];
+        float complex accumulated_phase = 2 * film_thickness * (*film_wavevector_normal_component);
 
         parallel_reflection = calculate_film_reflection(
             parallel_reflection,
             calculate_parallel_reflection(
-                &incident_wavevector_normal_component, &film_wavevector_normal_component,
-                &incident_refractive_index, &film_refractive_index),
+                incident_wavevector_normal_component, film_wavevector_normal_component,
+                incident_refractive_index, film_refractive_index),
             calculate_parallel_transmission(
-                &incident_wavevector_normal_component, &film_wavevector_normal_component,
-                &incident_refractive_index, &film_refractive_index),
+                incident_wavevector_normal_component, film_wavevector_normal_component,
+                incident_refractive_index, film_refractive_index),
             calculate_parallel_transmission(
-                &film_wavevector_normal_component, &incident_wavevector_normal_component,
-                &film_refractive_index, &incident_refractive_index),
+                film_wavevector_normal_component, incident_wavevector_normal_component,
+                film_refractive_index, incident_refractive_index),
             accumulated_phase
         );
 
         senkrecht_reflection = calculate_film_reflection(
             senkrecht_reflection,
             calculate_senkrecht_reflection(
-                &incident_wavevector_normal_component, &film_wavevector_normal_component),
+                incident_wavevector_normal_component, film_wavevector_normal_component),
             calculate_senkrecht_transmission(
-                &incident_wavevector_normal_component, &film_wavevector_normal_component),
+                incident_wavevector_normal_component, film_wavevector_normal_component),
             calculate_senkrecht_transmission(
-                &film_wavevector_normal_component, &incident_wavevector_normal_component),
+                film_wavevector_normal_component, incident_wavevector_normal_component),
             accumulated_phase
         );
     }
