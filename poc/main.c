@@ -2,7 +2,7 @@
 #include <complex.h>
 #include <tgmath.h>
 
-#include "fresnel.c"
+#include "fresnel.h"
 
 
 float complex calculate_film_reflection(
