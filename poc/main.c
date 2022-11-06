@@ -3,20 +3,8 @@
 #include <tgmath.h>
 
 #include "fresnel.h"
+#include "single_film.h"
 
-
-float complex calculate_film_reflection(
-    float complex reflection_out_of,
-    float complex reflection_into,
-    float complex transmission_into,
-    float complex transmission_back,
-    float complex accumulated_phase
-) {
-    float complex numerator = transmission_into * reflection_out_of * transmission_back;
-    float complex demoninator = exp(-1 * I  * accumulated_phase) + 
-        reflection_into * reflection_out_of;
-    return reflection_into + numerator / demoninator;
-}
 
 int main (void) {
     const int NUMBER_OF_FILMS = 2;
