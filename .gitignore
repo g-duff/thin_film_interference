@@ -3,3 +3,7 @@ __pycache__
 
 dist
 src/thin_film_interference.egg-info
+
+# C
+*o
+main

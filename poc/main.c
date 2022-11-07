@@ -2,62 +2,9 @@
 #include <complex.h>
 #include <tgmath.h>
 
+#include "fresnel.h"
+#include "single_film.h"
 
-float complex calculate_senkrecht_reflection (
-    float complex *incident_wavevector_normal_component,
-    float complex *transmission_wavevector_normal_component
-) {
-    float complex numerator = (*incident_wavevector_normal_component) - (*transmission_wavevector_normal_component);
-    float complex denominator = (*incident_wavevector_normal_component) + (*transmission_wavevector_normal_component);
-    return numerator / denominator;
-}
-
-float complex calculate_senkrecht_transmission (
-    float complex *incident_wavevector_normal_component,
-    float complex *transmission_wavevector_normal_component
-) {
-    float complex numerator = 2 * (*incident_wavevector_normal_component);
-    float complex denominator = (*incident_wavevector_normal_component) + (*transmission_wavevector_normal_component);
-    return numerator / denominator;
-}
-
-float complex calculate_parallel_reflection(
-        float complex *incident_wavevector_normal_component,
-        float complex *transmission_wavevector_normal_component,
-        const float complex *incident_refractive_index,
-        const float complex *transmission_refractive_index
-) {
-        float complex numerator = (*incident_wavevector_normal_component) * pow(*transmission_refractive_index,2) - 
-            (*transmission_wavevector_normal_component) * pow(*incident_refractive_index,2);
-        float complex denominator = (*incident_wavevector_normal_component) * pow(*transmission_refractive_index,2) + 
-            *transmission_wavevector_normal_component * pow(*incident_refractive_index,2);
-        return numerator / denominator;
-}
-
-float complex calculate_parallel_transmission(
-        float complex *incident_wavevector_normal_component,
-        float complex *transmission_wavevector_normal_component,
-        const float complex *incident_refractive_index,
-        const float complex *transmission_refractive_index
-) {
-        float complex numerator = 2 * (*incident_wavevector_normal_component) * (*incident_refractive_index) * (*transmission_refractive_index);
-        float complex denominator = (*incident_wavevector_normal_component) * pow(*transmission_refractive_index,2) + 
-            (*transmission_wavevector_normal_component) * pow(*incident_refractive_index,2);
-        return numerator / denominator;
-}
-
-float complex calculate_film_reflection(
-    float complex reflection_out_of,
-    float complex reflection_into,
-    float complex transmission_into,
-    float complex transmission_back,
-    float complex accumulated_phase
-) {
-    float complex numerator = transmission_into * reflection_out_of * transmission_back;
-    float complex demoninator = exp(-1 * I  * accumulated_phase) + 
-        reflection_into * reflection_out_of;
-    return reflection_into + numerator / demoninator;
-}
 
 int main (void) {
     const int NUMBER_OF_FILMS = 2;
