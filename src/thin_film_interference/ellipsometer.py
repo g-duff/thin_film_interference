@@ -2,7 +2,7 @@
 
 from itertools import tee
 import numpy as np
-from src.fresnel import Parallel, Senkrecht
+from .fresnel import Parallel, Senkrecht
 
 
 def ellipsometry(

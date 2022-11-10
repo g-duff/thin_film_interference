@@ -1,7 +1,7 @@
 [project]
 dependencies = ["numpy>=1.23.4"]
 name = "thin_film_interference"
-version = "0.0.0"
+version = "0.0.1"
 authors = [
   { name="George Duffett" },
 ]
