@@ -1,7 +1,7 @@
 SHELL = /bin/sh
 environment_bin := ./.venv/bin
 
-build:
+dist:
 	${environment_bin}/python3 -m build
 
 dev_dependencies: .venv
