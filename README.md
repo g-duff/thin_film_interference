@@ -8,6 +8,12 @@
 
 ![image](./example_figures/psi_delta.png)
 
+## Installation
+
+```sh
+pip3 install thin_film_interference-0.0.1-py3-none-any.whl
+```
+
 ## Usage
 
 Interface:
