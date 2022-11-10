@@ -9,7 +9,7 @@ dev_dependencies: .venv
 	${environment_bin}/pip3 install -r ./requirements/dev.txt
 
 lint_check:
-	${environment_bin}/pylint ./{src,tests}/*py
+	${environment_bin}/pylint ./{src/thin_film_interference,tests}/*py
 
 test:
 	${environment_bin}/python3 -m unittest discover ./tests/ 'test_*.py'
