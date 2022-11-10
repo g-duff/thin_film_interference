@@ -41,7 +41,7 @@ psi, delta = ellipsometry(
 
 ## Testing
 
-Benchmarked against [regress-pro](https://github.com/franko/regress-pro).
+Benchmarked against [regress-pro](https://github.com/franko/regress-pro) and [Filmetrics](https://www.filmetrics.com/reflectance-calculator?wmin=200&wmax=1000&wstep=1&angle=0&pol=s&units=nm&mat%5B%5D=Air&d%5B%5D=0&mat%5B%5D=1.5&d%5B%5D=250&mat%5B%5D=Si&d%5B%5D=0&sptype=r).
 
 ## Contributing
 
