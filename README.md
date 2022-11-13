@@ -10,7 +10,7 @@
 
 ## Installation
 
-Downlaod the latest release [here](https://github.com/g-duff/thin_film_interference/releases/latest), and install with pip eg:
+Download the latest release [here](https://github.com/g-duff/thin_film_interference/releases/latest), and install with pip eg:
 
 ```sh
 pip3 install thin_film_interference-0.0.1-py3-none-any.whl
