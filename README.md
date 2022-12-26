@@ -6,7 +6,7 @@
 * Arbitrary number of layers
 * All-numpy implementation
 
-![image](./example_figures/psi_delta.png)
+![image](./examples/figures/psi_delta.png)
 
 ## Installation
 
