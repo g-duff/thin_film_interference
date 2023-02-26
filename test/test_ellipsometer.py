@@ -8,7 +8,7 @@ class Ellipsometry(unittest.TestCase):
     def test_against_regres_pro(self):
         # Given
         free_space_wavelength, expected_tan_psi, expected_cos_delta = np.genfromtxt(
-            "./tests/SoI_regressPro.txt", skip_header=1, unpack=True, usecols=(0, 2, 5)
+            "./test/SoI_regressPro.txt", skip_header=1, unpack=True, usecols=(0, 2, 5)
         )
 
         substrate_refractive_index = 3.8
