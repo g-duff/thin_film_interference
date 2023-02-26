@@ -1,4 +1,4 @@
-# Thin Film Interference
+# [Thin Film Interference](https://github.com/g-duff/thin_film_interference)
 
 ## Features
 
