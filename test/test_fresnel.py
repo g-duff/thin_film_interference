@@ -1,8 +1,8 @@
 # pylint: disable = import-error, missing-class-docstring, missing-function-docstring, missing-module-docstring
 import unittest
 import numpy as np
-from src.thin_film_interference.fresnel import Parallel, Senkrecht
-import src.thin_film_interference.transmission_angles as ta
+from thin_film_interference.fresnel import Parallel, Senkrecht
+import thin_film_interference.transmission_angles as ta
 
 
 class Fresnel(unittest.TestCase):

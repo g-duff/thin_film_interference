@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
 dependencies = ["numpy>=1.23.4"]
 name = "thin_film_interference"
@@ -10,9 +14,12 @@ readme = "README.md"
 requires-python = ">=3.7"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: GPL-3.0",
+    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+
+[tool.setuptools.packages.find]
+include = ["thin_film_interference*"]
 
 [project.urls]
 "Homepage" = "https://github.com/g-duff/thin_film_interference"
