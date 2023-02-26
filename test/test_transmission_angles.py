@@ -1,7 +1,7 @@
 # pylint: disable = import-error, missing-class-docstring, missing-function-docstring, missing-module-docstring
 import unittest
 import numpy as np
-import src.thin_film_interference.transmission_angles as ta
+import thin_film_interference.transmission_angles as ta
 
 
 class TransmissionAngles(unittest.TestCase):

@@ -13,7 +13,7 @@ editable_install: .venv
 	${environment_bin}/pip3 install --editable .
 
 lint:
-	${environment_bin}/pylint ./{src/thin_film_interference,test}/*py
+	${environment_bin}/pylint ./{thin_film_interference,test}/*py
 
 test:
 	${environment_bin}/python3 -m unittest discover ./test/ 'test_*.py'

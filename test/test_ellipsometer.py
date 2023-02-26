@@ -1,7 +1,7 @@
 # pylint: disable = import-error, missing-class-docstring, missing-function-docstring, missing-module-docstring
 import unittest
 import numpy as np
-import src.thin_film_interference.ellipsometer as ec
+import thin_film_interference.ellipsometer as ec
 
 
 class Ellipsometry(unittest.TestCase):
