@@ -16,7 +16,7 @@ format:
 	${environment_bin}/autopep8 --in-place ./thin_film_interference/*py ./test/*py
 
 lint:
-	${environment_bin}/pylint ./{thin_film_interference,test}/*py
+	${environment_bin}/pylint ./thin_film_interference/*py ./test/*py
 
 test:
 	${environment_bin}/python3 -m unittest discover ./test/ 'test_*.py'
