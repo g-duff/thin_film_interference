@@ -66,9 +66,9 @@ def ellipsometry(
 
 def pairwise(iterable):
     ''' pairwise('ABCDEFG') --> AB BC CD DE EF FG'''
-    a, b = tee(iterable)
-    next(b, None)
-    return zip(a, b)
+    first, second = tee(iterable)
+    next(second, None)
+    return zip(first, second)
 
 
 def calculate_film_reflection(
