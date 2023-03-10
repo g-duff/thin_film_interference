@@ -1,4 +1,5 @@
 '''Calculate ellipsometry parameters psi, delta'''
+# pylint: disable = too-many-locals
 
 from itertools import tee
 import numpy as np
