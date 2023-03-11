@@ -22,6 +22,10 @@ pipeline {
 
 	post {
 
+		always {
+			sh "make clean"
+		}
+
 		success {
 			withCredentials([string(credentialsId: 'GitHubStatusToken', variable: 'TOKEN')]) {
 				sh '''curl -L \
