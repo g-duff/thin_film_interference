@@ -3,11 +3,14 @@ SHELL = /bin/sh
 environment := ./.venv
 environment_bin := ${environment}/bin
 
-.PHONY: lint format test
+.PHONY: clean format lint test
 
 # Default Goal
 editable_install: .venv
 	${environment_bin}/pip3 install --editable .
+
+clean:
+	rm -rf ${environment}
 
 dev_dependencies: .venv
 	${environment_bin}/pip3 install --upgrade pip
