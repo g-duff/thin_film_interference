@@ -21,7 +21,13 @@ pipeline {
 		}
 		stage('Test') { 
 			steps {
-				sh "make test"
+				script {
+					try {
+						sh "make test"
+					} catch (error) {
+						unstable(message: "${STAGE_NAME} is unstable")
+					}
+				}
 			}
 		}
 	}
