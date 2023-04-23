@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Documentation for:
 	* Fresnel functions.
 
+* Support for both lists and numpy arrays to ellipsometer function.
+
 ### Changed
 
 ### Removed
