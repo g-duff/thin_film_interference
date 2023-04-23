@@ -3,15 +3,14 @@
 
 from itertools import tee
 import numpy as np
-import numpy.typing as npt
 from .fresnel import Parallel, Senkrecht
 
 
 def ellipsometry(
-    free_space_wavelengths: "list | npt.NDArray",
-    illumination_angle: float,
-    refractive_indexes: "list | npt.NDArray",
-    film_thicknesses: "list | npt.NDArray",
+    free_space_wavelengths,
+    illumination_angle,
+    refractive_indexes,
+    film_thicknesses,
 ):
     '''Calculate ellipsometry parameters psi, delta from film stack parameters'''
 
