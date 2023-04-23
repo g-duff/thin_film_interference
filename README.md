@@ -20,10 +20,10 @@ pip3 install thin_film_interference-0.0.1-py3-none-any.whl
 
 Interface:
 ```py
-def ellipsometry(free_space_wavelengths: numpy.array,
+def ellipsometry(free_space_wavelengths: list or numpy.array,
     illumination_angle: float,
-    refractive_indexes: list,
-    film_thicknesses: list) -> (psi, delta)
+    refractive_indexes: list or numpy.array,
+    film_thicknesses: list or numpy.array) -> (psi, delta)
 ```
 
 Example function call:
@@ -44,7 +44,6 @@ psi, delta = ellipsometry(
     refractive_indices,
     film_thicknesses,
 )
-
 ```
 
 ## Testing
