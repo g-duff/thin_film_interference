@@ -36,11 +36,6 @@ pipeline {
 
 	post {
 
-		always {
-			sh "make clean"
-		}
-
-
 		success {
 			script {
 				notifyGitHubBuildStatus("thin_film_interference", "success")
@@ -57,6 +52,10 @@ pipeline {
 			script {
 				notifyGitHubBuildStatus("thin_film_interference", "error")
 			}
+		}
+
+		cleanup {
+			sh "make clean"
 		}
 
 	}
