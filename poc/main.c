@@ -15,7 +15,11 @@ int main (void) {
     thicknesses[0] = 220;
     thicknesses[1] = 3000;
 
-    const float complex refractive_indexes[NUMBER_OF_LAYERS] = {1.0, 3.8, 1.45, 3.8};
+    float complex *refractive_indexes = (float complex*)malloc(NUMBER_OF_LAYERS * sizeof(float complex));
+    refractive_indexes[0] = 1.0;
+    refractive_indexes[1] = 3.8;
+    refractive_indexes[2] = 1.45;
+    refractive_indexes[3] = 3.8;
 
     const float wavelength = 500.056;
     const float incident_angle = 65.0 * M_PI /180.0;
@@ -80,4 +84,5 @@ int main (void) {
     printf("%1.7f + %1.7fi\n", creal(parallel_reflection), cimag(parallel_reflection));
 
     free(thicknesses);
+    free(refractive_indexes);
 }
