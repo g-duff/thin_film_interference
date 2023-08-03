@@ -12,20 +12,21 @@ int main (void) {
     const int NUMBER_OF_LAYERS = NUMBER_OF_FILMS+2;
     
     float *thicknesses = (float*)malloc(NUMBER_OF_FILMS * sizeof(float));
+    float complex *refractive_indexes = (float complex*)malloc(NUMBER_OF_LAYERS * sizeof(float complex));
+    float complex *wavevector_normal_components = (float complex*)malloc(NUMBER_OF_LAYERS * sizeof(float complex));
+
     thicknesses[0] = 220;
     thicknesses[1] = 3000;
 
-    float complex *refractive_indexes = (float complex*)malloc(NUMBER_OF_LAYERS * sizeof(float complex));
     refractive_indexes[0] = 1.0;
     refractive_indexes[1] = 3.8;
     refractive_indexes[2] = 1.45;
     refractive_indexes[3] = 3.8;
 
     const float wavelength = 500.056;
-    const float incident_angle = 65.0 * M_PI /180.0;
-
     const float freespace_wavevector = 2.0*M_PI/wavelength;
-    float complex *wavevector_normal_components = (float complex*)malloc(NUMBER_OF_LAYERS * sizeof(float complex));
+
+    const float incident_angle = 65.0 * M_PI /180.0;
 
     for (int i=0; i<NUMBER_OF_LAYERS; i++) {
         float n = refractive_indexes[i];
