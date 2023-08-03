@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <complex.h>
 #include <tgmath.h>
 
@@ -10,14 +11,22 @@ int main (void) {
     const int NUMBER_OF_FILMS = 2;
     const int NUMBER_OF_LAYERS = NUMBER_OF_FILMS+2;
     
-    const float thicknesses[NUMBER_OF_FILMS] = {220, 3000};
-    const float complex refractive_indexes[NUMBER_OF_LAYERS] = {1.0, 3.8, 1.45, 3.8};
+    float *thicknesses = (float*)malloc(NUMBER_OF_FILMS * sizeof(float));
+    float complex *refractive_indexes = (float complex*)malloc(NUMBER_OF_LAYERS * sizeof(float complex));
+    float complex *wavevector_normal_components = (float complex*)malloc(NUMBER_OF_LAYERS * sizeof(float complex));
+
+    thicknesses[0] = 220;
+    thicknesses[1] = 3000;
+
+    refractive_indexes[0] = 1.0;
+    refractive_indexes[1] = 3.8;
+    refractive_indexes[2] = 1.45;
+    refractive_indexes[3] = 3.8;
 
     const float wavelength = 500.056;
-    const float incident_angle = 65.0 * M_PI /180.0;
-
     const float freespace_wavevector = 2.0*M_PI/wavelength;
-    float complex wavevector_normal_components[NUMBER_OF_LAYERS];
+
+    const float incident_angle = 65.0 * M_PI /180.0;
 
     for (int i=0; i<NUMBER_OF_LAYERS; i++) {
         float n = refractive_indexes[i];
@@ -74,4 +83,8 @@ int main (void) {
 
     printf("%1.7f + %1.7fi\n", creal(senkrecht_reflection), cimag(senkrecht_reflection));
     printf("%1.7f + %1.7fi\n", creal(parallel_reflection), cimag(parallel_reflection));
+
+    free(thicknesses);
+    free(refractive_indexes);
+    free(wavevector_normal_components);
 }
