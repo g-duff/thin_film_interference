@@ -25,7 +25,7 @@ int main (void) {
     const float incident_angle = 65.0 * M_PI /180.0;
 
     const float freespace_wavevector = 2.0*M_PI/wavelength;
-    float complex wavevector_normal_components[NUMBER_OF_LAYERS];
+    float complex *wavevector_normal_components = (float complex*)malloc(NUMBER_OF_LAYERS * sizeof(float complex));
 
     for (int i=0; i<NUMBER_OF_LAYERS; i++) {
         float n = refractive_indexes[i];
@@ -85,4 +85,5 @@ int main (void) {
 
     free(thicknesses);
     free(refractive_indexes);
+    free(wavevector_normal_components);
 }
