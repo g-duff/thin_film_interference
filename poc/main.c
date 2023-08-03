@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <complex.h>
 #include <tgmath.h>
 
@@ -10,7 +11,10 @@ int main (void) {
     const int NUMBER_OF_FILMS = 2;
     const int NUMBER_OF_LAYERS = NUMBER_OF_FILMS+2;
     
-    const float thicknesses[NUMBER_OF_FILMS] = {220, 3000};
+    float *thicknesses = (float*)malloc(NUMBER_OF_FILMS * sizeof(float));
+    thicknesses[0] = 220;
+    thicknesses[1] = 3000;
+
     const float complex refractive_indexes[NUMBER_OF_LAYERS] = {1.0, 3.8, 1.45, 3.8};
 
     const float wavelength = 500.056;
@@ -74,4 +78,6 @@ int main (void) {
 
     printf("%1.7f + %1.7fi\n", creal(senkrecht_reflection), cimag(senkrecht_reflection));
     printf("%1.7f + %1.7fi\n", creal(parallel_reflection), cimag(parallel_reflection));
+
+    free(thicknesses);
 }
